@@ -1,0 +1,34 @@
+{
+    "name": "exorg/autoloader",
+    "description": "Expansible Universal Autoloader.",
+    "type": "library",
+    "keywords": [
+        "exorg",
+        "autoloader"
+    ],
+    "license": "MIT",
+    "authors" : [
+        {
+            "name": "Katarzyna Krasińska",
+            "email": "katheroine@gmail.com",
+            "role": "Developer"
+        }
+    ],
+    "require": {
+        "php": ">=5.5.9"
+    },
+    "require-dev": {
+        "phpunit/PHPUnit": "4.4.*",
+        "squizlabs/php_codesniffer": "*"
+    },
+    "autoload": {
+        "psr-4": {
+            "Exorg\\Autoloader\\": "src/"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "Exorg\\Autoloader\\": "tests/"
+        }
+    }
+}
