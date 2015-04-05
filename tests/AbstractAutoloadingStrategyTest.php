@@ -12,8 +12,8 @@
 namespace Exorg\Autoloader;
 
 /**
- * AutoloadingStrategyTest.
- * PHPUnit test class for autoloading stratgy classes.
+ * AbstractAutoloadingStrategyTest.
+ * PHPUnit test class for autoloading strategy classes.
  *
  * @package Autoloader
  * @author Katarzyna Krasińska <katheroine@gmail.com>
@@ -21,7 +21,7 @@ namespace Exorg\Autoloader;
  * @license http://http://opensource.org/licenses/MIT MIT License
  * @link https://github.com/ExOrg/php-autoloader
  */
-abstract class AutoloadingStrategyTest extends \PHPUnit_Framework_TestCase
+abstract class AbstractAutoloadingStrategyTest extends AutoloadingProcessTestCase
 {
     /**
      * Instance of tested class.
@@ -37,7 +37,7 @@ abstract class AutoloadingStrategyTest extends \PHPUnit_Framework_TestCase
     protected function setUp()
     {
         $this->initialiseStrategy();
-        $this->registerAutoloaderStrategy();
+        $this->registerAutoloadingStrategy();
     }
 
     /**
@@ -46,28 +46,23 @@ abstract class AutoloadingStrategyTest extends \PHPUnit_Framework_TestCase
      */
     protected function tearDown()
     {
-        $this->unregisterAutoloaderStrategy();
+        $this->unregisterAutoloadingStrategy();
     }
 
     /**
-     * Initialise strategy fixture.
-     */
-    abstract protected function initialiseStrategy();
-
-    /**
-     * Register proper method of autoloader strategy
+     * Register proper method of autoloading strategy
      * as an autoloader function.
      */
-    protected function registerAutoloaderStrategy()
+    protected function registerAutoloadingStrategy()
     {
         spl_autoload_register([$this->strategy, 'loadClass'], true);
     }
 
     /**
-     * Unregister proper method of autoloader strategy
+     * Unregister proper method of autoloading strategy
      * as an autoloader function.
      */
-    protected function unregisterAutoloaderStrategy()
+    protected function unregisterAutoloadingStrategy()
     {
         spl_autoload_unregister([$this->strategy, 'loadClass']);
     }

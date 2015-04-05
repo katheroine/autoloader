@@ -12,7 +12,7 @@
 namespace Exorg\Autoloader;
 
 /**
- * AutoloaderWithAutoloadingStrategyTest.
+ * AbstractAutoloaderWithAutoloadingStrategyTest.
  * PHPUnit test class for Autloader with autloading strategy class.
  *
  * @package Autoloader
@@ -21,7 +21,7 @@ namespace Exorg\Autoloader;
  * @license http://http://opensource.org/licenses/MIT MIT License
  * @link https://github.com/ExOrg/php-autoloader
  */
-abstract class AutoloaderWithAutoloadingStrategyTest extends \PHPUnit_Framework_TestCase
+abstract class AbstractAutoloaderWithAutoloadingStrategyTest extends AutoloadingProcessTestCase
 {
     /**
      * Instance of tested containing class.
@@ -59,17 +59,17 @@ abstract class AutoloaderWithAutoloadingStrategyTest extends \PHPUnit_Framework_
     }
 
     /**
-     * Initialise strategy fixture.
-     */
-    abstract protected function initialiseStrategy();
-
-    /**
      * Initialise autoloader.
      */
     private function initialiseAutoloader()
     {
         $this->autoloader = new Autoloader();
     }
+
+    /**
+     * Initialise strategy fixture.
+     */
+    abstract protected function initialiseStrategy();
 
     /**
      * Set-up autoloader.
