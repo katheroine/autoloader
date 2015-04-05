@@ -21,7 +21,7 @@ namespace Exorg\Autoloader;
  * @license http://http://opensource.org/licenses/MIT MIT License
  * @link https://github.com/ExOrg/php-autoloader
  */
-class AutoloaderWithFixedAutoloadingStrategyTest extends AutoloaderWithAutoloadingStrategyTest
+class AutoloaderWithFixedAutoloadingStrategyTest extends AbstractAutoloaderWithAutoloadingStrategyTest
 {
     /**
      * Initialise strategy fixture.
@@ -29,6 +29,18 @@ class AutoloaderWithFixedAutoloadingStrategyTest extends AutoloaderWithAutoloadi
     protected function initialiseStrategy()
     {
         $this->strategy = new FixedAutoloadingStrategy();
+    }
+
+   /**
+     * Test unregistered class is not found.
+     */
+    public function testForNotRegisteredClass()
+    {
+        $path = $this->getFullFixturePath('/src/NotCalledClass');
+
+        $this->strategy->registerClassPath('NotCalledClass', $path);
+
+        $this->assertClassExists('NotRegisteredClass');
     }
 
     /**
@@ -42,9 +54,7 @@ class AutoloaderWithFixedAutoloadingStrategyTest extends AutoloaderWithAutoloadi
 
         $this->strategy->registerClassPath('ComponentNotNestedNoNS', $path);
 
-        $object = new \ComponentNotNestedNoNS();
-
-        $this->assertInstanceOf('\ComponentNotNestedNoNS', $object);
+        $this->assertClassIsInstantiable('\ComponentNotNestedNoNS');
     }
 
     /**
@@ -58,9 +68,7 @@ class AutoloaderWithFixedAutoloadingStrategyTest extends AutoloaderWithAutoloadi
 
         $this->strategy->registerClassPath('Dummy\ComponentNotNestedWithNS', $path);
 
-        $object = new \Dummy\ComponentNotNestedWithNS();
-
-        $this->assertInstanceOf('\Dummy\ComponentNotNestedWithNS', $object);
+        $this->assertClassIsInstantiable('\Dummy\ComponentNotNestedWithNS');
     }
 
     /**
@@ -74,9 +82,7 @@ class AutoloaderWithFixedAutoloadingStrategyTest extends AutoloaderWithAutoloadi
 
         $this->strategy->registerClassPath('ComponentNestedNoNS', $path);
 
-        $object = new \ComponentNestedNoNS();
-
-        $this->assertInstanceOf('\ComponentNestedNoNS', $object);
+        $this->assertClassIsInstantiable('\ComponentNestedNoNS');
     }
 
     /**
@@ -90,8 +96,6 @@ class AutoloaderWithFixedAutoloadingStrategyTest extends AutoloaderWithAutoloadi
 
         $this->strategy->registerClassPath('Dummy\ComponentNestedWithNS', $path);
 
-        $object = new \Dummy\ComponentNestedWithNS();
-
-        $this->assertInstanceOf('\Dummy\ComponentNestedWithNS', $object);
+        $this->assertClassIsInstantiable('\Dummy\ComponentNestedWithNS');
     }
 }

@@ -21,7 +21,7 @@ namespace Exorg\Autoloader;
  * @license http://http://opensource.org/licenses/MIT MIT License
  * @link https://github.com/ExOrg/php-autoloader
  */
-class FixedAutoloadingStrategyTest extends AutoloadingStrategyTest
+class FixedAutoloadingStrategyTest extends AbstractAutoloadingStrategyTest
 {
     /**
      * Initialise strategy fixture.
@@ -60,9 +60,7 @@ class FixedAutoloadingStrategyTest extends AutoloadingStrategyTest
 
         $this->strategy->registerClassPath('NotCalledClass', $path);
 
-        $classIncluded = class_exists('NotRegisteredClass');
-
-        $this->assertFalse($classIncluded);
+        $this->assertClassExists('NotRegisteredClass');
     }
 
     /**
@@ -76,9 +74,7 @@ class FixedAutoloadingStrategyTest extends AutoloadingStrategyTest
 
         $this->strategy->registerClassPath('ComponentNotNestedNoNS', $path);
 
-        $object = new \ComponentNotNestedNoNS();
-
-        $this->assertInstanceOf('\ComponentNotNestedNoNS', $object);
+        $this->assertClassIsInstantiable('\ComponentNotNestedNoNS');
     }
 
     /**
@@ -92,9 +88,7 @@ class FixedAutoloadingStrategyTest extends AutoloadingStrategyTest
 
         $this->strategy->registerClassPath('Dummy\ComponentNotNestedWithNS', $path);
 
-        $object = new \Dummy\ComponentNotNestedWithNS();
-
-        $this->assertInstanceOf('\Dummy\ComponentNotNestedWithNS', $object);
+        $this->assertClassIsInstantiable('\Dummy\ComponentNotNestedWithNS');
     }
 
     /**
@@ -108,9 +102,7 @@ class FixedAutoloadingStrategyTest extends AutoloadingStrategyTest
 
         $this->strategy->registerClassPath('ComponentNestedNoNS', $path);
 
-        $object = new \ComponentNestedNoNS();
-
-        $this->assertInstanceOf('\ComponentNestedNoNS', $object);
+        $this->assertClassIsInstantiable('\ComponentNestedNoNS');
     }
 
     /**
@@ -124,8 +116,6 @@ class FixedAutoloadingStrategyTest extends AutoloadingStrategyTest
 
         $this->strategy->registerClassPath('Dummy\ComponentNestedWithNS', $path);
 
-        $object = new \Dummy\ComponentNestedWithNS();
-
-        $this->assertInstanceOf('\Dummy\ComponentNestedWithNS', $object);
+        $this->assertClassIsInstantiable('\Dummy\ComponentNestedWithNS');
     }
 }
