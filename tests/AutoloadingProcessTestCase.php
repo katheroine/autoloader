@@ -28,7 +28,7 @@ abstract class AutoloadingProcessTestCase extends \PHPUnit_Framework_TestCase
      *
      * @param string $class
      */
-    protected static function assertClassExists($class)
+    protected static function assertClassDoesNotExist($class)
     {
         $classIncluded = class_exists($class);
 

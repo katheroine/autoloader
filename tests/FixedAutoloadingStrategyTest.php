@@ -60,7 +60,7 @@ class FixedAutoloadingStrategyTest extends AbstractAutoloadingStrategyTest
 
         $this->strategy->registerClassPath('NotCalledClass', $path);
 
-        $this->assertClassExists('NotRegisteredClass');
+        $this->assertClassDoesNotExist('NotRegisteredClass');
     }
 
     /**
