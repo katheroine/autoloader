@@ -40,7 +40,7 @@ class AutoloaderWithFixedAutoloadingStrategyTest extends AbstractAutoloaderWithA
 
         $this->strategy->registerClassPath('NotCalledClass', $path);
 
-        $this->assertClassExists('NotRegisteredClass');
+        $this->assertClassDoesNotExist('NotRegisteredClass');
     }
 
     /**
