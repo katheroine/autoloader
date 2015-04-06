@@ -121,7 +121,6 @@ class RecursiveAutoloadingStrategy implements AutoloadingStrategyInterface
 
         if ($namespaceFound) {
             $classNameStartPosition = $namespaceEndPosition + 1;
-            $namespace = substr($classFullName, 0, $namespaceEndPosition); // probably never used and unneeded
             $classStrictName = substr($classFullName, $classNameStartPosition);
         } else {
             $classStrictName = $classFullName;
