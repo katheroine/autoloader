@@ -2,4 +2,7 @@
 
 namespace Dummy;
 
-class Class_1_2 {}
+class Class_1_2
+{
+
+}
