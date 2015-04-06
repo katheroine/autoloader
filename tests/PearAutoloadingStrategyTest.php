@@ -64,6 +64,18 @@ class PearAutoloadingStrategyTest extends AbstractAutoloadingStrategyTest
     }
 
     /**
+     * Test class with unregisterd prefix.
+     */
+    public function testForNotRegisteredPrefix()
+    {
+        $path = $this->getFullFixturePath('/lib/classes');
+
+        $this->strategy->registerPrefixPath('Nonexistent_', $path);
+
+        $this->assertClassDoesNotExist('Dummy_ComponentNotRegistered');
+    }
+
+    /**
      * Test registerPrefixPath method
      * for the class with one level of nesting.
      */
