@@ -138,34 +138,35 @@ class RecursiveAutoloadingStrategy implements AutoloadingStrategyInterface
      */
     private function findFileInDirectoryPath($fileName, $directoryPath)
     {
+        $filePath = null;
+
         $directoryItems = self::extractDirectoryItems($directoryPath);
         $directoryItemsExist = !empty($directoryItems);
 
-        if (!$directoryItemsExist) {
-            return null;
-        }
+        if ($directoryItemsExist) {
+            foreach ($directoryItems as $directoryItem) {
+                $directoryItemPath = $directoryPath . '/' . $directoryItem;
+                $directoryItemIsDirectory = is_dir($directoryItemPath);
 
-        foreach ($directoryItems as $directoryItem) {
-            $directoryItemPath = $directoryPath . '/' . $directoryItem;
-            $directoryItemIsDirectory = is_dir($directoryItemPath);
+                if ($directoryItemIsDirectory) {
+                    $filePath = $this->findFileInDirectoryPath($fileName, $directoryItemPath);
+                    $filePathIsFound = !is_null($filePath);
 
-            if ($directoryItemIsDirectory) {
-                $filePath = $this->findFileInDirectoryPath($fileName, $directoryItemPath);
-                $filePathIsFound = !is_null($filePath);
+                    if ($filePathIsFound) {
+                        break;
+                    }
+                } else {
+                    $directoryItemIsSearchedFile = ($directoryItem === $fileName);
 
-                if ($filePathIsFound) {
-                    return $filePath;
-                }
-            } else {
-                $directoryItemIsSearchedFile = ($directoryItem === $fileName);
-
-                if ($directoryItemIsSearchedFile) {
-                    return $directoryItemPath;
+                    if ($directoryItemIsSearchedFile) {
+                        $filePath = $directoryItemPath;
+                        break;
+                    }
                 }
             }
         }
 
-        return null;
+        return $filePath;
     }
 
     /**
