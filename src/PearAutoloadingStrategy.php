@@ -60,7 +60,7 @@ class PearAutoloadingStrategy extends AbstractAutoloadingStrategy
      * needed in file searching process
      * and assign their values to the strategy class variables.
      *
-     * @param mixed $class
+     * @param string $class
      */
     protected function extractClassParameters($class)
     {
