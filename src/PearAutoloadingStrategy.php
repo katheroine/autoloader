@@ -21,7 +21,7 @@ namespace Exorg\Autoloader;
  * @license http://http://opensource.org/licenses/MIT MIT License
  * @link https://github.com/ExOrg/php-autoloader
  */
-class PearAutoloadingStrategy implements AutoloadingStrategyInterface
+class PearAutoloadingStrategy extends AbstractAutoloadingStrategy
 {
     /**
      * Class full names with assigned directory path.
@@ -56,44 +56,24 @@ class PearAutoloadingStrategy implements AutoloadingStrategyInterface
     }
 
     /**
-     * Search for the class file path and load it.
+     * Extract class paramaters like namespace or class name
+     * needed in file searching process
+     * and assign their values to the strategy class variables.
      *
-     * @param string $class
-     * @return boolean
+     * @param mixed $class
      */
-    public function loadClass($class)
+    protected function extractClassParameters($class)
     {
-        $this->setUpClassParametersFromFullName($class);
+        $this->currentClass = $class;
 
-        $classFilePath = $this->findClassFilePath();
-        $classFileFound = !is_null($classFilePath);
-
-        if ($classFileFound) {
-            require $classFilePath;
-            $result = true;
-        } else {
-            $result = false;
-        }
-
-        return $result;
-    }
-
-    /**
-     * Set-up class file path from class full name.
-     *
-     * @param string $classFullName
-     */
-    protected function setUpClassParametersFromFullName($classFullName)
-    {
-        $this->currentClass = $classFullName;
-
-        $classPath = str_replace('_', DIRECTORY_SEPARATOR, $classFullName);
+        $classPath = $this->buildClassPathFromClass($class);
 
         $this->currentPath = $classPath . '.php';
     }
 
     /**
-     * Find class full file path.
+     * Find full path of the file that contains
+     * the declaration of the automatically loaded class.
      *
      * @return string | null
      */
@@ -112,5 +92,18 @@ class PearAutoloadingStrategy implements AutoloadingStrategyInterface
                 return $classFilePath;
             }
         }
+    }
+
+    /**
+     * Build class path from class name.
+     *
+     * @param string $class
+     * @return string
+     */
+    protected static function buildClassPathFromClass($class)
+    {
+        $classPath = str_replace('_', DIRECTORY_SEPARATOR, $class);
+
+        return $classPath;
     }
 }

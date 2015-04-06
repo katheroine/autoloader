@@ -13,7 +13,7 @@ namespace Exorg\Autoloader;
 
 /**
  * RecursiveAutoloadingStrategy.
- * Autoloader strategy for recursve directory searching.
+ * Autoloading strategy for recursve directory searching.
  *
  * @package Autoloader
  * @author Katarzyna Krasińska <katheroine@gmail.com>
@@ -21,7 +21,7 @@ namespace Exorg\Autoloader;
  * @license http://http://opensource.org/licenses/MIT MIT License
  * @link https://github.com/ExOrg/php-autoloader
  */
-class RecursiveAutoloadingStrategy implements AutoloadingStrategyInterface
+class RecursiveAutoloadingStrategy extends AbstractAutoloadingStrategy
 {
     /**
      * Directory path where class files are searched.
@@ -48,59 +48,35 @@ class RecursiveAutoloadingStrategy implements AutoloadingStrategyInterface
     }
 
     /**
-     * Search for the class file path and load it.
+     * Extract class paramaters like namespace or class name
+     * needed in file searching process
+     * and assign their values to the strategy class variables.
      *
-     * @param string $class
-     * @return boolean
+     * @param mixed $class
      */
-    public function loadClass($class)
+    public function extractClassParameters($class)
     {
-        $this->setUpClassParametersFromFullName($class);
-
-        $classFilePath = $this->findClassFilePath();
-        $classFileFound = !is_null($classFilePath);
-
-        if ($classFileFound) {
-            require $classFilePath;
-            $result = true;
-        } else {
-            $result = false;
-        }
-
-        return $result;
-    }
-
-    /**
-     * Set-up class file path from class full name.
-     *
-     * @param string $classFullName
-     */
-    protected function setUpClassParametersFromFullName($classFullName)
-    {
-        $classStrictName = $this->extractClassStrictName($classFullName);
+        $classStrictName = $this->extractClassStrictName($class);
 
         $this->currentFile = $classStrictName . '.php';
     }
 
     /**
-     * Find class full file path.
+     * Find full path of the file that contains
+     * the declaration of the automatically loaded class.
      *
      * @return string | null
      */
     protected function findClassFilePath()
     {
-        $classFilePath = null;
-
         foreach ($this->paths as $path) {
             $classFilePath = $this->findFileInDirectoryPath($this->currentFile, $path);
             $classFileExists = is_file($classFilePath);
 
             if ($classFileExists) {
-                break;
+                return $classFilePath;
             }
         }
-
-        return $classFilePath;
     }
 
     /**
