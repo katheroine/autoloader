@@ -53,89 +53,213 @@ class Psr0AutoloadingStrategyTest extends AbstractAutoloadingStrategyTest
 
     /**
      * Test registerNamespacePath method
-     * for nonxisting class.
+     * for nonexistent class file
+     * with namespace separator.
      */
-    public function testForUnexistentClass()
+    public function testForNonexistentClassFileWithNSSep()
     {
         $path = $this->getFullFixturePath('/src');
 
         $this->strategy->registerNamespacePath('Dummy', $path);
 
-        $this->assertClassDoesNotExist('\Dummy\ComponentNonExistent');
+        $this->assertClassDoesNotExist('Dummy\ComponentNonexistent');
     }
 
     /**
      * Test registerNamespacePath method
-     * for nonexisting path.
+     * for nonexistent class file
+     * with underscore separator.
      */
-    public function testForUnexistentPath()
+    public function testForNonexistentClassFileWithUSSep()
+    {
+        $path = $this->getFullFixturePath('/src');
+
+        $this->strategy->registerNamespacePath('Dummy', $path);
+
+        $this->assertClassDoesNotExist('Dummy_ComponentNonexistent');
+    }
+
+    /**
+     * Test registerNamespacePath method
+     * for nonexisting path
+     * with namespace separator.
+     */
+    public function testForUnexistentPathWithNSSep()
     {
         $path = $this->getFullFixturePath('/nonexistent');
 
         $this->strategy->registerNamespacePath('Dummy', $path);
 
-        $this->assertClassDoesNotExist('\Dummy\ComponentNonExistent');
+        $this->assertClassDoesNotExist('Dummy\ComponentExistent');
     }
 
     /**
      * Test registerNamespacePath method
-     * for not registered namespace.
+     * for nonexisting path
+     * with underscore separator.
      */
-    public function testForNotRegisteredNamespace()
+    public function testForUnexistentPathWithUSSep()
+    {
+        $path = $this->getFullFixturePath('/nonexistent');
+
+        $this->strategy->registerNamespacePath('Dummy', $path);
+
+        $this->assertClassDoesNotExist('Dummy_ComponentExistent');
+    }
+
+    /**
+     * Test registerNamespacePath method
+     * for not registered namespace
+     * with namespace separator.
+     */
+    public function testForUnregisteredNamespaceWithNSSep()
+    {
+        $path = $this->getFullFixturePath('/src');
+
+        $this->strategy->registerNamespacePath('Unregistered', $path);
+
+        $this->assertClassDoesNotExist('Dummy\Component');
+    }
+
+    /**
+     * Test registerNamespacePath method
+     * for not registered namespace
+     * with underscore separator.
+     */
+    public function testForUnregisteredNamespaceWithUSSep()
+    {
+        $path = $this->getFullFixturePath('/src');
+
+        $this->strategy->registerNamespacePath('Unregistered', $path);
+
+        $this->assertClassDoesNotExist('Dummy_Component');
+    }
+
+    /**
+     * Test registerNamespacePath method
+     * for registered namespace but unused in class specification.
+     */
+    public function testForUnusedNamespace()
     {
         $path = $this->getFullFixturePath('/src');
 
         $this->strategy->registerNamespacePath('Dummy', $path);
 
-        $this->assertClassDoesNotExist('\Nonregistered\Component');
+        $this->assertClassDoesNotExist('Component');
     }
 
     /**
      * Test registerNamespacePath method
-     * for the class with one level of nesting.
+     * for namespace registration with one level of nesting
+     * and class specification with one level of nesting
+     * with namespace separator.
      */
-    public function testForClassWithOneLevelOfNesting()
+    public function testFor1nNamespaceAnd1nClassWithNSSep()
     {
         $path = $this->getFullFixturePath('/src');
 
         $this->strategy->registerNamespacePath('Dummy', $path);
 
-        $this->assertClassIsInstantiable('\Dummy\ComponentNotNested');
+        $this->assertClassIsInstantiable('Dummy\ComponentNotNested');
     }
 
     /**
      * Test registerNamespacePath method
-     * for the class with two levels of nesting.
+     * for namespace registration with one level of nesting
+     * and class specification with one level of nesting
+     * with underscore separator.
      */
-    public function testForClassWithTwoLevelsOfNesting()
+    public function testFor1nNamespaceAnd1nClassWithUSSep()
     {
         $path = $this->getFullFixturePath('/src');
 
         $this->strategy->registerNamespacePath('Dummy', $path);
 
-        $this->assertClassIsInstantiable('\Dummy\Core\ComponentNested');
+        $this->assertClassIsInstantiable('Dummy_ComponentNotNested');
     }
 
     /**
      * Test registerNamespacePath method
-     * for the class with three levels of nesting
-     * and underscored name of the class.
+     * for namespace registration with one level of nesting
+     * and class specification with two levels of nesting
+     * with namespace separator.
      */
-    public function testForClassWithThreeLevelsOfNestingAndClassNameUnderscored()
+    public function testFor1NestedNamespaceAnd2NestedClassWithNSSep()
     {
         $path = $this->getFullFixturePath('/src');
 
         $this->strategy->registerNamespacePath('Dummy', $path);
 
-        $this->assertClassIsInstantiable('\Dummy\Core\Sub_ComponentNestedSub');
+        $this->assertClassIsInstantiable('Dummy\Core\ComponentNested');
     }
 
     /**
      * Test registerNamespacePath method
-     * for the class with three levels of nesting
-     * and underscored name of the package.
+     * for namespace registration with one level of nesting
+     * and class specification with two levels of nesting
+     * with underscore separator.
      */
-    public function testForClassWithTreeLevelsOfNestingAndPackageNameUnderscored()
+    public function testFor1NestedNamespaceAnd2NestedClassWithUSSep()
+    {
+        $path = $this->getFullFixturePath('/src');
+
+        $this->strategy->registerNamespacePath('Dummy', $path);
+
+        $this->assertClassIsInstantiable('Dummy_Core_ComponentNested');
+    }
+
+    /**
+     * Test registerNamespacePath method
+     * for namespace registration with two levels of nesting
+     * and class specification with two levels of nesting
+     * with namespace separator.
+     */
+    public function testFor2NestedNamespaceAnd2NestedClassWithNSSep()
+    {
+        $path = $this->getFullFixturePath('/src');
+
+        $this->strategy->registerNamespacePath('Dummy\Core', $path);
+
+        $this->assertClassIsInstantiable('Dummy\Core\ComponentNested');
+    }
+
+    /**
+     * Test registerNamespacePath method
+     * for namespace registration with two levels of nesting
+     * and class specification with two levels of nesting
+     * with underscore separator.
+     */
+    public function testFor2NestedNamespaceAnd2NestedClassWithUSSep()
+    {
+        $path = $this->getFullFixturePath('/src');
+
+        $this->strategy->registerNamespacePath('Dummy\Core', $path);
+
+        $this->assertClassIsInstantiable('Dummy_Core_ComponentNested');
+    }
+
+    /**
+     * Test registerNamespacePath method
+     * for the class with one level of nesting
+     * and class specification with two levels of nesting
+     * with mixed separators.
+     */
+    public function testFor1NestedNamespaceAnd3NestedClassWithMXSep()
+    {
+        $path = $this->getFullFixturePath('/src');
+
+        $this->strategy->registerNamespacePath('Dummy', $path);
+
+        $this->assertClassIsInstantiable('Dummy\Core\Sub_ComponentNestedSub');
+    }
+
+    /**
+     * Test registerNamespacePath method
+     * for the class with one level of nesting
+     * and class specification with two levels of nesting
+     * with underscored package name.
+     */
+    public function testFor1NestedNamespaceAnd2NestedClassWithUSPackage()
     {
         $path = $this->getFullFixturePath('/src');
 
@@ -146,11 +270,12 @@ class Psr0AutoloadingStrategyTest extends AbstractAutoloadingStrategyTest
 
     /**
      * Test registerNamespacePath method
-     * for the class with three levels of nesting,
-     * underscored name of the class
-     * and underscored name of the package.
+     * for the class with one level of nesting
+     * and class specification with two levels of nesting
+     * with mixed separators
+     * and underscored package name.
      */
-    public function testForClassWithThreeLevelsOfNestingAndClassNameUnderscoredAndPackageNameUnderscored()
+    public function testFor1NestedNamespaceAnd2NestedClassWithUSSepAndUSPackage()
     {
         $path = $this->getFullFixturePath('/src');
 
