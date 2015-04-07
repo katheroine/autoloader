@@ -108,7 +108,7 @@ abstract class AbstractAutoloaderWithAutoloadingStrategyTest extends Autoloading
         $fullClassNameSections = explode('\\', $fullClassName);
         $shortClassName = array_pop($fullClassNameSections);
         $classNameSections = null;
-        preg_match_all('/((?:^|[A-Z])[a-z]+)/', $shortClassName, $classNameSections);
+        preg_match_all('/((?:^|[A-Z])[a-z0-9]+)/', $shortClassName, $classNameSections);
         $directoryName = strtolower($classNameSections[0][2]);
         $path = (__DIR__) . '/fixtures/' . $directoryName . $path;
 
