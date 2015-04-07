@@ -12,8 +12,8 @@
 namespace Exorg\Autoloader;
 
 /**
- * Psr0AutoloadingStrategy.
- * Autoloading strategy for PSR-0 standard.
+ * Psr4AutoloadingStrategy.
+ * Autoloading strategy for PSR-4 standard.
  *
  * @package Autoloader
  * @author Katarzyna Krasińska <katheroine@gmail.com>
@@ -21,7 +21,7 @@ namespace Exorg\Autoloader;
  * @license http://http://opensource.org/licenses/MIT MIT License
  * @link https://github.com/ExOrg/php-autoloader
  */
-class Psr0AutoloadingStrategy extends AbstractPsrAutoloadingStrategy
+class Psr4AutoloadingStrategy extends AbstractPsrAutoloadingStrategy
 {
     /**
      * Extract class paramaters like namespace or class name
@@ -43,10 +43,9 @@ class Psr0AutoloadingStrategy extends AbstractPsrAutoloadingStrategy
 
         // building namespace and class name path components
         $namespacePath = str_replace('\\', DIRECTORY_SEPARATOR, $this->currentNamespace);
-        $classPath = str_replace('_', DIRECTORY_SEPARATOR, $className);
 
         // building class file path
-        $this->currentPath = $namespacePath . DIRECTORY_SEPARATOR . $classPath . '.php';
+        $this->currentPath = $namespacePath . DIRECTORY_SEPARATOR . $className . '.php';
     }
 
     /**
@@ -63,7 +62,10 @@ class Psr0AutoloadingStrategy extends AbstractPsrAutoloadingStrategy
                 continue;
             }
 
-            $classFilePath = $path . DIRECTORY_SEPARATOR . $this->currentPath;
+            $namespacePath = str_replace('\\', DIRECTORY_SEPARATOR, $namespace);
+            $cutOffPosition = strlen($namespacePath);
+            $currentPath = substr($this->currentPath, $cutOffPosition);
+            $classFilePath = $path . $currentPath;
             $classFileExists = is_file($classFilePath);
 
             if ($classFileExists) {
