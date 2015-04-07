@@ -64,7 +64,7 @@ class AutoloaderWithPsr0AutoloadingStrategyTest extends AbstractAutoloaderWithAu
      * for nonexisting path
      * with namespace separator.
      */
-    public function testForUnexistentPathWithNSSep()
+    public function testForNonexistentPathWithNSSep()
     {
         $path = $this->getFullFixturePath('/nonexistent');
 
@@ -78,7 +78,7 @@ class AutoloaderWithPsr0AutoloadingStrategyTest extends AbstractAutoloaderWithAu
      * for nonexisting path
      * with underscore separator.
      */
-    public function testForUnexistentPathWithUSSep()
+    public function testForNonexistentPathWithUSSep()
     {
         $path = $this->getFullFixturePath('/nonexistent');
 
