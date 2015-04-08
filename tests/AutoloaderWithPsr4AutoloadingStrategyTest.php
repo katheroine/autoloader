@@ -31,7 +31,7 @@ class AutoloaderWithPsr4AutoloadingStrategyTest extends AbstractAutoloaderWithAu
         $this->strategy = new Psr4AutoloadingStrategy();
     }
 
-/**
+    /**
      * Test registerNamespacePath method
      * for nonexisting path.
      */
