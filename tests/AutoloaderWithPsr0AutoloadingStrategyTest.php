@@ -33,6 +33,62 @@ class AutoloaderWithPsr0AutoloadingStrategyTest extends AbstractAutoloaderWithAu
 
     /**
      * Test registerNamespacePath method
+     * for nonexisting path
+     * with namespace separator.
+     */
+    public function testForNonexistentPathWithNSSep()
+    {
+        $path = $this->getFullFixturePath('/nonexistent');
+
+        $this->strategy->registerNamespacePath('Dummy', $path);
+
+        $this->assertClassDoesNotExist('Dummy\ComponentNonexistent');
+    }
+
+    /**
+     * Test registerNamespacePath method
+     * for nonexisting path
+     * with underscore separator.
+     */
+    public function testForNonexistentPathWithUSSep()
+    {
+        $path = $this->getFullFixturePath('/nonexistent');
+
+        $this->strategy->registerNamespacePath('Dummy', $path);
+
+        $this->assertClassDoesNotExist('Dummy_ComponentNonexistent');
+    }
+
+    /**
+     * Test registerNamespacePath method
+     * for empty path
+     * with namespace separator.
+     */
+    public function testForEmptyPathWithNSSep()
+    {
+        $path = $this->getFullFixturePath('/empty');
+
+        $this->strategy->registerNamespacePath('Dummy', $path);
+
+        $this->assertClassDoesNotExist('Dummy\ComponentNonexistent');
+    }
+
+    /**
+     * Test registerNamespacePath method
+     * for empty path
+     * with underscore separator.
+     */
+    public function testForEmptyPathWithUSSep()
+    {
+        $path = $this->getFullFixturePath('/empty');
+
+        $this->strategy->registerNamespacePath('Dummy', $path);
+
+        $this->assertClassDoesNotExist('Dummy_ComponentNonexistent');
+    }
+
+    /**
+     * Test registerNamespacePath method
      * for nonexistent class file
      * with namespace separator.
      */
@@ -57,34 +113,6 @@ class AutoloaderWithPsr0AutoloadingStrategyTest extends AbstractAutoloaderWithAu
         $this->strategy->registerNamespacePath('Dummy', $path);
 
         $this->assertClassDoesNotExist('Dummy_ComponentNonexistent');
-    }
-
-    /**
-     * Test registerNamespacePath method
-     * for nonexisting path
-     * with namespace separator.
-     */
-    public function testForNonexistentPathWithNSSep()
-    {
-        $path = $this->getFullFixturePath('/nonexistent');
-
-        $this->strategy->registerNamespacePath('Dummy', $path);
-
-        $this->assertClassDoesNotExist('Dummy\ComponentExistent');
-    }
-
-    /**
-     * Test registerNamespacePath method
-     * for nonexisting path
-     * with underscore separator.
-     */
-    public function testForNonexistentPathWithUSSep()
-    {
-        $path = $this->getFullFixturePath('/nonexistent');
-
-        $this->strategy->registerNamespacePath('Dummy', $path);
-
-        $this->assertClassDoesNotExist('Dummy_ComponentExistent');
     }
 
     /**
