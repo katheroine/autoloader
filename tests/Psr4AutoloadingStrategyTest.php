@@ -32,45 +32,6 @@ class Psr4AutoloadingStrategyTest extends AbstractAutoloadingStrategyTest
     }
 
     /**
-     * Test registerNamespacePath method
-     * for nonexistent class file.
-     */
-    public function testForNonexistentClassFile()
-    {
-        $path = $this->getFullFixturePath('/src');
-
-        $this->strategy->registerNamespacePath('Vendor\Package', $path);
-
-        $this->assertClassDoesNotExist('Dummy\ComponentNonexistent');
-    }
-
-    /**
-     * Test registerNamespacePath method
-     * for nonexisting path.
-     */
-    public function testForNonexistentPath()
-    {
-        $path = $this->getFullFixturePath('/nonexistent');
-
-        $this->strategy->registerNamespacePath('Vendor\Package', $path);
-
-        $this->assertClassDoesNotExist('Dummy\ComponentExistent');
-    }
-
-    /**
-     * Test registerNamespacePath method
-     * for not registered namespace.
-     */
-    public function testForUnregisteredNamespace()
-    {
-        $path = $this->getFullFixturePath('/src');
-
-        $this->strategy->registerNamespacePath('Unregistered', $path);
-
-        $this->assertClassDoesNotExist('Dummy\Component');
-    }
-
-    /**
      * Test Exorg\Autoloader\Psr4AutoloadingStrategy class exists.
      */
     public function testConstructorReturnsProperInstance()
@@ -90,6 +51,58 @@ class Psr4AutoloadingStrategyTest extends AbstractAutoloadingStrategyTest
         $this->assertImplements($strategy, 'Exorg\Autoloader\AutoloadingStrategyInterface');
     }
 
+/**
+     * Test registerNamespacePath method
+     * for nonexisting path.
+     */
+    public function testForNonexistentPath()
+    {
+        $path = $this->getFullFixturePath('/nonexistent');
+
+        $this->strategy->registerNamespacePath('Vendor\Package', $path);
+
+        $this->assertClassDoesNotExist('Dummy\ComponentExistent');
+    }
+
+    /**
+     * Test registerNamespacePath method
+     * for empty path.
+     */
+    public function testForEmptyPath()
+    {
+        $path = $this->getFullFixturePath('/empty');
+
+        $this->strategy->registerNamespacePath('Vendor\Package', $path);
+
+        $this->assertClassDoesNotExist('Dummy\ComponentExistent');
+    }
+
+    /**
+     * Test registerNamespacePath method
+     * for nonexistent class file.
+     */
+    public function testForNonexistentClassFile()
+    {
+        $path = $this->getFullFixturePath('/src');
+
+        $this->strategy->registerNamespacePath('Vendor\Package', $path);
+
+        $this->assertClassDoesNotExist('Dummy\ComponentNonexistent');
+    }
+
+    /**
+     * Test registerNamespacePath method
+     * for not registered namespace.
+     */
+    public function testForUnregisteredNamespace()
+    {
+        $path = $this->getFullFixturePath('/src');
+
+        $this->strategy->registerNamespacePath('Unregistered', $path);
+
+        $this->assertClassDoesNotExist('Dummy\Component');
+    }
+
     /**
      * Test registerNamespacePath method
      * for namespace registration with one level of nesting
@@ -106,20 +119,6 @@ class Psr4AutoloadingStrategyTest extends AbstractAutoloadingStrategyTest
 
     /**
      * Test registerNamespacePath method
-     * for namespace registration with two levels of nesting
-     * and class specification with two levels of nesting.
-     */
-    public function testFor2NestedNamespaceAnd2NestedClass()
-    {
-        $path = $this->getFullFixturePath('/src');
-
-        $this->strategy->registerNamespacePath('Vendor\Package\Dummy', $path);
-
-        $this->assertClassDoesNotExist('Vendor\Package\Dummy\Core\ComponentNested');
-    }
-
-    /**
-     * Test registerNamespacePath method
      * for namespace registration with one level of nesting
      * and class specification with two levels of nesting.
      */
@@ -129,7 +128,21 @@ class Psr4AutoloadingStrategyTest extends AbstractAutoloadingStrategyTest
 
         $this->strategy->registerNamespacePath('Vendor\Package', $path);
 
-        $this->assertClassIsInstantiable('Vendor\Package\Dummy\Core\ComponentNested');
+        $this->assertClassIsInstantiable('Vendor\Package\Dummy\Core\ComponentNested1');
+    }
+
+    /**
+     * Test registerNamespacePath method
+     * for namespace registration with two levels of nesting
+     * and class specification with two levels of nesting.
+     */
+    public function testFor2NestedNamespaceAnd2NestedClass()
+    {
+        $path = $this->getFullFixturePath('/src');
+
+        $this->strategy->registerNamespacePath('Vendor\Package\Dummy', $path);
+
+        $this->assertClassDoesNotExist('Vendor\Package\Dummy\Core\ComponentNested2');
     }
 
     /**
