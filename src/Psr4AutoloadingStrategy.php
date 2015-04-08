@@ -37,15 +37,17 @@ class Psr4AutoloadingStrategy extends AbstractPsrAutoloadingStrategy
 
         // extracting namespace chain and strict class name
         $namespaceEndPosition = strrpos($classFullName, '\\');
-        $classNameStartPosition = $namespaceEndPosition + 1;
         $this->processedNamespace = substr($classFullName, 0, $namespaceEndPosition);
-        $className = substr($classFullName, $classNameStartPosition);
 
-        // building namespace and class name path components
+        // building namespace path snippet
         $namespacePath = str_replace('\\', DIRECTORY_SEPARATOR, $this->processedNamespace);
 
-        // building class file path
-        $this->processedPath = $namespacePath . DIRECTORY_SEPARATOR . $className . '.php';
+        // building class path snippets
+        $classNameStartPosition = $namespaceEndPosition + 1;
+        $classPath = substr($classFullName, $classNameStartPosition);
+
+        // building class file path with namespace prefix
+        $this->processedPath = $namespacePath . DIRECTORY_SEPARATOR . $classPath . '.php';
     }
 
     /**
@@ -58,14 +60,21 @@ class Psr4AutoloadingStrategy extends AbstractPsrAutoloadingStrategy
     {
         foreach ($this->namespacePaths as $namespace => $path) {
             $namespaceIsNotRegistered = (0 !== strpos($this->processedNamespace, $namespace));
+
             if ($namespaceIsNotRegistered) {
                 continue;
             }
 
+            // building namespace path prefix
             $namespacePath = str_replace('\\', DIRECTORY_SEPARATOR, $namespace);
+
+            // cutting off namespace path prefix from class file path
             $cutOffPosition = strlen($namespacePath);
-            $currentPath = substr($this->processedPath, $cutOffPosition);
-            $classFilePath = $path . $currentPath;
+            $classPath = substr($this->processedPath, $cutOffPosition);
+
+            // building class file path without namespace prefix
+            $classFilePath = $path . $classPath;
+
             $classFileExists = is_file($classFilePath);
 
             if ($classFileExists) {
