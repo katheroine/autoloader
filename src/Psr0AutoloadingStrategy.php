@@ -39,10 +39,12 @@ class Psr0AutoloadingStrategy extends AbstractPsrAutoloadingStrategy
         $namespaceEndPosition = strrpos($classFullName, '\\');
         $this->processedNamespace = substr($classFullName, 0, $namespaceEndPosition);
 
-        // building namespace and class path snippets
+        // building namespace path snippet
+        $namespacePath = str_replace('\\', DIRECTORY_SEPARATOR, $this->processedNamespace);
+
+        // building class path snippet
         $classNameStartPosition = $namespaceEndPosition + 1;
         $className = substr($classFullName, $classNameStartPosition);
-        $namespacePath = str_replace('\\', DIRECTORY_SEPARATOR, $this->processedNamespace);
         $classPath = str_replace('_', DIRECTORY_SEPARATOR, $className);
 
         // building entire class file path
