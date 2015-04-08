@@ -51,7 +51,7 @@ class Psr4AutoloadingStrategyTest extends AbstractAutoloadingStrategyTest
         $this->assertImplements($strategy, 'Exorg\Autoloader\AutoloadingStrategyInterface');
     }
 
-/**
+    /**
      * Test registerNamespacePath method
      * for nonexisting path.
      */
