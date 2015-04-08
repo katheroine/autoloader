@@ -35,7 +35,7 @@ class RecursiveAutoloadingStrategy extends AbstractAutoloadingStrategy
      *
      * @var string
      */
-    protected $currentFile;
+    protected $processedFile;
 
     /**
      * Register path for recursive search by autoloader.
@@ -58,7 +58,7 @@ class RecursiveAutoloadingStrategy extends AbstractAutoloadingStrategy
     {
         $classStrictName = $this->extractClassStrictName($class);
 
-        $this->currentFile = $classStrictName . '.php';
+        $this->processedFile = $classStrictName . '.php';
     }
 
     /**
@@ -70,7 +70,8 @@ class RecursiveAutoloadingStrategy extends AbstractAutoloadingStrategy
     protected function findClassFilePath()
     {
         foreach ($this->paths as $path) {
-            $classFilePath = $this->findFileInDirectoryPath($this->currentFile, $path);
+            $classFilePath = $this->findFileInDirectoryPath($this->processedFile, $path);
+
             $classFileExists = is_file($classFilePath);
 
             if ($classFileExists) {
@@ -114,49 +115,62 @@ class RecursiveAutoloadingStrategy extends AbstractAutoloadingStrategy
      */
     private function findFileInDirectoryPath($fileName, $directoryPath)
     {
-        $filePath = null;
-
         $directoryItems = self::extractDirectoryItems($directoryPath);
-        $directoryItemsExist = !empty($directoryItems);
 
-        if ($directoryItemsExist) {
-            foreach ($directoryItems as $directoryItem) {
-                $directoryItemPath = $directoryPath . '/' . $directoryItem;
-                $directoryItemIsDirectory = is_dir($directoryItemPath);
+        $directoryItemsExist = !is_null($directoryItems) && !empty($directoryItems);
 
-                if ($directoryItemIsDirectory) {
-                    $filePath = $this->findFileInDirectoryPath($fileName, $directoryItemPath);
-                    $filePathIsFound = !is_null($filePath);
+        if (!$directoryItemsExist) {
+            return null;
+        }
 
-                    if ($filePathIsFound) {
-                        break;
-                    }
-                } else {
-                    $directoryItemIsSearchedFile = ($directoryItem === $fileName);
+        foreach ($directoryItems as $directoryItem) {
+            $directoryItemPath = $directoryPath . '/' . $directoryItem;
 
-                    if ($directoryItemIsSearchedFile) {
-                        $filePath = $directoryItemPath;
-                        break;
-                    }
+            $directoryItemIsDirectory = $this->pathIsNonemptyDirectory($directoryItemPath);
+
+            if ($directoryItemIsDirectory) {
+                return $this->findFileInDirectoryPath($fileName, $directoryItemPath);
+            } else {
+                $directoryItemIsSearchedFile = ($directoryItem === $fileName);
+
+                if ($directoryItemIsSearchedFile) {
+                    return $directoryItemPath;
                 }
             }
         }
-
-        return $filePath;
     }
 
     /**
      * Extract content of the directory.
      *
      * @param string $directoryPath
-     * @return mixed:
+     * @return array[string] | null:
      */
     private function extractDirectoryItems($directoryPath)
     {
-        $directoryItems = scandir($directoryPath);
-        $this->removeDotPaths($directoryItems);
+        $directoryPathExists = is_dir($directoryPath);
 
-        return $directoryItems;
+        if ($directoryPathExists) {
+            $directoryItems = scandir($directoryPath);
+            $this->removeDotPaths($directoryItems);
+
+            return $directoryItems;
+        }
+    }
+
+    /**
+     * Check if path is nonempty directory path.
+     *
+     * @param unknown $path
+     * @return boolean
+     */
+    private function pathIsNonemptyDirectory($path)
+    {
+        $directoryItems = $this->extractDirectoryItems($path);
+
+        $pathIsNonemptyDirectory = !is_null($directoryItems) && !empty($directoryItems);
+
+        return $pathIsNonemptyDirectory;
     }
 
     /**
