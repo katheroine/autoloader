@@ -32,6 +32,30 @@ class AutoloaderWithFixedAutoloadingStrategyTest extends AbstractAutoloaderWithA
     }
 
     /**
+     * Test unexistant registered path.
+     */
+    public function testForNonexistentRegisteredPath()
+    {
+        $path = $this->getFullFixturePath('/nonexistent');
+
+        $this->strategy->registerClassPath('NotCalledClass', $path);
+
+        $this->assertClassDoesNotExist('NotRegisteredClass');
+    }
+
+    /**
+     * Test empty registered path.
+     */
+    public function testForEmptyRegisteredPath()
+    {
+        $path = $this->getFullFixturePath('/empty');
+
+        $this->strategy->registerClassPath('NotCalledClass', $path);
+
+        $this->assertClassDoesNotExist('NotRegisteredClass');
+    }
+
+    /**
      * Test unregistered class is not found.
      */
     public function testForNotRegisteredClass()
