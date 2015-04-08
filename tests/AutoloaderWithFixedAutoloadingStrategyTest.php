@@ -31,7 +31,7 @@ class AutoloaderWithFixedAutoloadingStrategyTest extends AbstractAutoloaderWithA
         $this->strategy = new FixedAutoloadingStrategy();
     }
 
-       /**
+    /**
      * Test unregistered class is not found.
      */
     public function testForNotRegisteredClass()
