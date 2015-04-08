@@ -52,8 +52,7 @@ class Psr0AutoloadingStrategyTest extends AbstractAutoloadingStrategyTest
     }
 
     /**
-     * Test registerNamespacePath method
-     * for nonexisting path
+     * Test for nonexisting path
      * with namespace separator.
      */
     public function testForNonexistentPathWithNSSep()
@@ -66,8 +65,7 @@ class Psr0AutoloadingStrategyTest extends AbstractAutoloadingStrategyTest
     }
 
     /**
-     * Test registerNamespacePath method
-     * for nonexisting path
+     * Test for nonexisting path
      * with underscore separator.
      */
     public function testForNonexistentPathWithUSSep()
@@ -80,8 +78,7 @@ class Psr0AutoloadingStrategyTest extends AbstractAutoloadingStrategyTest
     }
 
     /**
-     * Test registerNamespacePath method
-     * for empty path
+     * Test for empty path
      * with namespace separator.
      */
     public function testForEmptyPathWithNSSep()
@@ -94,8 +91,7 @@ class Psr0AutoloadingStrategyTest extends AbstractAutoloadingStrategyTest
     }
 
     /**
-     * Test registerNamespacePath method
-     * for empty path
+     * Test for empty path
      * with underscore separator.
      */
     public function testForEmptyPathWithUSSep()
@@ -108,8 +104,7 @@ class Psr0AutoloadingStrategyTest extends AbstractAutoloadingStrategyTest
     }
 
     /**
-     * Test registerNamespacePath method
-     * for nonexistent class file
+     * Test for nonexistent class file
      * with namespace separator.
      */
     public function testForNonexistentClassFileWithNSSep()
@@ -122,8 +117,7 @@ class Psr0AutoloadingStrategyTest extends AbstractAutoloadingStrategyTest
     }
 
     /**
-     * Test registerNamespacePath method
-     * for nonexistent class file
+     * Test for nonexistent class file
      * with underscore separator.
      */
     public function testForNonexistentClassFileWithUSSep()
@@ -136,8 +130,7 @@ class Psr0AutoloadingStrategyTest extends AbstractAutoloadingStrategyTest
     }
 
     /**
-     * Test registerNamespacePath method
-     * for not registered namespace
+     * Test for not registered namespace
      * with namespace separator.
      */
     public function testForUnregisteredNamespaceWithNSSep()
@@ -150,8 +143,7 @@ class Psr0AutoloadingStrategyTest extends AbstractAutoloadingStrategyTest
     }
 
     /**
-     * Test registerNamespacePath method
-     * for not registered namespace
+     * Test for not registered namespace
      * with underscore separator.
      */
     public function testForUnregisteredNamespaceWithUSSep()
@@ -164,8 +156,7 @@ class Psr0AutoloadingStrategyTest extends AbstractAutoloadingStrategyTest
     }
 
     /**
-     * Test registerNamespacePath method
-     * for registered namespace but unused in class specification.
+     * Test for registered namespace but unused in class specification.
      */
     public function testForUnusedNamespace()
     {
@@ -177,8 +168,7 @@ class Psr0AutoloadingStrategyTest extends AbstractAutoloadingStrategyTest
     }
 
     /**
-     * Test registerNamespacePath method
-     * for namespace registration with one level of nesting
+     * Test for namespace registration with one level of nesting
      * and class specification with one level of nesting
      * with namespace separator.
      */
@@ -192,8 +182,7 @@ class Psr0AutoloadingStrategyTest extends AbstractAutoloadingStrategyTest
     }
 
     /**
-     * Test registerNamespacePath method
-     * for namespace registration with one level of nesting
+     * Test for namespace registration with one level of nesting
      * and class specification with one level of nesting
      * with underscore separator.
      */
@@ -207,12 +196,11 @@ class Psr0AutoloadingStrategyTest extends AbstractAutoloadingStrategyTest
     }
 
     /**
-     * Test registerNamespacePath method
-     * for namespace registration with one level of nesting
+     * Test for namespace registration with one level of nesting
      * and class specification with two levels of nesting
      * with namespace separator.
      */
-    public function testFor1NestedNamespaceAnd2NestedClassWithNSSep()
+    public function testFor1nNamespaceAnd2nClassWithNSSep()
     {
         $path = $this->getFullFixturePath('/src');
 
@@ -222,12 +210,11 @@ class Psr0AutoloadingStrategyTest extends AbstractAutoloadingStrategyTest
     }
 
     /**
-     * Test registerNamespacePath method
-     * for namespace registration with one level of nesting
+     * Test for namespace registration with one level of nesting
      * and class specification with two levels of nesting
      * with underscore separator.
      */
-    public function testFor1NestedNamespaceAnd2NestedClassWithUSSep()
+    public function testFor1nNamespaceAnd2nClassWithUSSep()
     {
         $path = $this->getFullFixturePath('/src');
 
@@ -237,12 +224,11 @@ class Psr0AutoloadingStrategyTest extends AbstractAutoloadingStrategyTest
     }
 
     /**
-     * Test registerNamespacePath method
-     * for namespace registration with two levels of nesting
+     * Test for namespace registration with two levels of nesting
      * and class specification with two levels of nesting
      * with namespace separator.
      */
-    public function testFor2NestedNamespaceAnd2NestedClassWithNSSep()
+    public function testFor2nNamespaceAnd2nClassWithNSSep()
     {
         $path = $this->getFullFixturePath('/src');
 
@@ -252,12 +238,11 @@ class Psr0AutoloadingStrategyTest extends AbstractAutoloadingStrategyTest
     }
 
     /**
-     * Test registerNamespacePath method
-     * for namespace registration with two levels of nesting
+     * Test for namespace registration with two levels of nesting
      * and class specification with two levels of nesting
      * with underscore separator.
      */
-    public function testFor2NestedNamespaceAnd2NestedClassWithUSSep()
+    public function testFor2nNamespaceAnd2nClassWithUSSep()
     {
         $path = $this->getFullFixturePath('/src');
 
@@ -267,12 +252,11 @@ class Psr0AutoloadingStrategyTest extends AbstractAutoloadingStrategyTest
     }
 
     /**
-     * Test registerNamespacePath method
-     * for the class with one level of nesting
+     * Test for the class with one level of nesting
      * and class specification with two levels of nesting
      * with mixed separators.
      */
-    public function testFor1NestedNamespaceAnd3NestedClassWithMXSep()
+    public function testFor1nNamespaceAnd3nClassWithMXSep()
     {
         $path = $this->getFullFixturePath('/src');
 
@@ -282,12 +266,11 @@ class Psr0AutoloadingStrategyTest extends AbstractAutoloadingStrategyTest
     }
 
     /**
-     * Test registerNamespacePath method
-     * for the class with one level of nesting
+     * Test for the class with one level of nesting
      * and class specification with two levels of nesting
      * with underscored package name.
      */
-    public function testFor1NestedNamespaceAnd2NestedClassWithUSPackage()
+    public function testFor1nNamespaceAnd2nClassWithUSPackage()
     {
         $path = $this->getFullFixturePath('/src');
 
@@ -297,13 +280,12 @@ class Psr0AutoloadingStrategyTest extends AbstractAutoloadingStrategyTest
     }
 
     /**
-     * Test registerNamespacePath method
-     * for the class with one level of nesting
+     * Test for the class with one level of nesting
      * and class specification with two levels of nesting
      * with mixed separators
      * and underscored package name.
      */
-    public function testFor1NestedNamespaceAnd2NestedClassWithUSSepAndUSPackage()
+    public function testFor1nNamespaceAnd2nClassWithUSSepAndUSPackage()
     {
         $path = $this->getFullFixturePath('/src');
 

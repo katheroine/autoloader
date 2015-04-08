@@ -52,9 +52,9 @@ class PearAutoloadingStrategyTest extends AbstractAutoloadingStrategyTest
     }
 
     /**
-     * Test class is not found in nonexistent registerd path.
+     * Test for nonexistent registered path.
      */
-    public function testForNonexistentRegisteredPath()
+    public function testForNonexistentPath()
     {
         $path = $this->getFullFixturePath('/nonexistent');
 
@@ -63,10 +63,10 @@ class PearAutoloadingStrategyTest extends AbstractAutoloadingStrategyTest
         $this->assertClassDoesNotExist('Dummy_ComponentNotRegistered');
     }
 
-   /**
-     * Test class is not found in empty registerd path.
+    /**
+     * Test for empty registered path.
      */
-    public function testForEmptyRegisteredPath()
+    public function testForEmptyPath()
     {
         $path = $this->getFullFixturePath('/empty');
 
@@ -76,9 +76,9 @@ class PearAutoloadingStrategyTest extends AbstractAutoloadingStrategyTest
     }
 
     /**
-     * Test class is not found in unregisterd path.
+     * Test for unregisterd path.
      */
-    public function testForNotRegisteredPath()
+    public function testForUnregisteredPath()
     {
         $path = $this->getFullFixturePath('/doc');
 
@@ -90,7 +90,7 @@ class PearAutoloadingStrategyTest extends AbstractAutoloadingStrategyTest
     /**
      * Test class with unregisterd prefix.
      */
-    public function testForNotRegisteredPrefix()
+    public function testForUnregisteredPrefix()
     {
         $path = $this->getFullFixturePath('/lib/classes');
 
@@ -100,10 +100,9 @@ class PearAutoloadingStrategyTest extends AbstractAutoloadingStrategyTest
     }
 
     /**
-     * Test registerPrefixPath method
-     * for the class with one level of nesting.
+     * Test for the class with one level of nesting.
      */
-    public function testForClassWithOneLevelOfNesting()
+    public function testFor1nClass()
     {
         $path = $this->getFullFixturePath('/lib/classes');
 
@@ -113,10 +112,9 @@ class PearAutoloadingStrategyTest extends AbstractAutoloadingStrategyTest
     }
 
     /**
-     * Test registerPrefixPath method
-     * for the class with two levels of nesting.
+     * Test for the class with two levels of nesting.
      */
-    public function testForClassWithTwoLevelsOfNesting()
+    public function testFor2nClass()
     {
         $path = $this->getFullFixturePath('/lib/classes');
 
