@@ -52,9 +52,9 @@ class RecursiveAutoloadingStrategyTest extends AbstractAutoloadingStrategyTest
     }
 
     /**
-     * Test registered path doesn't exist.
+     * Test for nonexistent registered path.
      */
-    public function testForNonexistentRegisteredPath()
+    public function testForNonexistentPath()
     {
         $path = $this->getFullFixturePath('/nonexistent');
 
@@ -64,9 +64,9 @@ class RecursiveAutoloadingStrategyTest extends AbstractAutoloadingStrategyTest
     }
 
     /**
-     * Test registered path is empty directory.
+     * Test for empty registered path.
      */
-    public function testForEmptyRegisteredPath()
+    public function testForEmptyPath()
     {
         $path = $this->getFullFixturePath('/empty');
 
@@ -76,19 +76,19 @@ class RecursiveAutoloadingStrategyTest extends AbstractAutoloadingStrategyTest
     }
 
     /**
-     * Test class not existent in registered path is not found.
+     * Test for the class not existent in registered path is not found.
      */
-    public function testForClassNotExistentInRegisteredPath()
+    public function testForNonexistentClass()
     {
         $path = $this->getFullFixturePath('/subdirectory-1/subdirectory-1-1');
 
         $this->strategy->registerPath($path);
 
-        $this->assertClassDoesNotExist('Class_1_2_1');
+        $this->assertClassDoesNotExist('Class_Nonexistent');
     }
 
     /**
-     * Test class existent on higher level directory
+     * Test for the class existent on higher level directory
      * than registered path is not found.
      */
     public function testForClassExistentOnHigherLevelThanRegisteredPath()
@@ -101,7 +101,7 @@ class RecursiveAutoloadingStrategyTest extends AbstractAutoloadingStrategyTest
     }
 
     /**
-     * Test class existent on higher level directory
+     * Test for the class existent on higher level directory
      * than registered path is not found.
      */
     public function testForPathWithEmptyDirectory()
@@ -114,8 +114,7 @@ class RecursiveAutoloadingStrategyTest extends AbstractAutoloadingStrategyTest
     }
 
     /**
-     * Test registerPath method
-     * for not nested directory path
+     * Test for not nested directory path
      * and not nested class file
      * and class without namespace.
      */
@@ -129,8 +128,7 @@ class RecursiveAutoloadingStrategyTest extends AbstractAutoloadingStrategyTest
     }
 
     /**
-     * Test registerPath method
-     * for not nested directory path
+     * Test for not nested directory path
      * and not nested class file
      * and class with namespace.
      */
@@ -144,8 +142,7 @@ class RecursiveAutoloadingStrategyTest extends AbstractAutoloadingStrategyTest
     }
 
     /**
-     * Test registerPath method
-     * for not nested directory path
+     * Test for not nested directory path
      * and class file with one level of nesting
      * and class without namespace.
      */
@@ -159,8 +156,7 @@ class RecursiveAutoloadingStrategyTest extends AbstractAutoloadingStrategyTest
     }
 
     /**
-     * Test registerPath method
-     * for not nested directory path
+     * Test for not nested directory path
      * and class file with one level of nesting
      * and class with namespace.
      */
@@ -174,8 +170,7 @@ class RecursiveAutoloadingStrategyTest extends AbstractAutoloadingStrategyTest
     }
 
     /**
-     * Test registerPath method
-     * for not nested directory path
+     * Test for not nested directory path
      * and class file with two levels of nesting
      * and class without namespace.
      */
@@ -189,8 +184,7 @@ class RecursiveAutoloadingStrategyTest extends AbstractAutoloadingStrategyTest
     }
 
     /**
-     * Test registerPath method
-     * for not nested directory path
+     * Test for not nested directory path
      * and class file with two levels of nesting
      * and class with namespace.
      */
@@ -204,8 +198,7 @@ class RecursiveAutoloadingStrategyTest extends AbstractAutoloadingStrategyTest
     }
 
     /**
-     * Test registerPath method
-     * for directory path file with two levels of nesting
+     * Test for directory path file with two levels of nesting
      * and class file with two levels of nesting
      * and class without namespace.
      */
@@ -219,8 +212,7 @@ class RecursiveAutoloadingStrategyTest extends AbstractAutoloadingStrategyTest
     }
 
     /**
-     * Test registerPath method
-     * for directory path file with two levels of nesting
+     * Test for directory path file with two levels of nesting
      * and class file with two levels of nesting
      * and class with namespace.
      */

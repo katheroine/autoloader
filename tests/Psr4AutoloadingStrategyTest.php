@@ -52,8 +52,7 @@ class Psr4AutoloadingStrategyTest extends AbstractAutoloadingStrategyTest
     }
 
     /**
-     * Test registerNamespacePath method
-     * for nonexisting path.
+     * Test for nonexisting path.
      */
     public function testForNonexistentPath()
     {
@@ -65,8 +64,7 @@ class Psr4AutoloadingStrategyTest extends AbstractAutoloadingStrategyTest
     }
 
     /**
-     * Test registerNamespacePath method
-     * for empty path.
+     * Test for empty path.
      */
     public function testForEmptyPath()
     {
@@ -78,8 +76,7 @@ class Psr4AutoloadingStrategyTest extends AbstractAutoloadingStrategyTest
     }
 
     /**
-     * Test registerNamespacePath method
-     * for nonexistent class file.
+     * Test for nonexistent class file.
      */
     public function testForNonexistentClassFile()
     {
@@ -91,8 +88,7 @@ class Psr4AutoloadingStrategyTest extends AbstractAutoloadingStrategyTest
     }
 
     /**
-     * Test registerNamespacePath method
-     * for not registered namespace.
+     * Test for not registered namespace.
      */
     public function testForUnregisteredNamespace()
     {
@@ -104,8 +100,7 @@ class Psr4AutoloadingStrategyTest extends AbstractAutoloadingStrategyTest
     }
 
     /**
-     * Test registerNamespacePath method
-     * for namespace registration with one level of nesting
+     * Test for namespace registration with one level of nesting
      * and class specification with one level of nesting.
      */
     public function testFor1nNamespaceAnd1nClass()
@@ -118,11 +113,10 @@ class Psr4AutoloadingStrategyTest extends AbstractAutoloadingStrategyTest
     }
 
     /**
-     * Test registerNamespacePath method
-     * for namespace registration with one level of nesting
+     * Test for namespace registration with one level of nesting
      * and class specification with two levels of nesting.
      */
-    public function testFor1NestedNamespaceAnd2NestedClass()
+    public function testFor1nNamespaceAnd2nClass()
     {
         $path = $this->getFullFixturePath('/src');
 
@@ -132,11 +126,10 @@ class Psr4AutoloadingStrategyTest extends AbstractAutoloadingStrategyTest
     }
 
     /**
-     * Test registerNamespacePath method
-     * for namespace registration with two levels of nesting
+     * Test for namespace registration with two levels of nesting
      * and class specification with two levels of nesting.
      */
-    public function testFor2NestedNamespaceAnd2NestedClass()
+    public function testFor2nNamespaceAnd2nClass()
     {
         $path = $this->getFullFixturePath('/src');
 
@@ -146,12 +139,11 @@ class Psr4AutoloadingStrategyTest extends AbstractAutoloadingStrategyTest
     }
 
     /**
-     * Test registerNamespacePath method
-     * for the class with one level of nesting
+     * Test for the class with one level of nesting
      * and class specification with two levels of nesting
      * with underscored package name.
      */
-    public function testFor1NestedNamespaceAnd2NestedClassWithUSPackage()
+    public function testFor1nNamespaceAnd2nClassWithUSPackage()
     {
         $path = $this->getFullFixturePath('/src');
 

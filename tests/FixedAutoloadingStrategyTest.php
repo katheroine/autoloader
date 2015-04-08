@@ -52,45 +52,56 @@ class FixedAutoloadingStrategyTest extends AbstractAutoloadingStrategyTest
     }
 
     /**
-     * Test unexistant registered path.
+     * Test for nonexistent registered path.
      */
-    public function testForNonexistentRegisteredPath()
+    public function testForNonexistentPath()
     {
         $path = $this->getFullFixturePath('/nonexistent');
 
         $this->strategy->registerClassPath('NotCalledClass', $path);
 
-        $this->assertClassDoesNotExist('NotRegisteredClass');
+        $this->assertClassDoesNotExist('NonexistentClass');
     }
 
     /**
-     * Test empty registered path.
+     * Test for empty registered path.
      */
-    public function testForEmptyRegisteredPath()
+    public function testForEmptyPath()
     {
         $path = $this->getFullFixturePath('/empty');
 
         $this->strategy->registerClassPath('NotCalledClass', $path);
 
-        $this->assertClassDoesNotExist('NotRegisteredClass');
+        $this->assertClassDoesNotExist('NonexistentClass');
     }
 
     /**
-     * Test unregistered class is not found.
+     * Test class not existent in registered path is not found.
      */
-    public function testForNotRegisteredClass()
+    public function testForNonexistentClass()
     {
-        $path = $this->getFullFixturePath('/src/NotCalledClass');
+        $path = $this->getFullFixturePath('/src');
 
-        $this->strategy->registerClassPath('NotCalledClass', $path);
+        $this->strategy->registerClassPath('NonexistentClass', $path);
+
+        $this->assertClassDoesNotExist('NonexistentClass');
+    }
+
+    /**
+     * Test class not registered with registered path is not found.
+     */
+    public function testForUnregisteredClass()
+    {
+        $path = $this->getFullFixturePath('/src');
+
+        $this->strategy->registerClassPath('RegisteredClass', $path);
 
         $this->assertClassDoesNotExist('NotRegisteredClass');
     }
 
     /**
-     * Test registerClassPath method
-     * for the class specification with one level of nesting
-     * with no namespace
+     * Test for the class specification with one level of nesting
+     * with no namespace.
      */
     public function testFor1nClassAndNoNamespace()
     {
@@ -102,9 +113,8 @@ class FixedAutoloadingStrategyTest extends AbstractAutoloadingStrategyTest
     }
 
     /**
-     * Test registerClassPath method
-     * for the class specification with one level of nesting
-     * and namespace with one level of nesting
+     * Test for the class specification with one level of nesting
+     * and namespace with one level of nesting.
      */
     public function testFor1nClassAnd1nNamespace()
     {
@@ -116,9 +126,8 @@ class FixedAutoloadingStrategyTest extends AbstractAutoloadingStrategyTest
     }
 
     /**
-     * Test registerClassPath method
-     * for the class specification with two levels of nesting
-     * with no namespace
+     * Test for the class specification with two levels of nesting
+     * with no namespace.
      */
     public function testFor2nClassAndNoNamespace()
     {
@@ -130,9 +139,8 @@ class FixedAutoloadingStrategyTest extends AbstractAutoloadingStrategyTest
     }
 
     /**
-     * Test registerClassPath method
-     * for the class specification with two levels of nesting
-     * with namespace with one level of nesting
+     * Test for the class specification with two levels of nesting
+     * with namespace with one level of nesting.
      */
     public function testFor2nClassAnd1nNamespace()
     {
