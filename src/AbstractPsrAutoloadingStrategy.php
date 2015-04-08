@@ -35,14 +35,14 @@ abstract class AbstractPsrAutoloadingStrategy extends AbstractAutoloadingStrateg
      *
      * @var string | null
      */
-    protected $currentNamespace = null;
+    protected $processedNamespace = null;
 
     /**
      * Partial file path of the currently processed class name.
      *
      * @var string | null
      */
-    protected $currentPath = null;
+    protected $processedPath = null;
 
     /**
      * Register namespace and assign a directory path.
