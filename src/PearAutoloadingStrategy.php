@@ -35,14 +35,14 @@ class PearAutoloadingStrategy extends AbstractAutoloadingStrategy
      *
      * @var unknown
      */
-    protected $currentClass = null;
+    protected $processedClass = null;
 
     /**
      * Partial file path of the currently processed class name.
      *
      * @var string | null
      */
-    protected $currentPath = null;
+    protected $processedPath = null;
 
     /**
      * Register prefix and assign a directory path.
@@ -64,11 +64,11 @@ class PearAutoloadingStrategy extends AbstractAutoloadingStrategy
      */
     protected function extractClassParameters($class)
     {
-        $this->currentClass = $class;
+        $this->processedClass = $class;
 
         $classPath = $this->buildClassPathFromClass($class);
 
-        $this->currentPath = $classPath . '.php';
+        $this->processedPath = $classPath . '.php';
     }
 
     /**
@@ -80,12 +80,14 @@ class PearAutoloadingStrategy extends AbstractAutoloadingStrategy
     protected function findClassFilePath()
     {
         foreach ($this->prefixPaths as $prefix => $path) {
-            $prefixIsNotRegistered = (0 !== strpos($this->currentClass, $prefix));
+            $prefixIsNotRegistered = (0 !== strpos($this->processedClass, $prefix));
+
             if ($prefixIsNotRegistered) {
                 continue;
             }
 
-            $classFilePath = $path . DIRECTORY_SEPARATOR . $this->currentPath;
+            $classFilePath = $path . DIRECTORY_SEPARATOR . $this->processedPath;
+
             $classFileExists = is_file($classFilePath);
 
             if ($classFileExists) {
