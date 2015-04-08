@@ -32,6 +32,30 @@ class AutoloaderWithPearAutoloadingStrategyTest extends AbstractAutoloaderWithAu
     }
 
     /**
+     * Test class is not found in nonexistent registerd path.
+     */
+    public function testForNonexistentRegisteredPath()
+    {
+        $path = $this->getFullFixturePath('/nonexistent');
+
+        $this->strategy->registerPrefixPath('Dummy', $path);
+
+        $this->assertClassDoesNotExist('Dummy_ComponentNotRegistered');
+    }
+
+   /**
+     * Test class is not found in empty registerd path.
+     */
+    public function testForEmptyRegisteredPath()
+    {
+        $path = $this->getFullFixturePath('/empty');
+
+        $this->strategy->registerPrefixPath('Dummy', $path);
+
+        $this->assertClassDoesNotExist('Dummy_ComponentNotRegistered');
+    }
+
+    /**
      * Test class is not found in unregisterd path.
      */
     public function testForNotRegisteredPath()
