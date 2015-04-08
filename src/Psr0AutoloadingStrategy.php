@@ -37,16 +37,16 @@ class Psr0AutoloadingStrategy extends AbstractPsrAutoloadingStrategy
 
         // extracting namespace chain and strict class name
         $namespaceEndPosition = strrpos($classFullName, '\\');
-        $classNameStartPosition = $namespaceEndPosition + 1;
-        $this->currentNamespace = substr($classFullName, 0, $namespaceEndPosition);
-        $className = substr($classFullName, $classNameStartPosition);
+        $this->processedNamespace = substr($classFullName, 0, $namespaceEndPosition);
 
-        // building namespace and class name path components
-        $namespacePath = str_replace('\\', DIRECTORY_SEPARATOR, $this->currentNamespace);
+        // building namespace and class path snippets
+        $classNameStartPosition = $namespaceEndPosition + 1;
+        $className = substr($classFullName, $classNameStartPosition);
+        $namespacePath = str_replace('\\', DIRECTORY_SEPARATOR, $this->processedNamespace);
         $classPath = str_replace('_', DIRECTORY_SEPARATOR, $className);
 
-        // building class file path
-        $this->currentPath = $namespacePath . DIRECTORY_SEPARATOR . $classPath . '.php';
+        // building entire class file path
+        $this->processedPath = $namespacePath . DIRECTORY_SEPARATOR . $classPath . '.php';
     }
 
     /**
@@ -58,12 +58,14 @@ class Psr0AutoloadingStrategy extends AbstractPsrAutoloadingStrategy
     protected function findClassFilePath()
     {
         foreach ($this->namespacePaths as $namespace => $path) {
-            $namespaceIsNotRegistered = (0 !== strpos($this->currentNamespace, $namespace));
+            $namespaceIsNotRegistered = (0 !== strpos($this->processedNamespace, $namespace));
+
             if ($namespaceIsNotRegistered) {
                 continue;
             }
 
-            $classFilePath = $path . DIRECTORY_SEPARATOR . $this->currentPath;
+            $classFilePath = $path . DIRECTORY_SEPARATOR . $this->processedPath;
+
             $classFileExists = is_file($classFilePath);
 
             if ($classFileExists) {

@@ -38,14 +38,14 @@ class Psr4AutoloadingStrategy extends AbstractPsrAutoloadingStrategy
         // extracting namespace chain and strict class name
         $namespaceEndPosition = strrpos($classFullName, '\\');
         $classNameStartPosition = $namespaceEndPosition + 1;
-        $this->currentNamespace = substr($classFullName, 0, $namespaceEndPosition);
+        $this->processedNamespace = substr($classFullName, 0, $namespaceEndPosition);
         $className = substr($classFullName, $classNameStartPosition);
 
         // building namespace and class name path components
-        $namespacePath = str_replace('\\', DIRECTORY_SEPARATOR, $this->currentNamespace);
+        $namespacePath = str_replace('\\', DIRECTORY_SEPARATOR, $this->processedNamespace);
 
         // building class file path
-        $this->currentPath = $namespacePath . DIRECTORY_SEPARATOR . $className . '.php';
+        $this->processedPath = $namespacePath . DIRECTORY_SEPARATOR . $className . '.php';
     }
 
     /**
@@ -57,14 +57,14 @@ class Psr4AutoloadingStrategy extends AbstractPsrAutoloadingStrategy
     protected function findClassFilePath()
     {
         foreach ($this->namespacePaths as $namespace => $path) {
-            $namespaceIsNotRegistered = (0 !== strpos($this->currentNamespace, $namespace));
+            $namespaceIsNotRegistered = (0 !== strpos($this->processedNamespace, $namespace));
             if ($namespaceIsNotRegistered) {
                 continue;
             }
 
             $namespacePath = str_replace('\\', DIRECTORY_SEPARATOR, $namespace);
             $cutOffPosition = strlen($namespacePath);
-            $currentPath = substr($this->currentPath, $cutOffPosition);
+            $currentPath = substr($this->processedPath, $cutOffPosition);
             $classFilePath = $path . $currentPath;
             $classFileExists = is_file($classFilePath);
 
