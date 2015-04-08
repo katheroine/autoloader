@@ -35,7 +35,7 @@ class FixedAutoloadingStrategy extends AbstractAutoloadingStrategy
      *
      * @var string | null
      */
-    protected $currentClass = null;
+    protected $processedClass = null;
 
     /**
      * Register class full name and assign a directory path.
@@ -57,7 +57,7 @@ class FixedAutoloadingStrategy extends AbstractAutoloadingStrategy
      */
     public function extractClassParameters($class)
     {
-        $this->currentClass = $class;
+        $this->processedClass = $class;
     }
 
     /**
@@ -69,7 +69,8 @@ class FixedAutoloadingStrategy extends AbstractAutoloadingStrategy
     protected function findClassFilePath()
     {
         foreach ($this->classPaths as $class => $path) {
-            $pathIsNotRegistered = (0 !== strpos(strrev($this->currentClass), strrev($class)));
+            $pathIsNotRegistered = (0 !== strpos(strrev($this->processedClass), strrev($class)));
+
             if ($pathIsNotRegistered) {
                 continue;
             }

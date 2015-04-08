@@ -65,57 +65,57 @@ class FixedAutoloadingStrategyTest extends AbstractAutoloadingStrategyTest
 
     /**
      * Test registerClassPath method
-     * for the class with one level of nesting
+     * for the class specification with one level of nesting
      * with no namespace
      */
-    public function testForClassWithOneLevelOfNestingWithNoNamespace()
+    public function testFor1nClassAndNoNamespace()
     {
         $path = $this->getFullFixturePath('/src/ComponentNotNestedNoNS.php');
 
         $this->strategy->registerClassPath('ComponentNotNestedNoNS', $path);
 
-        $this->assertClassIsInstantiable('\ComponentNotNestedNoNS');
+        $this->assertClassIsInstantiable('ComponentNotNestedNoNS');
     }
 
     /**
      * Test registerClassPath method
-     * for the class with one level of nesting
-     * with namespace
+     * for the class specification with one level of nesting
+     * and namespace with one level of nesting
      */
-    public function testForClassWithOneLevelOfNestingWithNamespace()
+    public function testFor1nClassAnd1nNamespace()
     {
         $path = $this->getFullFixturePath('/src/ComponentNotNestedWithNS.php');
 
         $this->strategy->registerClassPath('Dummy\ComponentNotNestedWithNS', $path);
 
-        $this->assertClassIsInstantiable('\Dummy\ComponentNotNestedWithNS');
+        $this->assertClassIsInstantiable('Dummy\ComponentNotNestedWithNS');
     }
 
     /**
      * Test registerClassPath method
-     * for the class with two levels of nesting
+     * for the class specification with two levels of nesting
      * with no namespace
      */
-    public function testForClassWithTwoLevelsOfNestingWithNoNamespace()
+    public function testFor2nClassAndNoNamespace()
     {
         $path = $this->getFullFixturePath('/src/Core/ComponentNestedNoNS.php');
 
         $this->strategy->registerClassPath('ComponentNestedNoNS', $path);
 
-        $this->assertClassIsInstantiable('\ComponentNestedNoNS');
+        $this->assertClassIsInstantiable('ComponentNestedNoNS');
     }
 
     /**
      * Test registerClassPath method
-     * for the class with two levels of nesting
-     * with namespace
+     * for the class specification with two levels of nesting
+     * with namespace with one level of nesting
      */
-    public function testForClassWithTwoLevelsOfNestingWithNamespace()
+    public function testFor2nClassAnd1nNamespace()
     {
         $path = $this->getFullFixturePath('/src/Core/ComponentNestedWithNS.php');
 
         $this->strategy->registerClassPath('Dummy\ComponentNestedWithNS', $path);
 
-        $this->assertClassIsInstantiable('\Dummy\ComponentNestedWithNS');
+        $this->assertClassIsInstantiable('Dummy\ComponentNestedWithNS');
     }
 }
