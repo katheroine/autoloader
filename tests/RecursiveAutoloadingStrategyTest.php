@@ -52,6 +52,30 @@ class RecursiveAutoloadingStrategyTest extends AbstractAutoloadingStrategyTest
     }
 
     /**
+     * Test registered path doesn't exist.
+     */
+    public function testForNonexistentRegisteredPath()
+    {
+        $path = $this->getFullFixturePath('/nonexistent');
+
+        $this->strategy->registerPath($path);
+
+        $this->assertClassDoesNotExist('Class_0');
+    }
+
+    /**
+     * Test registered path is empty directory.
+     */
+    public function testForEmptyRegisteredPath()
+    {
+        $path = $this->getFullFixturePath('/empty');
+
+        $this->strategy->registerPath($path);
+
+        $this->assertClassDoesNotExist('Class_0');
+    }
+
+    /**
      * Test class not existent in registered path is not found.
      */
     public function testForClassNotExistentInRegisteredPath()

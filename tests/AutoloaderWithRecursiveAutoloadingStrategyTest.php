@@ -32,6 +32,30 @@ class AutoloaderWithRecursiveAutoloadingStrategyTest extends AbstractAutoloaderW
     }
 
     /**
+     * Test registered path doesn't exist.
+     */
+    public function testForNonexistentRegisteredPath()
+    {
+        $path = $this->getFullFixturePath('/nonexistent');
+
+        $this->strategy->registerPath($path);
+
+        $this->assertClassDoesNotExist('Class_0');
+    }
+
+    /**
+     * Test registered path is empty directory.
+     */
+    public function testForEmptyRegisteredPath()
+    {
+        $path = $this->getFullFixturePath('/empty');
+
+        $this->strategy->registerPath($path);
+
+        $this->assertClassDoesNotExist('Class_0');
+    }
+
+    /**
      * Test class not existent in registered path is not found.
      */
     public function testForClassNotExistentInRegisteredPath()
@@ -40,7 +64,7 @@ class AutoloaderWithRecursiveAutoloadingStrategyTest extends AbstractAutoloaderW
 
         $this->strategy->registerPath($path);
 
-        $this->assertClassDoesNotExist('\Class_1_2_1');
+        $this->assertClassDoesNotExist('Class_1_2_1');
     }
 
     /**
@@ -53,7 +77,7 @@ class AutoloaderWithRecursiveAutoloadingStrategyTest extends AbstractAutoloaderW
 
         $this->strategy->registerPath($path);
 
-        $this->assertClassDoesNotExist('\Class_0');
+        $this->assertClassDoesNotExist('Class_2');
     }
 
     /**
@@ -66,122 +90,126 @@ class AutoloaderWithRecursiveAutoloadingStrategyTest extends AbstractAutoloaderW
 
         $this->strategy->registerPath($path);
 
-        $this->assertClassDoesNotExist('\Class_0');
+        $this->assertClassDoesNotExist('Class_2');
     }
 
     /**
      * Test registerPath method
-     * for not nested directories searching
+     * for not nested directory path
+     * and not nested class file
      * and class without namespace.
      */
-    public function testForNotNestedPathAndClassWithNoNamespace()
+    public function testFor0nPathAnd0nFileAndClassWithNoNamespace()
+    {
+        $path = $this->getFullFixturePath('');
+
+        $this->strategy->registerPath($path);
+
+        $this->assertClassIsInstantiable('Class_1');
+    }
+
+    /**
+     * Test registerPath method
+     * for not nested directory path
+     * and not nested class file
+     * and class with namespace.
+     */
+    public function testFor0nPathAnd0nFileAndClassWithNamespace()
+    {
+        $path = $this->getFullFixturePath('');
+
+        $this->strategy->registerPath($path);
+
+        $this->assertClassIsInstantiable('Dummy\Class_2');
+    }
+
+    /**
+     * Test registerPath method
+     * for not nested directory path
+     * and class file with one level of nesting
+     * and class without namespace.
+     */
+    public function testFor0nPathAnd1nFileAndClassWithNoNamespace()
+    {
+        $path = $this->getFullFixturePath('');
+
+        $this->strategy->registerPath($path);
+
+        $this->assertClassIsInstantiable('Class_1_1');
+    }
+
+    /**
+     * Test registerPath method
+     * for not nested directory path
+     * and class file with one level of nesting
+     * and class with namespace.
+     */
+    public function testFor0nPathAnd1nFileAndClassWithNamespace()
+    {
+        $path = $this->getFullFixturePath('');
+
+        $this->strategy->registerPath($path);
+
+        $this->assertClassIsInstantiable('Dummy\Class_1_2');
+    }
+
+    /**
+     * Test registerPath method
+     * for not nested directory path
+     * and class file with two levels of nesting
+     * and class without namespace.
+     */
+    public function testFor0nPathAnd2nFileAndClassWithNoNamespace()
+    {
+        $path = $this->getFullFixturePath('');
+
+        $this->strategy->registerPath($path);
+
+        $this->assertClassIsInstantiable('Class_1_1_1');
+    }
+
+    /**
+     * Test registerPath method
+     * for not nested directory path
+     * and class file with two levels of nesting
+     * and class with namespace.
+     */
+    public function testFor0nPathAnd2nFileAndClassWithNamespace()
+    {
+        $path = $this->getFullFixturePath('');
+
+        $this->strategy->registerPath($path);
+
+        $this->assertClassIsInstantiable('Dummy\Class_1_1_2');
+    }
+
+    /**
+     * Test registerPath method
+     * for directory path file with two levels of nesting
+     * and class file with two levels of nesting
+     * and class without namespace.
+     */
+    public function testFor2nPathAnd2nFileAndClassWithNoNamespace()
     {
         $path = $this->getFullFixturePath('/subdirectory-1/subdirectory-1-1');
 
         $this->strategy->registerPath($path);
 
-        $this->assertClassIsInstantiable('\Class_1_1_1');
+        $this->assertClassIsInstantiable('Class_1_1_3');
     }
 
     /**
      * Test registerPath method
-     * for not nested directories searching
+     * for directory path file with two levels of nesting
+     * and class file with two levels of nesting
      * and class with namespace.
      */
-    public function testForNotNestedPathAndClassWithNamespace()
+    public function testFor2nPathAnd2nFileAndClassWithNamespace()
     {
         $path = $this->getFullFixturePath('/subdirectory-1/subdirectory-1-1');
 
         $this->strategy->registerPath($path);
 
-        $this->assertClassIsInstantiable('\Dummy\Class_1_1_2');
-    }
-
-    /**
-     * Test registerPath method
-     * for nested directories searching
-     * and class without namespace.
-     */
-    public function testForNestedPathAndClassWithNoNamespace()
-    {
-        $path = $this->getFullFixturePath('');
-
-        $this->strategy->registerPath($path);
-
-        $this->assertClassIsInstantiable('\Class_1');
-    }
-
-    /**
-     * Test registerPath method
-     * for nested directories searching
-     * and class with namespace.
-     */
-    public function testForNestedPathAndClassWithNamespace()
-    {
-        $path = $this->getFullFixturePath('');
-
-        $this->strategy->registerPath($path);
-
-        $this->assertClassIsInstantiable('\Dummy\Class_2');
-    }
-
-    /**
-     * Test registerPath method
-     * for nested directories searching
-     * for singly nested class file
-     * and class without namespace.
-     */
-    public function testForNestedFilesAndSinglyNestedPathAndClassWithNoNamespace()
-    {
-        $path = $this->getFullFixturePath('');
-
-        $this->strategy->registerPath($path);
-
-        $this->assertClassIsInstantiable('\Class_1_1');
-    }
-
-    /**
-     * Test registerPath method
-     * for nested directories searching
-     * for singly nested class file
-     * and class with namespace.
-     */
-    public function testForNestedFilesAndSinglyNestedPathAndClassWithNamespace()
-    {
-        $path = $this->getFullFixturePath('');
-
-        $this->strategy->registerPath($path);
-
-        $this->assertClassIsInstantiable('\Dummy\Class_1_2');
-    }
-
-    /**
-     * Test registerPath method
-     * for nested directories searching
-     * for doubly nested class file
-     * and class without namespace.
-     */
-    public function testForNestedFilesAndDoublyNestedPathAndClassWithNoNamespace()
-    {
-        $path = $this->getFullFixturePath('');
-
-        $this->strategy->registerPath($path);
-
-        $this->assertClassIsInstantiable('\Class_1_1_1');
-    }
-
-    /**
-     * Test registerPath method
-     * for nested directories searching
-     * for doubly nested class file
-     * and class with namespace.
-     */
-    public function testForNestedFilesAndDoublyNestedPathAndClassWithNamespace()
-    {
-        $path = $this->getFullFixturePath('');
-
-        $this->strategy->registerPath($path);
-
-        $this->assertClassIsInstantiable('\Dummy\Class_1_1_2');
+        $this->assertClassIsInstantiable('Dummy\Class_1_1_4');
     }
 }
