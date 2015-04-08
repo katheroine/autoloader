@@ -2,7 +2,7 @@
 
 namespace Vendor\Package\Dummy\Core;
 
-class ComponentNested
+class ComponentNested1
 {
 
 }
