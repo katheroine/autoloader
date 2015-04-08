@@ -180,7 +180,7 @@ class RecursiveAutoloadingStrategy extends AbstractAutoloadingStrategy
      */
     private function removeDotPaths(&$directoryContent)
     {
-        $dotpaths = ['.', '..'];
+        $dotpaths = ['.', '..', '.gitignore'];
         $directoryContent = array_diff($directoryContent, $dotpaths);
     }
 }
