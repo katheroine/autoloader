@@ -115,7 +115,7 @@ class RecursiveAutoloadingStrategy extends AbstractAutoloadingStrategy
      */
     private function findFileInDirectoryPath($fileName, $directoryPath)
     {
-        $directoryItems = self::extractDirectoryItems($directoryPath);
+        $directoryItems = $this->extractDirectoryItems($directoryPath);
 
         $directoryItemsExist = !is_null($directoryItems) && !empty($directoryItems);
 
