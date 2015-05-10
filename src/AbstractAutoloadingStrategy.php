@@ -18,7 +18,7 @@ namespace Exorg\Autoloader;
  * @package Autoloader
  * @author Katarzyna Krasińska <katheroine@gmail.com>
  * @copyright Copyright (c) 2015 Katarzyna Krasińska
- * @license http://http://opensource.org/licenses/MIT MIT License
+ * @license http://opensource.org/licenses/MIT MIT License
  * @link https://github.com/ExOrg/php-autoloader
  */
 abstract class AbstractAutoloadingStrategy implements AutoloadingStrategyInterface

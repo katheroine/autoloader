@@ -18,7 +18,7 @@ namespace Exorg\Autoloader;
  * @package Autoloader
  * @author Katarzyna Krasińska <katheroine@gmail.com>
  * @copyright Copyright (c) 2015 Katarzyna Krasińska
- * @license http://http://opensource.org/licenses/MIT MIT License
+ * @license http://opensource.org/licenses/MIT MIT License
  * @link https://github.com/ExOrg/php-autoloader
  */
 class RecursiveAutoloadingStrategy extends AbstractAutoloadingStrategy
@@ -111,76 +111,24 @@ class RecursiveAutoloadingStrategy extends AbstractAutoloadingStrategy
      *
      * @param string $fileName
      * @param string $directoryPath
-     * @return string $filePath
+     * @return string $filePath | null
      */
     private function findFileInDirectoryPath($fileName, $directoryPath)
     {
-        $directoryItems = self::extractDirectoryItems($directoryPath);
+        try {
+            $directoryIterator = new \RecursiveDirectoryIterator($directoryPath);
+            $directoryItems = new \RecursiveIteratorIterator($directoryIterator);
 
-        $directoryItemsExist = !is_null($directoryItems) && !empty($directoryItems);
-
-        if (!$directoryItemsExist) {
-            return null;
-        }
-
-        foreach ($directoryItems as $directoryItem) {
-            $directoryItemPath = $directoryPath . '/' . $directoryItem;
-
-            $directoryItemIsDirectory = $this->pathIsNonemptyDirectory($directoryItemPath);
-
-            if ($directoryItemIsDirectory) {
-                return $this->findFileInDirectoryPath($fileName, $directoryItemPath);
-            } else {
-                $directoryItemIsSearchedFile = ($directoryItem === $fileName);
+            foreach ($directoryItems as $directoryItem) {
+                $directoryItemIsSearchedFile = ($directoryItem->getFilename() === $fileName);
 
                 if ($directoryItemIsSearchedFile) {
-                    return $directoryItemPath;
+                    return $directoryItem->getPathname();
                 }
             }
+        } catch (\RuntimeException $exception) {
+            // directory path defines empty directory
+            return null;
         }
-    }
-
-    /**
-     * Extract content of the directory.
-     *
-     * @param string $directoryPath
-     * @return array[string] | null:
-     */
-    private function extractDirectoryItems($directoryPath)
-    {
-        $directoryPathExists = is_dir($directoryPath);
-
-        if ($directoryPathExists) {
-            $directoryItems = scandir($directoryPath);
-            $this->removeDotPaths($directoryItems);
-
-            return $directoryItems;
-        }
-    }
-
-    /**
-     * Check if path is nonempty directory path.
-     *
-     * @param unknown $path
-     * @return boolean
-     */
-    private function pathIsNonemptyDirectory($path)
-    {
-        $directoryItems = $this->extractDirectoryItems($path);
-
-        $pathIsNonemptyDirectory = !is_null($directoryItems) && !empty($directoryItems);
-
-        return $pathIsNonemptyDirectory;
-    }
-
-    /**
-     * Remove dot paths from the set of directory items.
-     *
-     * @param array of string $directoryContent
-     */
-    private function removeDotPaths(&$directoryContent)
-    {
-        $dotpaths = ['.', '..', '.gitignore'];
-        $directoryContent = array_diff($directoryContent, $dotpaths);
     }
 }
