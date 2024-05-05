@@ -21,7 +21,7 @@ namespace Exorg\Autoloader;
  * @license http://opensource.org/licenses/MIT MIT License
  * @link https://github.com/ExOrg/php-autoloader
  */
-abstract class AbstractAutoloadingStrategyTest extends AutoloadingProcessTestCase
+abstract class AbstractAutoloadingStrategyTestCase extends AutoloadingProcessTestCase
 {
     /**
      * Instance of tested class.

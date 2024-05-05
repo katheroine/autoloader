@@ -21,7 +21,7 @@ namespace Exorg\Autoloader;
  * @license http://opensource.org/licenses/MIT MIT License
  * @link https://github.com/ExOrg/php-autoloader
  */
-class Psr4AutoloadingStrategyTest extends AbstractAutoloadingStrategyTest
+class Psr4AutoloadingStrategyTest extends AbstractAutoloadingStrategyTestCase
 {
     /**
      * Initialise strategy fixture.
