@@ -157,16 +157,14 @@ class AutoloaderTest extends TestCase
 
     /**
      * Test setAutoloadingStrategy method
-     * doesn't accept argument of Exorg\Autoloader\IntrfaceAutoloadingStrategy iterface.
-     *
-     * @expectedException PHPUnit_Framework_Error
+     * doesn't accept argument of class
+     * that does not implement Exorg\Autoloader\IntrfaceAutoloadingStrategy iterface.
      */
     public function testSetAutoloadingStrategyDoesNotAcceptsArgument()
     {
-        $autoloadingStrategyMock = $this->getMockBuilder('stdClass')
-            ->getMock();
+        $this->expectException('TypeError');
 
-        $this->autoloader->setAutoloadingStrategy($autoloadingStrategyMock);
+        $this->autoloader->setAutoloadingStrategy(new \stdClass());
     }
 
     /**
