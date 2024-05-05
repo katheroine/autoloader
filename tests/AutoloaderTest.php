@@ -11,6 +11,8 @@
 
 namespace Exorg\Autoloader;
 
+use PHPUnit\Framework\TestCase;
+
 /**
  * AutoloaderTest.
  * PHPUnit test class for Autoloader class.
@@ -21,7 +23,7 @@ namespace Exorg\Autoloader;
  * @license http://opensource.org/licenses/MIT MIT License
  * @link https://github.com/ExOrg/php-autoloader
  */
-class AutoloaderTest extends \PHPUnit_Framework_TestCase
+class AutoloaderTest extends TestCase
 {
     /**
      * Instance of tested class.
@@ -42,7 +44,7 @@ class AutoloaderTest extends \PHPUnit_Framework_TestCase
      * Sets up the fixture, for example, open a network connection.
      * This method is called before a test is executed.
      */
-    protected function setUp()
+    protected function setUp(): void
     {
         $this->initialiseAutoloader();
         $this->initialiseAutoloadingStrategyMock();
