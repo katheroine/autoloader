@@ -119,7 +119,8 @@ class AutoloaderTest extends TestCase
      */
     private function registrationIsCorrect()
     {
-        $lastRegisteredAutoloader = array_pop(spl_autoload_functions());
+        $autoloadFunctions = spl_autoload_functions();
+        $lastRegisteredAutoloader = array_pop($autoloadFunctions);
         $autoloaderClass = $this->getMockedClass($lastRegisteredAutoloader[0]);
         $autoloaderMethod = $lastRegisteredAutoloader[1];
 

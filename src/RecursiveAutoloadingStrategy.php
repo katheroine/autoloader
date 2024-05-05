@@ -72,7 +72,7 @@ class RecursiveAutoloadingStrategy extends AbstractAutoloadingStrategy
         foreach ($this->paths as $path) {
             $classFilePath = $this->findFileInDirectoryPath($this->processedFile, $path);
 
-            $classFileExists = is_file($classFilePath);
+            $classFileExists = ! is_null($classFilePath) && is_file($classFilePath);
 
             if ($classFileExists) {
                 return $classFilePath;
