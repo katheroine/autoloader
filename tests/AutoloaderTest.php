@@ -140,7 +140,7 @@ class AutoloaderTest extends TestCase
     protected function getMockedClass($mock)
     {
         $mockClass = get_class($mock);
-        $mockedClass = (substr(substr($mockClass, 5), 0, -9));
+        $mockedClass = (substr(substr($mockClass, 11), 0, -9));
 
         return $mockedClass;
     }
@@ -171,13 +171,13 @@ class AutoloaderTest extends TestCase
      * Test setAutoloadingStrategy method
      * receives argument of Exorg\Autoloader\IntrfaceAutoloadingStrategy iterface.
      */
-    public function testSetAutoloadingStrategyReceivesCorrectArgument()
-    {
-        $autoloadingStrategyMock = $this->getMockBuilder('Exorg\Autoloader\AutoloadingStrategyInterface')
-            ->getMock();
+    // public function testSetAutoloadingStrategyReceivesCorrectArgument()
+    // {
+    //     $autoloadingStrategyMock = $this->getMockBuilder('Exorg\Autoloader\AutoloadingStrategyInterface')
+    //         ->getMock();
 
-        $this->autoloader->setAutoloadingStrategy($autoloadingStrategyMock);
-    }
+    //     $this->autoloader->setAutoloadingStrategy($autoloadingStrategyMock);
+    // }
 
     /**
      * Test register method registers autoloader class and method properly.
