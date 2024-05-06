@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /*
  * This file is part of the Autoloader package.
  *
@@ -12,37 +14,37 @@
 namespace Exorg\Autoloader;
 
 /**
- * RecursiveAutoloadingStrategy.
+ * Recursive autoloading strategy.
  * Autoloading strategy for recursve directory searching.
  *
  * @package Autoloader
  * @author Katarzyna Krasińska <katheroine@gmail.com>
- * @copyright Copyright (c) 2015 Katarzyna Krasińska
+ * @copyright Copyright (c) Katarzyna Krasińska
  * @license http://opensource.org/licenses/MIT MIT License
  * @link https://github.com/ExOrg/php-autoloader
  */
 class RecursiveAutoloadingStrategy extends AbstractAutoloadingStrategy
 {
     /**
-     * Directory path where class files are searched.
+     * Directory paths where class files are searched.
      *
-     * @var array[string] | array[]
+     * @var string[] | array[]
      */
-    protected $paths = array();
+    protected array $paths = [];
 
     /**
      * File name for the currently processed class.
      *
      * @var string
      */
-    protected $processedFile;
+    protected string $processedFile;
 
     /**
      * Register path for recursive search by autoloader.
      *
      * @param string $path
      */
-    public function registerPath($path)
+    public function registerPath(string $path): void
     {
         $this->paths[] = $path;
     }
@@ -54,7 +56,7 @@ class RecursiveAutoloadingStrategy extends AbstractAutoloadingStrategy
      *
      * @param string $class
      */
-    public function extractClassParameters($class)
+    public function extractClassParameters(string $class): void
     {
         $classStrictName = $this->extractClassStrictName($class);
 
@@ -67,7 +69,7 @@ class RecursiveAutoloadingStrategy extends AbstractAutoloadingStrategy
      *
      * @return string | null
      */
-    protected function findClassFilePath()
+    protected function findClassFilePath(): ?string
     {
         foreach ($this->paths as $path) {
             $classFilePath = $this->findFileInDirectoryPath($this->processedFile, $path);
@@ -78,6 +80,8 @@ class RecursiveAutoloadingStrategy extends AbstractAutoloadingStrategy
                 return $classFilePath;
             }
         }
+
+        return null;
     }
 
     /**
@@ -86,7 +90,7 @@ class RecursiveAutoloadingStrategy extends AbstractAutoloadingStrategy
      *
      * @param string $classFullName
      */
-    protected static function extractClassStrictName($classFullName)
+    protected static function extractClassStrictName(string $classFullName): string
     {
         // removing '\' characters from the beginning of the name
         $classFullName = ltrim($classFullName, '\\');
@@ -111,9 +115,10 @@ class RecursiveAutoloadingStrategy extends AbstractAutoloadingStrategy
      *
      * @param string $fileName
      * @param string $directoryPath
-     * @return string $filePath | null
+     *
+     * @return string | null $filePath
      */
-    private function findFileInDirectoryPath($fileName, $directoryPath)
+    private function findFileInDirectoryPath(string $fileName, string $directoryPath): ?string
     {
         try {
             $directoryIterator = new \RecursiveDirectoryIterator($directoryPath);
@@ -126,8 +131,10 @@ class RecursiveAutoloadingStrategy extends AbstractAutoloadingStrategy
                     return $directoryItem->getPathname();
                 }
             }
+
+            return null;
         } catch (\RuntimeException $exception) {
-            // directory path defines empty directory
+            // Directory path defines empty directory
             return null;
         }
     }

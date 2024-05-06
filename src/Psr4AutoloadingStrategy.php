@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /*
  * This file is part of the Autoloader package.
  *
@@ -12,12 +14,12 @@
 namespace Exorg\Autoloader;
 
 /**
- * Psr4AutoloadingStrategy.
+ * PSR-4 autoloading strategy.
  * Autoloading strategy for PSR-4 standard.
  *
  * @package Autoloader
  * @author Katarzyna Krasińska <katheroine@gmail.com>
- * @copyright Copyright (c) 2015 Katarzyna Krasińska
+ * @copyright Copyright (c) Katarzyna Krasińska
  * @license http://opensource.org/licenses/MIT MIT License
  * @link https://github.com/ExOrg/php-autoloader
  */
@@ -30,23 +32,23 @@ class Psr4AutoloadingStrategy extends AbstractPsrAutoloadingStrategy
      *
      * @param string $class
      */
-    protected function extractClassParameters($class)
+    protected function extractClassParameters(string $class): void
     {
-        // removing '\' characters from the beginning of the name
+        // Removing '\' characters from the beginning of the name
         $classFullName = ltrim($class, '\\');
 
-        // extracting namespace chain and strict class name
+        // Extracting namespace chain and strict class name
         $namespaceEndPosition = strrpos($classFullName, '\\');
         $this->processedNamespace = substr($classFullName, 0, $namespaceEndPosition);
 
-        // building namespace path snippet
+        // Building namespace path snippet
         $namespacePath = str_replace('\\', DIRECTORY_SEPARATOR, $this->processedNamespace);
 
-        // building class path snippets
+        // Building class path snippets
         $classNameStartPosition = $namespaceEndPosition + 1;
         $classPath = substr($classFullName, $classNameStartPosition);
 
-        // building class file path with namespace prefix
+        // Building class file path with namespace prefix
         $this->processedPath = $namespacePath . DIRECTORY_SEPARATOR . $classPath . '.php';
     }
 
@@ -56,7 +58,7 @@ class Psr4AutoloadingStrategy extends AbstractPsrAutoloadingStrategy
      *
      * @return string | null
      */
-    protected function findClassFilePath()
+    protected function findClassFilePath(): ?string
     {
         foreach ($this->namespacePaths as $namespace => $path) {
             $namespaceIsNotRegistered = (0 !== strpos($this->processedNamespace, $namespace));
@@ -65,14 +67,14 @@ class Psr4AutoloadingStrategy extends AbstractPsrAutoloadingStrategy
                 continue;
             }
 
-            // building namespace path prefix
+            // Building namespace path prefix
             $namespacePath = str_replace('\\', DIRECTORY_SEPARATOR, $namespace);
 
-            // cutting off namespace path prefix from class file path
+            // Cutting off namespace path prefix from class file path
             $cutOffPosition = strlen($namespacePath);
             $classPath = substr($this->processedPath, $cutOffPosition);
 
-            // building class file path without namespace prefix
+            // Building class file path without namespace prefix
             $classFilePath = $path . $classPath;
 
             $classFileExists = is_file($classFilePath);
@@ -81,5 +83,7 @@ class Psr4AutoloadingStrategy extends AbstractPsrAutoloadingStrategy
                 return $classFilePath;
             }
         }
+
+        return null;
     }
 }
