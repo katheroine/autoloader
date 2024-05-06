@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /*
  * This file is part of the Autoloader package.
  *
@@ -12,12 +14,12 @@
 namespace Exorg\Autoloader;
 
 /**
- * Psr0AutoloadingStrategyTest.
+ * PSR-0 autoloading strategy test.
  * PHPUnit test class for Psr0AutoloadingStrategy class.
  *
  * @package Autoloader
  * @author Katarzyna Krasińska <katheroine@gmail.com>
- * @copyright Copyright (c) 2015 Katarzyna Krasińska
+ * @copyright Copyright (c) Katarzyna Krasińska
  * @license http://opensource.org/licenses/MIT MIT License
  * @link https://github.com/ExOrg/php-autoloader
  */
@@ -26,7 +28,7 @@ class Psr0AutoloadingStrategyTest extends AbstractAutoloadingStrategyTestCase
     /**
      * Initialise strategy fixture.
      */
-    protected function initialiseStrategy()
+    protected function initialiseStrategy(): void
     {
         $this->strategy = new Psr0AutoloadingStrategy();
     }

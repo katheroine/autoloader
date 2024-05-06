@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /*
  * This file is part of the Autoloader package.
  *
@@ -12,28 +14,36 @@
 namespace Exorg\Autoloader;
 
 /**
- * PearAutoloadingStrategy.
+ * PEAR autoloading strategy.
  * Autoloading strategy for PEAR-like directory structures.
  *
  * @package Autoloader
  * @author Katarzyna Krasińska <katheroine@gmail.com>
- * @copyright Copyright (c) 2015 Katarzyna Krasińska
+ * @copyright Copyright (c) Katarzyna Krasińska
  * @license http://opensource.org/licenses/MIT MIT License
  * @link https://github.com/ExOrg/php-autoloader
  */
 class PearAutoloadingStrategy extends AbstractAutoloadingStrategy
 {
     /**
+     * Directory paths where class files are searched
+     * assigned to the class name prefixes.
+     *
+     * @var array
+     */
+    protected array $prefixPaths = array();
+
+    /**
      * Class full names with assigned directory path.
      *
-     * @var array[string]string | array[]
+     * @var string[] | array[]
      */
     protected $classPaths = array();
 
     /**
      * Currently processed full name of the class.
      *
-     * @var unknown
+     * @var mixed
      */
     protected $processedClass = null;
 
@@ -44,15 +54,13 @@ class PearAutoloadingStrategy extends AbstractAutoloadingStrategy
      */
     protected $processedPath = null;
 
-    protected $prefixPaths = array();
-
     /**
      * Register prefix and assign a directory path.
      *
      * @param string $prefix
      * @param string $path
      */
-    public function registerPrefixPath($prefix, $path)
+    public function registerPrefixPath(string $prefix, string $path): void
     {
         $this->prefixPaths[$prefix] = $path;
     }
@@ -64,7 +72,7 @@ class PearAutoloadingStrategy extends AbstractAutoloadingStrategy
      *
      * @param string $class
      */
-    protected function extractClassParameters($class)
+    protected function extractClassParameters(string $class): void
     {
         $this->processedClass = $class;
 
@@ -79,7 +87,7 @@ class PearAutoloadingStrategy extends AbstractAutoloadingStrategy
      *
      * @return string | null
      */
-    protected function findClassFilePath()
+    protected function findClassFilePath(): ?string
     {
         foreach ($this->prefixPaths as $prefix => $path) {
             $prefixIsNotRegistered = (0 !== strpos($this->processedClass, $prefix));
@@ -96,15 +104,18 @@ class PearAutoloadingStrategy extends AbstractAutoloadingStrategy
                 return $classFilePath;
             }
         }
+
+        return null;
     }
 
     /**
      * Build class path from class name.
      *
      * @param string $class
+     *
      * @return string
      */
-    protected static function buildClassPathFromClass($class)
+    protected static function buildClassPathFromClass(string $class): string
     {
         $classPath = str_replace('_', DIRECTORY_SEPARATOR, $class);
 

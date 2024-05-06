@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /*
  * This file is part of the Autoloader package.
  *
@@ -12,12 +14,12 @@
 namespace Exorg\Autoloader;
 
 /**
- * FixedAutoloadingStrategy.
+ * Fixed autoloading strategy.
  * Autoloading strategy for fixed paths.
  *
  * @package Autoloader
  * @author Katarzyna Krasińska <katheroine@gmail.com>
- * @copyright Copyright (c) 2015 Katarzyna Krasińska
+ * @copyright Copyright (c) Katarzyna Krasińska
  * @license http://opensource.org/licenses/MIT MIT License
  * @link https://github.com/ExOrg/php-autoloader
  */
@@ -26,7 +28,7 @@ class FixedAutoloadingStrategy extends AbstractAutoloadingStrategy
     /**
      * Class full names with assigned directory path.
      *
-     * @var array[string]string | array[]
+     * @var string[] | array[]
      */
     protected $classPaths = array();
 
@@ -43,7 +45,7 @@ class FixedAutoloadingStrategy extends AbstractAutoloadingStrategy
      * @param string $class
      * @param string $path
      */
-    public function registerClassPath($class, $path)
+    public function registerClassPath(string $class, string $path): void
     {
         $this->classPaths[$class] = $path;
     }
@@ -55,7 +57,7 @@ class FixedAutoloadingStrategy extends AbstractAutoloadingStrategy
      *
      * @param string $class
      */
-    public function extractClassParameters($class)
+    public function extractClassParameters(string $class): void
     {
         $this->processedClass = $class;
     }
@@ -66,7 +68,7 @@ class FixedAutoloadingStrategy extends AbstractAutoloadingStrategy
      *
      * @return string | null
      */
-    protected function findClassFilePath()
+    protected function findClassFilePath(): ?string
     {
         foreach ($this->classPaths as $class => $path) {
             $pathIsNotRegistered = (0 !== strpos(strrev($this->processedClass), strrev($class)));
@@ -81,5 +83,7 @@ class FixedAutoloadingStrategy extends AbstractAutoloadingStrategy
                 return $path;
             }
         }
+
+        return null;
     }
 }

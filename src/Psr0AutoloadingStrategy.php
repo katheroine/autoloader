@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /*
  * This file is part of the Autoloader package.
  *
@@ -12,12 +14,12 @@
 namespace Exorg\Autoloader;
 
 /**
- * Psr0AutoloadingStrategy.
+ * PSR-0 autoloading strategy.
  * Autoloading strategy for PSR-0 standard.
  *
  * @package Autoloader
  * @author Katarzyna Krasińska <katheroine@gmail.com>
- * @copyright Copyright (c) 2015 Katarzyna Krasińska
+ * @copyright Copyright (c) Katarzyna Krasińska
  * @license http://opensource.org/licenses/MIT MIT License
  * @link https://github.com/ExOrg/php-autoloader
  */
@@ -30,24 +32,24 @@ class Psr0AutoloadingStrategy extends AbstractPsrAutoloadingStrategy
      *
      * @param string $class
      */
-    protected function extractClassParameters($class)
+    protected function extractClassParameters(string $class): void
     {
-        // removing '\' characters from the beginning of the name
+        // Removing '\' characters from the beginning of the name
         $classFullName = ltrim($class, '\\');
 
-        // extracting namespace chain and strict class name
-        $namespaceEndPosition = strrpos($classFullName, '\\');
+        // Extracting namespace chain and strict class name
+        $namespaceEndPosition = strrpos($classFullName, '\\') ?: null;
         $this->processedNamespace = substr($classFullName, 0, $namespaceEndPosition);
 
-        // building namespace path snippet
+        // Building namespace path snippet
         $namespacePath = str_replace('\\', DIRECTORY_SEPARATOR, $this->processedNamespace);
 
-        // building class path snippet
+        // Building class path snippet
         $classNameStartPosition = $namespaceEndPosition + 1;
         $className = substr($classFullName, $classNameStartPosition);
         $classPath = str_replace('_', DIRECTORY_SEPARATOR, $className);
 
-        // building entire class file path
+        // Building entire class file path
         $this->processedPath = $namespacePath . DIRECTORY_SEPARATOR . $classPath . '.php';
     }
 
@@ -57,7 +59,7 @@ class Psr0AutoloadingStrategy extends AbstractPsrAutoloadingStrategy
      *
      * @return string | null
      */
-    protected function findClassFilePath()
+    protected function findClassFilePath(): ?string
     {
         foreach ($this->namespacePaths as $namespace => $path) {
             $namespaceIsNotRegistered = (0 !== strpos($this->processedNamespace, $namespace));
@@ -74,5 +76,7 @@ class Psr0AutoloadingStrategy extends AbstractPsrAutoloadingStrategy
                 return $classFilePath;
             }
         }
+
+        return null;
     }
 }

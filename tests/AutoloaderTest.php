@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /*
  * This file is part of the Autoloader package.
  *
@@ -14,12 +16,12 @@ namespace Exorg\Autoloader;
 use PHPUnit\Framework\TestCase;
 
 /**
- * AutoloaderTest.
+ * Autoloader test.
  * PHPUnit test class for Autoloader class.
  *
  * @package Autoloader
  * @author Katarzyna Krasińska <katheroine@gmail.com>
- * @copyright Copyright (c) 2015 Katarzyna Krasińska
+ * @copyright Copyright (c) Katarzyna Krasińska
  * @license http://opensource.org/licenses/MIT MIT License
  * @link https://github.com/ExOrg/php-autoloader
  */
@@ -30,7 +32,7 @@ class AutoloaderTest extends TestCase
      *
      * @var Autoloader
      */
-    private $autoloader;
+    private Autoloader $autoloader;
 
     /**
      * Autoloading strategy mock.
@@ -38,7 +40,7 @@ class AutoloaderTest extends TestCase
      *
      * @var mixed
      */
-    private $autoloadingStrategyMock;
+    private mixed $autoloadingStrategyMock;
 
     /**
      * Sets up the fixture, for example, open a network connection.
@@ -53,7 +55,7 @@ class AutoloaderTest extends TestCase
     /**
      * Initialise autoloader fixture.
      */
-    protected function initialiseAutoloader()
+    protected function initialiseAutoloader(): void
     {
         $this->autoloader = new Autoloader();
     }
@@ -61,7 +63,7 @@ class AutoloaderTest extends TestCase
     /**
      * Initialise autoloading strategy mock.
      */
-    protected function initialiseAutoloadingStrategyMock()
+    protected function initialiseAutoloadingStrategyMock(): void
     {
         $this->autoloadingStrategyMock = $this->getMockBuilder('Exorg\Autoloader\AutoloadingStrategyInterface')
             ->getMock();
@@ -70,7 +72,7 @@ class AutoloaderTest extends TestCase
     /**
      * Set-up autoloader with autoloading strategy mock.
      */
-    protected function setUpAutoloaderWithStrategy()
+    protected function setUpAutoloaderWithStrategy(): void
     {
         $this->autoloader->setAutoloadingStrategy($this->autoloadingStrategyMock);
     }
@@ -79,7 +81,7 @@ class AutoloaderTest extends TestCase
      * Register proper method of autoloader strategy mock
      * as an autoloader function.
      */
-    protected function registerAutoloaderStrategyMock()
+    protected function registerAutoloaderStrategyMock(): void
     {
         spl_autoload_register([$this->autoloadingStrategyMock, 'loadClass'], true);
     }
@@ -88,7 +90,7 @@ class AutoloaderTest extends TestCase
      * Unregister proper method of autoloader strategy mock
      * as an autoloader function.
      */
-    protected function unregisterAutoloaderStrategyMock()
+    protected function unregisterAutoloaderStrategyMock(): void
     {
         spl_autoload_unregister([$this->autoloadingStrategyMock, 'loadClass']);
     }
@@ -97,7 +99,7 @@ class AutoloaderTest extends TestCase
      * Assert autoloader strategy stub
      * has been registered properly.
      */
-    protected function assertAutoloaderRegistered()
+    protected function assertAutoloaderRegistered(): void
     {
         $this->assertTrue($this->registrationIsCorrect());
     }
@@ -106,7 +108,7 @@ class AutoloaderTest extends TestCase
      * Assert autoloader strategy stub
      * is not registered.
      */
-    protected function assertAutoloaderUnregistered()
+    protected function assertAutoloaderUnregistered(): void
     {
         $this->assertFalse($this->registrationIsCorrect());
     }
@@ -117,7 +119,7 @@ class AutoloaderTest extends TestCase
      *
      * @return boolean
      */
-    private function registrationIsCorrect()
+    private function registrationIsCorrect(): bool
     {
         $autoloadFunctions = spl_autoload_functions();
         $lastRegisteredAutoloader = array_pop($autoloadFunctions);
@@ -136,9 +138,10 @@ class AutoloaderTest extends TestCase
      * from the mock object.
      *
      * @param mixed $mock
+     *
      * @return string
      */
-    protected function getMockedClass($mock)
+    protected function getMockedClass($mock): mixed
     {
         $mockClass = get_class($mock);
         $mockedClass = (substr(substr($mockClass, 11), 0, -9));

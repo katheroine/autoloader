@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /*
  * This file is part of the Autoloader package.
  *
@@ -14,12 +16,12 @@ namespace Exorg\Autoloader;
 use PHPUnit\Framework\TestCase;
 
 /**
- * AutoloadingProcessTestCase.
+ * Autoloading process test case.
  * PHPUnit test class for all autoloading processes.
  *
  * @package Autoloader
  * @author Katarzyna Krasińska <katheroine@gmail.com>
- * @copyright Copyright (c) 2015 Katarzyna Krasińska
+ * @copyright Copyright (c) Katarzyna Krasińska
  * @license http://opensource.org/licenses/MIT MIT License
  * @link https://github.com/ExOrg/php-autoloader
  */
@@ -30,7 +32,7 @@ abstract class AutoloadingProcessTestCase extends TestCase
      *
      * @param string $class
      */
-    protected static function assertClassDoesNotExist($class)
+    protected static function assertClassDoesNotExist(string $class): void
     {
         $classIncluded = class_exists($class);
 
@@ -43,7 +45,7 @@ abstract class AutoloadingProcessTestCase extends TestCase
      *
      * @param string $class
      */
-    protected static function assertClassIsInstantiable($class)
+    protected static function assertClassIsInstantiable(string $class): void
     {
         $object = new $class();
 

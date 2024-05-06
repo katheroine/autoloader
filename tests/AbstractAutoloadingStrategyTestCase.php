@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /*
  * This file is part of the Autoloader package.
  *
@@ -12,12 +14,12 @@
 namespace Exorg\Autoloader;
 
 /**
- * AbstractAutoloadingStrategyTest.
+ * Autoloading strategy test.
  * PHPUnit test class for autoloading strategy classes.
  *
  * @package Autoloader
  * @author Katarzyna Krasińska <katheroine@gmail.com>
- * @copyright Copyright (c) 2015 Katarzyna Krasińska
+ * @copyright Copyright (c) Katarzyna Krasińska
  * @license http://opensource.org/licenses/MIT MIT License
  * @link https://github.com/ExOrg/php-autoloader
  */
@@ -28,7 +30,7 @@ abstract class AbstractAutoloadingStrategyTestCase extends AutoloadingProcessTes
      *
      * @var AutoloadingStrategyInterface
      */
-    protected $strategy;
+    protected AutoloadingStrategyInterface $strategy;
 
     /**
      * Sets up the fixture, for example, open a network connection.
@@ -53,7 +55,7 @@ abstract class AbstractAutoloadingStrategyTestCase extends AutoloadingProcessTes
      * Register proper method of autoloading strategy
      * as an autoloader function.
      */
-    protected function registerAutoloadingStrategy()
+    protected function registerAutoloadingStrategy(): void
     {
         spl_autoload_register([$this->strategy, 'loadClass'], true);
     }
@@ -62,7 +64,7 @@ abstract class AbstractAutoloadingStrategyTestCase extends AutoloadingProcessTes
      * Unregister proper method of autoloading strategy
      * as an autoloader function.
      */
-    protected function unregisterAutoloadingStrategy()
+    protected function unregisterAutoloadingStrategy(): void
     {
         spl_autoload_unregister([$this->strategy, 'loadClass']);
     }
@@ -72,8 +74,10 @@ abstract class AbstractAutoloadingStrategyTestCase extends AutoloadingProcessTes
      * of autoloaded class files.
      *
      * @param string $path
+     *
+     * @return string
      */
-    protected function getFullFixturePath($path)
+    protected function getFullFixturePath(string $path): string
     {
         $fullClassName = get_called_class();
         $fullClassNameSections = explode('\\', $fullClassName);
@@ -92,7 +96,7 @@ abstract class AbstractAutoloadingStrategyTestCase extends AutoloadingProcessTes
      * @param mixed  $object
      * @param string $interface
      */
-    public function assertImplements($object, $interface)
+    public function assertImplements(mixed $object, string $interface): void
     {
         $implementedInterfaces = class_implements($object);
         $implementsInterface = in_array($interface, $implementedInterfaces);
