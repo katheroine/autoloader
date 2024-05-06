@@ -11,7 +11,7 @@ declare(strict_types=1);
  * file that was distributed with this source code.
  */
 
-namespace Exorg\Autoloader;
+namespace ExOrg\Autoloader;
 
 /**
  * Recursive autoloading strategy test.
@@ -34,13 +34,13 @@ class RecursiveAutoloadingStrategyTest extends AbstractAutoloadingStrategyTestCa
     }
 
     /**
-     * Test Exorg\Autoloader\RecursiveAutoloadingStrategy class exists.
+     * Test ExOrg\Autoloader\RecursiveAutoloadingStrategy class exists.
      */
     public function testConstructorReturnsProperInstance()
     {
         $strategy = new RecursiveAutoloadingStrategy();
 
-        $this->assertInstanceOf('Exorg\Autoloader\RecursiveAutoloadingStrategy', $strategy);
+        $this->assertInstanceOf('ExOrg\Autoloader\RecursiveAutoloadingStrategy', $strategy);
     }
 
     /**
@@ -50,7 +50,7 @@ class RecursiveAutoloadingStrategyTest extends AbstractAutoloadingStrategyTestCa
     {
         $strategy = new RecursiveAutoloadingStrategy();
 
-        $this->assertImplements($strategy, 'Exorg\Autoloader\AutoloadingStrategyInterface');
+        $this->assertImplements($strategy, 'ExOrg\Autoloader\AutoloadingStrategyInterface');
     }
 
     /**

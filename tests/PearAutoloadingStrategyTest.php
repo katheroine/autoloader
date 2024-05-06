@@ -11,7 +11,7 @@ declare(strict_types=1);
  * file that was distributed with this source code.
  */
 
-namespace Exorg\Autoloader;
+namespace ExOrg\Autoloader;
 
 /**
  * PEAR autoloading strategy test.
@@ -34,13 +34,13 @@ class PearAutoloadingStrategyTest extends AbstractAutoloadingStrategyTestCase
     }
 
     /**
-     * Test Exorg\Autoloader\PearAutoloadingStrategy class exists.
+     * Test ExOrg\Autoloader\PearAutoloadingStrategy class exists.
      */
     public function testConstructorReturnsProperInstance()
     {
         $strategy = new PearAutoloadingStrategy();
 
-        $this->assertInstanceOf('Exorg\Autoloader\PearAutoloadingStrategy', $strategy);
+        $this->assertInstanceOf('ExOrg\Autoloader\PearAutoloadingStrategy', $strategy);
     }
 
     /**
@@ -50,7 +50,7 @@ class PearAutoloadingStrategyTest extends AbstractAutoloadingStrategyTestCase
     {
         $strategy = new PearAutoloadingStrategy();
 
-        $this->assertImplements($strategy, 'Exorg\Autoloader\AutoloadingStrategyInterface');
+        $this->assertImplements($strategy, 'ExOrg\Autoloader\AutoloadingStrategyInterface');
     }
 
     /**

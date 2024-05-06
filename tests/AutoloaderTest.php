@@ -11,7 +11,7 @@ declare(strict_types=1);
  * file that was distributed with this source code.
  */
 
-namespace Exorg\Autoloader;
+namespace ExOrg\Autoloader;
 
 use PHPUnit\Framework\TestCase;
 
@@ -65,7 +65,7 @@ class AutoloaderTest extends TestCase
      */
     protected function initialiseAutoloadingStrategyMock(): void
     {
-        $this->autoloadingStrategyMock = $this->getMockBuilder('Exorg\Autoloader\AutoloadingStrategyInterface')
+        $this->autoloadingStrategyMock = $this->getMockBuilder('ExOrg\Autoloader\AutoloadingStrategyInterface')
             ->getMock();
     }
 
@@ -150,19 +150,19 @@ class AutoloaderTest extends TestCase
     }
 
     /**
-     * Test Exorg\Autoloader\Autoloader class exists.
+     * Test ExOrg\Autoloader\Autoloader class exists.
      */
     public function testConstructorReturnsProperInstance()
     {
         $autoloader = new Autoloader();
 
-        $this->assertInstanceOf('Exorg\Autoloader\Autoloader', $autoloader);
+        $this->assertInstanceOf('ExOrg\Autoloader\Autoloader', $autoloader);
     }
 
     /**
      * Test setAutoloadingStrategy method
      * doesn't accept argument of class
-     * that does not implement Exorg\Autoloader\IntrfaceAutoloadingStrategy iterface.
+     * that does not implement ExOrg\Autoloader\IntrfaceAutoloadingStrategy iterface.
      */
     public function testSetAutoloadingStrategyDoesNotAcceptsArgument()
     {
@@ -173,13 +173,13 @@ class AutoloaderTest extends TestCase
 
     /**
      * Test setAutoloadingStrategy method
-     * receives argument of Exorg\Autoloader\IntrfaceAutoloadingStrategy iterface.
+     * receives argument of ExOrg\Autoloader\IntrfaceAutoloadingStrategy iterface.
      */
     public function testSetAutoloadingStrategyReceivesCorrectArgument()
     {
         $this->markTestIncomplete('This test is problematic.');
 
-        $autoloadingStrategyMock = $this->getMockBuilder('Exorg\Autoloader\AutoloadingStrategyInterface')
+        $autoloadingStrategyMock = $this->getMockBuilder('ExOrg\Autoloader\AutoloadingStrategyInterface')
             ->getMock();
 
         $this->autoloader->setAutoloadingStrategy($autoloadingStrategyMock);

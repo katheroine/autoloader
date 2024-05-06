@@ -11,7 +11,7 @@ declare(strict_types=1);
  * file that was distributed with this source code.
  */
 
-namespace Exorg\Autoloader;
+namespace ExOrg\Autoloader;
 
 /**
  * Fixed autoloading strategy test.
@@ -34,13 +34,13 @@ class FixedAutoloadingStrategyTest extends AbstractAutoloadingStrategyTestCase
     }
 
     /**
-     * Test Exorg\Autoloader\FixedAutoloadingStrategy class exists.
+     * Test ExOrg\Autoloader\FixedAutoloadingStrategy class exists.
      */
     public function testConstructorReturnsProperInstance()
     {
         $strategy = new FixedAutoloadingStrategy();
 
-        $this->assertInstanceOf('Exorg\Autoloader\FixedAutoloadingStrategy', $strategy);
+        $this->assertInstanceOf('ExOrg\Autoloader\FixedAutoloadingStrategy', $strategy);
     }
 
     /**
@@ -50,7 +50,7 @@ class FixedAutoloadingStrategyTest extends AbstractAutoloadingStrategyTestCase
     {
         $strategy = new FixedAutoloadingStrategy();
 
-        $this->assertImplements($strategy, 'Exorg\Autoloader\AutoloadingStrategyInterface');
+        $this->assertImplements($strategy, 'ExOrg\Autoloader\AutoloadingStrategyInterface');
     }
 
     /**
