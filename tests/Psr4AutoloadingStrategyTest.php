@@ -11,7 +11,7 @@ declare(strict_types=1);
  * file that was distributed with this source code.
  */
 
-namespace Exorg\Autoloader;
+namespace ExOrg\Autoloader;
 
 /**
  * PSR-4 autoloading strategy test.
@@ -34,13 +34,13 @@ class Psr4AutoloadingStrategyTest extends AbstractAutoloadingStrategyTestCase
     }
 
     /**
-     * Test Exorg\Autoloader\Psr4AutoloadingStrategy class exists.
+     * Test ExOrg\Autoloader\Psr4AutoloadingStrategy class exists.
      */
     public function testConstructorReturnsProperInstance()
     {
         $strategy = new Psr4AutoloadingStrategy();
 
-        $this->assertInstanceOf('Exorg\Autoloader\Psr4AutoloadingStrategy', $strategy);
+        $this->assertInstanceOf('ExOrg\Autoloader\Psr4AutoloadingStrategy', $strategy);
     }
 
     /**
@@ -50,7 +50,7 @@ class Psr4AutoloadingStrategyTest extends AbstractAutoloadingStrategyTestCase
     {
         $strategy = new Psr4AutoloadingStrategy();
 
-        $this->assertImplements($strategy, 'Exorg\Autoloader\AutoloadingStrategyInterface');
+        $this->assertImplements($strategy, 'ExOrg\Autoloader\AutoloadingStrategyInterface');
     }
 
     /**
