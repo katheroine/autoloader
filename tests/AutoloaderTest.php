@@ -172,13 +172,15 @@ class AutoloaderTest extends TestCase
      * Test setAutoloadingStrategy method
      * receives argument of Exorg\Autoloader\IntrfaceAutoloadingStrategy iterface.
      */
-    // public function testSetAutoloadingStrategyReceivesCorrectArgument()
-    // {
-    //     $autoloadingStrategyMock = $this->getMockBuilder('Exorg\Autoloader\AutoloadingStrategyInterface')
-    //         ->getMock();
+    public function testSetAutoloadingStrategyReceivesCorrectArgument()
+    {
+        $this->markTestIncomplete('This test is problematic.');
 
-    //     $this->autoloader->setAutoloadingStrategy($autoloadingStrategyMock);
-    // }
+        $autoloadingStrategyMock = $this->getMockBuilder('Exorg\Autoloader\AutoloadingStrategyInterface')
+            ->getMock();
+
+        $this->autoloader->setAutoloadingStrategy($autoloadingStrategyMock);
+    }
 
     /**
      * Test register method registers autoloader class and method properly.
