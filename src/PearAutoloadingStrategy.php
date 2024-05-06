@@ -44,6 +44,8 @@ class PearAutoloadingStrategy extends AbstractAutoloadingStrategy
      */
     protected $processedPath = null;
 
+    protected $prefixPaths = array();
+
     /**
      * Register prefix and assign a directory path.
      *

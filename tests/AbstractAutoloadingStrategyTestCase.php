@@ -21,7 +21,7 @@ namespace Exorg\Autoloader;
  * @license http://opensource.org/licenses/MIT MIT License
  * @link https://github.com/ExOrg/php-autoloader
  */
-abstract class AbstractAutoloadingStrategyTest extends AutoloadingProcessTestCase
+abstract class AbstractAutoloadingStrategyTestCase extends AutoloadingProcessTestCase
 {
     /**
      * Instance of tested class.
@@ -34,7 +34,7 @@ abstract class AbstractAutoloadingStrategyTest extends AutoloadingProcessTestCas
      * Sets up the fixture, for example, open a network connection.
      * This method is called before a test is executed.
      */
-    protected function setUp()
+    protected function setUp(): void
     {
         $this->initialiseStrategy();
         $this->registerAutoloadingStrategy();
@@ -44,7 +44,7 @@ abstract class AbstractAutoloadingStrategyTest extends AutoloadingProcessTestCas
      * Tears down the fixture, for example, close a network connection.
      * This method is called after a test is executed.
      */
-    protected function tearDown()
+    protected function tearDown(): void
     {
         $this->unregisterAutoloadingStrategy();
     }

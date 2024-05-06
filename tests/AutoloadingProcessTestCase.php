@@ -11,6 +11,8 @@
 
 namespace Exorg\Autoloader;
 
+use PHPUnit\Framework\TestCase;
+
 /**
  * AutoloadingProcessTestCase.
  * PHPUnit test class for all autoloading processes.
@@ -21,7 +23,7 @@ namespace Exorg\Autoloader;
  * @license http://opensource.org/licenses/MIT MIT License
  * @link https://github.com/ExOrg/php-autoloader
  */
-abstract class AutoloadingProcessTestCase extends \PHPUnit_Framework_TestCase
+abstract class AutoloadingProcessTestCase extends TestCase
 {
     /**
      * Assert class exist.
