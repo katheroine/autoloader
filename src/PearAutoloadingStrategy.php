@@ -31,14 +31,14 @@ class PearAutoloadingStrategy extends AbstractAutoloadingStrategy
      *
      * @var array
      */
-    protected array $prefixPaths = array();
+    protected array $prefixPaths = [];
 
     /**
      * Class full names with assigned directory path.
      *
      * @var string[] | array[]
      */
-    protected $classPaths = array();
+    protected $classPaths = [];
 
     /**
      * Currently processed full name of the class.

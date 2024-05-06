@@ -30,7 +30,7 @@ class RecursiveAutoloadingStrategy extends AbstractAutoloadingStrategy
      *
      * @var string[] | array[]
      */
-    protected array $paths = array();
+    protected array $paths = [];
 
     /**
      * File name for the currently processed class.

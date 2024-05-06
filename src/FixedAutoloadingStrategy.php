@@ -30,7 +30,7 @@ class FixedAutoloadingStrategy extends AbstractAutoloadingStrategy
      *
      * @var string[] | array[]
      */
-    protected $classPaths = array();
+    protected $classPaths = [];
 
     /**
      * Currently processed class name.
