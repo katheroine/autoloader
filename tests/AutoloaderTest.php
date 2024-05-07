@@ -28,6 +28,16 @@ use PHPUnit\Framework\TestCase;
 class AutoloaderTest extends TestCase
 {
     /**
+     * @var string
+     */
+    protected const AUTOLOADER_FULLY_QUALIFIED_CLASS_NAME = 'ExOrg\\Autoloader\\Autoloader';
+    protected const AUTOLOADING_STRATEGY_INTERFACE_NAME = 'AutoloadingStrategyInterface';
+    protected const AUTOLOADING_STRATEGY_FULLY_QUALIFIED_INTERFACE_NAME = 'ExOrg\\Autoloader\\'
+        . self::AUTOLOADING_STRATEGY_INTERFACE_NAME ;
+    protected const AUTOLOADER_FUNCTION_NAME = 'loadClass';
+    protected const TYPE_ERROR_EXCEPTION_CLASS_NAME = 'TypeError';
+
+    /**
      * Instance of tested class.
      *
      * @var Autoloader
@@ -47,9 +57,7 @@ class AutoloaderTest extends TestCase
      */
     public function testConstructorReturnsProperInstance()
     {
-        $autoloader = new Autoloader();
-
-        $this->assertInstanceOf('ExOrg\Autoloader\Autoloader', $autoloader);
+        $this->assertInstanceOf(self::AUTOLOADER_FULLY_QUALIFIED_CLASS_NAME, $this->autoloader);
     }
 
     /**
@@ -59,20 +67,9 @@ class AutoloaderTest extends TestCase
      */
     public function testSetAutoloadingStrategyDoesNotAcceptUnproperArgument()
     {
-        $this->expectException('TypeError');
+        $this->expectException(self::TYPE_ERROR_EXCEPTION_CLASS_NAME);
 
         $this->autoloader->setAutoloadingStrategy(new \stdClass());
-    }
-
-    /**
-     * Test setAutoloadingStrategy method
-     * receives argument of ExOrg\Autoloader\IntrfaceAutoloadingStrategy iterface.
-     */
-    public function testSetAutoloadingStrategyReceivesCorrectArgument()
-    {
-        $this->markTestIncomplete('This test is problematic.');
-
-        $this->autoloader->setAutoloadingStrategy($this->autoloadingStrategyMock);
     }
 
     /**
@@ -125,8 +122,7 @@ class AutoloaderTest extends TestCase
      */
     protected function initialiseAutoloadingStrategyMock(): void
     {
-        $this->autoloadingStrategyMock = $this->getMockBuilder('ExOrg\Autoloader\AutoloadingStrategyInterface')
-            ->getMock();
+        $this->autoloadingStrategyMock = $this->createMock(self::AUTOLOADING_STRATEGY_FULLY_QUALIFIED_INTERFACE_NAME);
     }
 
     /**
@@ -143,7 +139,7 @@ class AutoloaderTest extends TestCase
      */
     protected function registerAutoloaderStrategyMock(): void
     {
-        spl_autoload_register([$this->autoloadingStrategyMock, 'loadClass'], true);
+        spl_autoload_register([$this->autoloadingStrategyMock, self::AUTOLOADER_FUNCTION_NAME], true);
     }
 
     /**
@@ -152,7 +148,7 @@ class AutoloaderTest extends TestCase
      */
     protected function unregisterAutoloaderStrategyMock(): void
     {
-        spl_autoload_unregister([$this->autoloadingStrategyMock, 'loadClass']);
+        spl_autoload_unregister([$this->autoloadingStrategyMock, self::AUTOLOADER_FUNCTION_NAME]);
     }
 
     /**
@@ -186,8 +182,8 @@ class AutoloaderTest extends TestCase
         $autoloaderClass = $this->getMockedClass($lastRegisteredAutoloader[0]);
         $autoloaderMethod = $lastRegisteredAutoloader[1];
 
-        $classIsCorrect = ($autoloaderClass === 'AutoloadingStrategyInterface');
-        $methodIsCorrect = ($autoloaderMethod === 'loadClass');
+        $classIsCorrect = ($autoloaderClass === self::AUTOLOADING_STRATEGY_INTERFACE_NAME);
+        $methodIsCorrect = ($autoloaderMethod === self::AUTOLOADER_FUNCTION_NAME);
         $registrationIsCorrect = $classIsCorrect && $methodIsCorrect;
 
         return $registrationIsCorrect;

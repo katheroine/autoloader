@@ -25,6 +25,8 @@ namespace ExOrg\Autoloader;
  */
 class Psr4AutoloadingStrategyTest extends AbstractAutoloadingStrategyTestCase
 {
+    private const PSR4_AUTOLOADING_STRATEGY_FULLY_QUALIFIED_CLASS_NAME = 'ExOrg\Autoloader\Psr4AutoloadingStrategy';
+
     /**
      * Test ExOrg\Autoloader\Psr4AutoloadingStrategy class exists.
      */
@@ -32,7 +34,7 @@ class Psr4AutoloadingStrategyTest extends AbstractAutoloadingStrategyTestCase
     {
         $strategy = new Psr4AutoloadingStrategy();
 
-        $this->assertInstanceOf('ExOrg\Autoloader\Psr4AutoloadingStrategy', $strategy);
+        $this->assertInstanceOf(self::PSR4_AUTOLOADING_STRATEGY_FULLY_QUALIFIED_CLASS_NAME, $strategy);
     }
 
     /**
@@ -42,7 +44,7 @@ class Psr4AutoloadingStrategyTest extends AbstractAutoloadingStrategyTestCase
     {
         $strategy = new Psr4AutoloadingStrategy();
 
-        $this->assertImplements($strategy, 'ExOrg\Autoloader\AutoloadingStrategyInterface');
+        $this->assertImplements($strategy, self::AUTOLOADING_STRATEGY_FULLY_QUALIFIED_INTERFACE_NAME);
     }
 
     /**

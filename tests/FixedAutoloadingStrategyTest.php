@@ -25,6 +25,8 @@ namespace ExOrg\Autoloader;
  */
 class FixedAutoloadingStrategyTest extends AbstractAutoloadingStrategyTestCase
 {
+    private const FIXED_AUTOLOADING_STRATEGY_FULLY_QUALIFIED_CLASS_NAME = 'ExOrg\Autoloader\FixedAutoloadingStrategy';
+
     /**
      * Test ExOrg\Autoloader\FixedAutoloadingStrategy class exists.
      */
@@ -32,7 +34,7 @@ class FixedAutoloadingStrategyTest extends AbstractAutoloadingStrategyTestCase
     {
         $strategy = new FixedAutoloadingStrategy();
 
-        $this->assertInstanceOf('ExOrg\Autoloader\FixedAutoloadingStrategy', $strategy);
+        $this->assertInstanceOf(self::FIXED_AUTOLOADING_STRATEGY_FULLY_QUALIFIED_CLASS_NAME, $strategy);
     }
 
     /**
@@ -42,7 +44,7 @@ class FixedAutoloadingStrategyTest extends AbstractAutoloadingStrategyTestCase
     {
         $strategy = new FixedAutoloadingStrategy();
 
-        $this->assertImplements($strategy, 'ExOrg\Autoloader\AutoloadingStrategyInterface');
+        $this->assertImplements($strategy, self::AUTOLOADING_STRATEGY_FULLY_QUALIFIED_INTERFACE_NAME);
     }
 
     /**
