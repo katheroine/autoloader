@@ -30,6 +30,12 @@ abstract class AbstractAutoloadingStrategyTestCase extends TestCase
     use ClassAndObjectTrait;
 
     /**
+     * var string
+     */
+    protected const AUTOLOADER_FUNCTION_NAME = 'loadClass';
+    protected const AUTOLOADING_STRATEGY_FULLY_QUALIFIED_INTERFACE_NAME = 'ExOrg\Autoloader\AutoloadingStrategyInterface';
+
+    /**
      * Instance of tested class.
      *
      * @var AutoloadingStrategyInterface
@@ -77,7 +83,7 @@ abstract class AbstractAutoloadingStrategyTestCase extends TestCase
      */
     protected function registerAutoloadingStrategy(): void
     {
-        spl_autoload_register([$this->strategy, 'loadClass'], true);
+        spl_autoload_register([$this->strategy, self::AUTOLOADER_FUNCTION_NAME], true);
     }
 
     /**
@@ -86,7 +92,7 @@ abstract class AbstractAutoloadingStrategyTestCase extends TestCase
      */
     protected function unregisterAutoloadingStrategy(): void
     {
-        spl_autoload_unregister([$this->strategy, 'loadClass']);
+        spl_autoload_unregister([$this->strategy, self::AUTOLOADER_FUNCTION_NAME]);
     }
 
     /**
@@ -105,7 +111,7 @@ abstract class AbstractAutoloadingStrategyTestCase extends TestCase
         $classNameSections = null;
         preg_match_all('/((?:^|[A-Z])[a-z0-9]+)/', $shortClassName, $classNameSections);
         $directoryName = strtolower($classNameSections[0][0]);
-        $path = (__DIR__) . '/fixtures/' . $directoryName . $path;
+        $path = (__DIR__) . '/fixtures/' . $directoryName . $partialPath;
 
         return $path;
     }

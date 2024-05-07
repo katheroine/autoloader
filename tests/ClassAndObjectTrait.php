@@ -26,7 +26,7 @@ namespace ExOrg\Autoloader;
 trait ClassAndObjectTrait
 {
     /**
-     * Assert class exist.
+     * Assert class does not exist.
      *
      * @param string $class
      */

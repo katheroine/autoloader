@@ -25,6 +25,8 @@ namespace ExOrg\Autoloader;
  */
 class RecursiveAutoloadingStrategyTest extends AbstractAutoloadingStrategyTestCase
 {
+    private const RECURSIVE_AUTOLOADING_STRATEGY_FULLY_QUALIFIED_CLASS_NAME = 'ExOrg\Autoloader\RecursiveAutoloadingStrategy';
+
     /**
      * Test ExOrg\Autoloader\RecursiveAutoloadingStrategy class exists.
      */
@@ -32,7 +34,7 @@ class RecursiveAutoloadingStrategyTest extends AbstractAutoloadingStrategyTestCa
     {
         $strategy = new RecursiveAutoloadingStrategy();
 
-        $this->assertInstanceOf('ExOrg\Autoloader\RecursiveAutoloadingStrategy', $strategy);
+        $this->assertInstanceOf(self::RECURSIVE_AUTOLOADING_STRATEGY_FULLY_QUALIFIED_CLASS_NAME, $strategy);
     }
 
     /**
@@ -42,7 +44,7 @@ class RecursiveAutoloadingStrategyTest extends AbstractAutoloadingStrategyTestCa
     {
         $strategy = new RecursiveAutoloadingStrategy();
 
-        $this->assertImplements($strategy, 'ExOrg\Autoloader\AutoloadingStrategyInterface');
+        $this->assertImplements($strategy, self::AUTOLOADING_STRATEGY_FULLY_QUALIFIED_INTERFACE_NAME);
     }
 
     /**

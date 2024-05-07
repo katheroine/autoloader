@@ -25,6 +25,8 @@ namespace ExOrg\Autoloader;
  */
 class PearAutoloadingStrategyTest extends AbstractAutoloadingStrategyTestCase
 {
+    private const PEAR_AUTOLOADING_STRATEGY_FULLY_QUALIFIED_CLASS_NAME = 'ExOrg\Autoloader\PearAutoloadingStrategy';
+
     /**
      * Test ExOrg\Autoloader\PearAutoloadingStrategy class exists.
      */
@@ -32,7 +34,7 @@ class PearAutoloadingStrategyTest extends AbstractAutoloadingStrategyTestCase
     {
         $strategy = new PearAutoloadingStrategy();
 
-        $this->assertInstanceOf('ExOrg\Autoloader\PearAutoloadingStrategy', $strategy);
+        $this->assertInstanceOf(self::PEAR_AUTOLOADING_STRATEGY_FULLY_QUALIFIED_CLASS_NAME, $strategy);
     }
 
     /**
@@ -42,7 +44,7 @@ class PearAutoloadingStrategyTest extends AbstractAutoloadingStrategyTestCase
     {
         $strategy = new PearAutoloadingStrategy();
 
-        $this->assertImplements($strategy, 'ExOrg\Autoloader\AutoloadingStrategyInterface');
+        $this->assertImplements($strategy, self::AUTOLOADING_STRATEGY_FULLY_QUALIFIED_INTERFACE_NAME);
     }
 
     /**
