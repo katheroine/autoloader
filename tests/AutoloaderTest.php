@@ -43,6 +43,66 @@ class AutoloaderTest extends TestCase
     private mixed $autoloadingStrategyMock;
 
     /**
+     * Test ExOrg\Autoloader\Autoloader class exists.
+     */
+    public function testConstructorReturnsProperInstance()
+    {
+        $autoloader = new Autoloader();
+
+        $this->assertInstanceOf('ExOrg\Autoloader\Autoloader', $autoloader);
+    }
+
+    /**
+     * Test setAutoloadingStrategy method
+     * doesn't accept argument of class
+     * that does not implement ExOrg\Autoloader\IntrfaceAutoloadingStrategy iterface.
+     */
+    public function testSetAutoloadingStrategyDoesNotAcceptUnproperArgument()
+    {
+        $this->expectException('TypeError');
+
+        $this->autoloader->setAutoloadingStrategy(new \stdClass());
+    }
+
+    /**
+     * Test setAutoloadingStrategy method
+     * receives argument of ExOrg\Autoloader\IntrfaceAutoloadingStrategy iterface.
+     */
+    public function testSetAutoloadingStrategyReceivesCorrectArgument()
+    {
+        $this->markTestIncomplete('This test is problematic.');
+
+        $this->autoloader->setAutoloadingStrategy($this->autoloadingStrategyMock);
+    }
+
+    /**
+     * Test register method registers autoloader class and method properly.
+     */
+    public function testRegisterRegistersAutoloaderProperly()
+    {
+        $this->setUpAutoloaderWithStrategy();
+
+        $this->autoloader->register();
+
+        $this->assertAutoloaderRegistered();
+
+        $this->unregisterAutoloaderStrategyMock();
+    }
+
+    /**
+     * Test unregister method unregisters autoloader class and method properly.
+     */
+    public function testUnregisterRegistersAutoloaderProperly()
+    {
+        $this->setUpAutoloaderWithStrategy();
+        $this->registerAutoloaderStrategyMock();
+
+        $this->autoloader->unregister();
+
+        $this->assertAutoloaderUnregistered();
+    }
+
+        /**
      * Sets up the fixture, for example, open a network connection.
      * This method is called before a test is executed.
      */
@@ -147,69 +207,5 @@ class AutoloaderTest extends TestCase
         $mockedClass = (substr(substr($mockClass, 11), 0, -9));
 
         return $mockedClass;
-    }
-
-    /**
-     * Test ExOrg\Autoloader\Autoloader class exists.
-     */
-    public function testConstructorReturnsProperInstance()
-    {
-        $autoloader = new Autoloader();
-
-        $this->assertInstanceOf('ExOrg\Autoloader\Autoloader', $autoloader);
-    }
-
-    /**
-     * Test setAutoloadingStrategy method
-     * doesn't accept argument of class
-     * that does not implement ExOrg\Autoloader\IntrfaceAutoloadingStrategy iterface.
-     */
-    public function testSetAutoloadingStrategyDoesNotAcceptsArgument()
-    {
-        $this->expectException('TypeError');
-
-        $this->autoloader->setAutoloadingStrategy(new \stdClass());
-    }
-
-    /**
-     * Test setAutoloadingStrategy method
-     * receives argument of ExOrg\Autoloader\IntrfaceAutoloadingStrategy iterface.
-     */
-    public function testSetAutoloadingStrategyReceivesCorrectArgument()
-    {
-        $this->markTestIncomplete('This test is problematic.');
-
-        $autoloadingStrategyMock = $this->getMockBuilder('ExOrg\Autoloader\AutoloadingStrategyInterface')
-            ->getMock();
-
-        $this->autoloader->setAutoloadingStrategy($autoloadingStrategyMock);
-    }
-
-    /**
-     * Test register method registers autoloader class and method properly.
-     */
-    public function testRegisterRegistersAutoloaderProperly()
-    {
-        $this->setUpAutoloaderWithStrategy();
-
-        $this->autoloader->register();
-
-        $this->assertAutoloaderRegistered();
-
-        $this->unregisterAutoloaderStrategyMock();
-    }
-
-    /**
-     * Test unregister method unregisters autoloader class and method properly.
-     */
-    public function testUnregisterRegistersAutoloaderProperly()
-    {
-        $this->setUpAutoloaderWithStrategy();
-
-        $this->registerAutoloaderStrategyMock();
-
-        $this->autoloader->unregister();
-
-        $this->assertAutoloaderUnregistered();
     }
 }

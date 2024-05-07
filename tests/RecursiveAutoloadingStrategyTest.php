@@ -26,14 +26,6 @@ namespace ExOrg\Autoloader;
 class RecursiveAutoloadingStrategyTest extends AbstractAutoloadingStrategyTestCase
 {
     /**
-     * Initialise strategy fixture.
-     */
-    protected function initialiseStrategy(): void
-    {
-        $this->strategy = new RecursiveAutoloadingStrategy();
-    }
-
-    /**
      * Test ExOrg\Autoloader\RecursiveAutoloadingStrategy class exists.
      */
     public function testConstructorReturnsProperInstance()
@@ -225,5 +217,16 @@ class RecursiveAutoloadingStrategyTest extends AbstractAutoloadingStrategyTestCa
         $this->strategy->registerPath($path);
 
         $this->assertClassIsInstantiable('Dummy\Class_1_1_4');
+    }
+
+    /**
+     * Provide autoloading strategy instance
+     * against which the tests will be running.
+     *
+     * @return AutoloadingStrategyInterface
+     */
+    protected function provideStrategyIstance(): AutoloadingStrategyInterface
+    {
+        return new RecursiveAutoloadingStrategy();
     }
 }

@@ -26,14 +26,6 @@ namespace ExOrg\Autoloader;
 class PearAutoloadingStrategyTest extends AbstractAutoloadingStrategyTestCase
 {
     /**
-     * Initialise strategy fixture.
-     */
-    protected function initialiseStrategy(): void
-    {
-        $this->strategy = new PearAutoloadingStrategy();
-    }
-
-    /**
      * Test ExOrg\Autoloader\PearAutoloadingStrategy class exists.
      */
     public function testConstructorReturnsProperInstance()
@@ -123,5 +115,16 @@ class PearAutoloadingStrategyTest extends AbstractAutoloadingStrategyTestCase
         $this->strategy->registerPrefixPath('Dummy_', $path);
 
         $this->assertClassIsInstantiable('Dummy_Core_ComponentNested');
+    }
+
+    /**
+     * Provide autoloading strategy instance
+     * against which the tests will be running.
+     *
+     * @return AutoloadingStrategyInterface
+     */
+    protected function provideStrategyIstance(): AutoloadingStrategyInterface
+    {
+        return new PearAutoloadingStrategy();
     }
 }
