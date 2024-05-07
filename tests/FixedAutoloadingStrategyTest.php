@@ -26,14 +26,6 @@ namespace ExOrg\Autoloader;
 class FixedAutoloadingStrategyTest extends AbstractAutoloadingStrategyTestCase
 {
     /**
-     * Initialise strategy fixture.
-     */
-    protected function initialiseStrategy(): void
-    {
-        $this->strategy = new FixedAutoloadingStrategy();
-    }
-
-    /**
      * Test ExOrg\Autoloader\FixedAutoloadingStrategy class exists.
      */
     public function testConstructorReturnsProperInstance()
@@ -151,5 +143,16 @@ class FixedAutoloadingStrategyTest extends AbstractAutoloadingStrategyTestCase
         $this->strategy->registerClassPath('Dummy\ComponentNestedWithNS', $path);
 
         $this->assertClassIsInstantiable('Dummy\ComponentNestedWithNS');
+    }
+
+    /**
+     * Provide autoloading strategy instance
+     * against which the tests will be running.
+     *
+     * @return AutoloadingStrategyInterface
+     */
+    protected function provideStrategyIstance(): AutoloadingStrategyInterface
+    {
+        return new FixedAutoloadingStrategy();
     }
 }

@@ -26,14 +26,6 @@ namespace ExOrg\Autoloader;
 class Psr4AutoloadingStrategyTest extends AbstractAutoloadingStrategyTestCase
 {
     /**
-     * Initialise strategy fixture.
-     */
-    protected function initialiseStrategy(): void
-    {
-        $this->strategy = new Psr4AutoloadingStrategy();
-    }
-
-    /**
      * Test ExOrg\Autoloader\Psr4AutoloadingStrategy class exists.
      */
     public function testConstructorReturnsProperInstance()
@@ -152,5 +144,16 @@ class Psr4AutoloadingStrategyTest extends AbstractAutoloadingStrategyTestCase
         $this->strategy->registerNamespacePath('Dummy', $path);
 
         $this->assertClassIsInstantiable('Dummy\Additional_Package\AdditionalComponentNested');
+    }
+
+    /**
+     * Provide autoloading strategy instance
+     * against which the tests will be running.
+     *
+     * @return AutoloadingStrategyInterface
+     */
+    protected function provideStrategyIstance(): AutoloadingStrategyInterface
+    {
+        return new Psr4AutoloadingStrategy();
     }
 }

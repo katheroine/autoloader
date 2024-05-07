@@ -13,6 +13,8 @@ declare(strict_types=1);
 
 namespace ExOrg\Autoloader;
 
+use PHPUnit\Framework\TestCase;
+
 /**
  * Autoloading strategy test.
  * PHPUnit test class for autoloading strategy classes.
@@ -23,14 +25,24 @@ namespace ExOrg\Autoloader;
  * @license http://opensource.org/licenses/MIT MIT License
  * @link https://github.com/ExOrg/php-autoloader
  */
-abstract class AbstractAutoloadingStrategyTestCase extends AutoloadingProcessTestCase
+abstract class AbstractAutoloadingStrategyTestCase extends TestCase
 {
+    use ClassAndObjectTrait;
+
     /**
      * Instance of tested class.
      *
      * @var AutoloadingStrategyInterface
      */
     protected AutoloadingStrategyInterface $strategy;
+
+    /**
+     * Provide autoloading strategy instance
+     * against which the tests will be running.
+     *
+     * @return AutoloadingStrategyInterface
+     */
+    abstract protected function provideStrategyIstance(): AutoloadingStrategyInterface;
 
     /**
      * Sets up the fixture, for example, open a network connection.
@@ -49,6 +61,14 @@ abstract class AbstractAutoloadingStrategyTestCase extends AutoloadingProcessTes
     protected function tearDown(): void
     {
         $this->unregisterAutoloadingStrategy();
+    }
+
+    /**
+     * Initialise strategy fixture.
+     */
+    protected function initialiseStrategy(): void
+    {
+        $this->strategy = $this->provideStrategyIstance();
     }
 
     /**
@@ -73,11 +93,11 @@ abstract class AbstractAutoloadingStrategyTestCase extends AutoloadingProcessTes
      * Get full path for given partial path
      * of autoloaded class files.
      *
-     * @param string $path
+     * @param string $partialPath
      *
      * @return string
      */
-    protected function getFullFixturePath(string $path): string
+    protected function getFullFixturePath(string $partialPath): string
     {
         $fullClassName = get_called_class();
         $fullClassNameSections = explode('\\', $fullClassName);
@@ -88,19 +108,5 @@ abstract class AbstractAutoloadingStrategyTestCase extends AutoloadingProcessTes
         $path = (__DIR__) . '/fixtures/' . $directoryName . $path;
 
         return $path;
-    }
-
-    /**
-     * Assert object class implements given interface.
-     *
-     * @param mixed  $object
-     * @param string $interface
-     */
-    public function assertImplements(mixed $object, string $interface): void
-    {
-        $implementedInterfaces = class_implements($object);
-        $implementsInterface = in_array($interface, $implementedInterfaces);
-
-        $this->assertTrue($implementsInterface);
     }
 }
