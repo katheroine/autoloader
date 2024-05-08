@@ -27,24 +27,24 @@ abstract class AbstractAutoloadingStrategy implements AutoloadingStrategyInterfa
     /**
      * Search for the class file path and load it.
      *
-     * @param string $class
+     * @param string $fullyQualifiedClassName
      *
      * @return boolean
      */
-    public function loadClass(string $class): bool
+    public function loadClass(string $fullyQualifiedClassName): bool
     {
-        $this->extractClassParameters($class);
+        $this->extractClassParameters($fullyQualifiedClassName);
 
         $classFilePath = $this->findClassFilePath();
-        $classFileFound = !is_null($classFilePath);
+        $classFileNotFound = is_null($classFilePath);
 
-        if ($classFileFound) {
-            require $classFilePath;
-
-            return true;
-        } else {
+        if ($classFileNotFound) {
             return false;
         }
+
+        require $classFilePath;
+
+        return true;
     }
 
     /**
@@ -53,9 +53,9 @@ abstract class AbstractAutoloadingStrategy implements AutoloadingStrategyInterfa
      * and assign their values to the strategy class variables
      * that will be used by the findClassFilePath method.
      *
-     * @param string $class
+     * @param string $fullyQualifiedClassName
      */
-    abstract protected function extractClassParameters(string $class): void;
+    abstract protected function extractClassParameters(string $fullyQualifiedClassName): void;
 
     /**
      * Find full path of the file that contains

@@ -28,6 +28,8 @@ namespace ExOrg\Autoloader;
  */
 class Autoloader
 {
+    private const AUTOLOADER_FUNCTION_NAME = 'loadClass';
+
     /**
      * Autoloading strategy.
      *
@@ -50,7 +52,7 @@ class Autoloader
      */
     public function register(): void
     {
-        spl_autoload_register([$this->autoloadingStrategy, 'loadClass'], true);
+        spl_autoload_register([$this->autoloadingStrategy, self::AUTOLOADER_FUNCTION_NAME], true);
     }
 
     /**
@@ -58,6 +60,6 @@ class Autoloader
      */
     public function unregister(): void
     {
-        spl_autoload_unregister([$this->autoloadingStrategy, 'loadClass']);
+        spl_autoload_unregister([$this->autoloadingStrategy, self::AUTOLOADER_FUNCTION_NAME]);
     }
 }

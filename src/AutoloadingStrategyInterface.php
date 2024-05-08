@@ -28,9 +28,9 @@ interface AutoloadingStrategyInterface
     /**
      * Load proper file containing needed definition.
      *
-     * @param string $classFullName
+     * @param string $fullyQualifiedClassName
      *
      * @return boolean
      */
-    public function loadClass(string $classFullName): bool;
+    public function loadClass(string $fullyQualifiedClassName): bool;
 }
