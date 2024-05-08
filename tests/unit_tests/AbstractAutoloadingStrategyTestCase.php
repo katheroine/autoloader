@@ -34,6 +34,8 @@ abstract class AbstractAutoloadingStrategyTestCase extends TestCase
      */
     protected const AUTOLOADER_FUNCTION_NAME = 'loadClass';
     protected const AUTOLOADING_STRATEGY_FULLY_QUALIFIED_INTERFACE_NAME = 'ExOrg\Autoloader\AutoloadingStrategyInterface';
+    protected const FIXTURES_DIRECTORY_RELATIVE_PATH = '/../fixtures/';
+    protected const CLASS_NAME_SECTION_REGEXP_PATTERN = '/((?:^|[A-Z])[a-z0-9]+)/';
 
     /**
      * Instance of tested class.
@@ -109,9 +111,9 @@ abstract class AbstractAutoloadingStrategyTestCase extends TestCase
         $fullClassNameSections = explode('\\', $fullClassName);
         $shortClassName = array_pop($fullClassNameSections);
         $classNameSections = null;
-        preg_match_all('/((?:^|[A-Z])[a-z0-9]+)/', $shortClassName, $classNameSections);
+        preg_match_all(self::CLASS_NAME_SECTION_REGEXP_PATTERN, $shortClassName, $classNameSections);
         $directoryName = strtolower($classNameSections[0][0]);
-        $path = (__DIR__) . '/fixtures/' . $directoryName . $partialPath;
+        $path = (__DIR__) . self::FIXTURES_DIRECTORY_RELATIVE_PATH . $directoryName . $partialPath;
 
         return $path;
     }

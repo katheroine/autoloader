@@ -30,7 +30,7 @@
     },
     "autoload-dev": {
         "psr-4": {
-            "ExOrg\\Autoloader\\": "tests/"
+            "ExOrg\\Autoloader\\": "tests/unit_tests/"
         }
     },
     "scripts": {
