@@ -56,7 +56,7 @@ class Psr4AutoloadingStrategyTest extends AbstractAutoloadingStrategyTestCase
 
         $this->strategy->registerNamespacePath('Vendor\Package', $path);
 
-        $this->assertClassDoesNotExist('Dummy\ComponentExistent');
+        $this->assertClassDoesNotExist('\Dummy\ComponentExistent');
     }
 
     /**
@@ -80,7 +80,7 @@ class Psr4AutoloadingStrategyTest extends AbstractAutoloadingStrategyTestCase
 
         $this->strategy->registerNamespacePath('Vendor\Package', $path);
 
-        $this->assertClassDoesNotExist('Dummy\ComponentNonexistent');
+        $this->assertClassDoesNotExist('\Dummy\ComponentNonexistent');
     }
 
     /**
@@ -92,7 +92,7 @@ class Psr4AutoloadingStrategyTest extends AbstractAutoloadingStrategyTestCase
 
         $this->strategy->registerNamespacePath('Unregistered', $path);
 
-        $this->assertClassDoesNotExist('Dummy\Component');
+        $this->assertClassDoesNotExist('\Dummy\Component');
     }
 
     /**
@@ -105,7 +105,7 @@ class Psr4AutoloadingStrategyTest extends AbstractAutoloadingStrategyTestCase
 
         $this->strategy->registerNamespacePath('Vendor\Package', $path);
 
-        $this->assertClassIsInstantiable('Vendor\Package\Dummy\ComponentNotNested');
+        $this->assertClassIsInstantiable('\Vendor\Package\Dummy\ComponentNotNested');
     }
 
     /**
@@ -118,7 +118,7 @@ class Psr4AutoloadingStrategyTest extends AbstractAutoloadingStrategyTestCase
 
         $this->strategy->registerNamespacePath('Vendor\Package', $path);
 
-        $this->assertClassIsInstantiable('Vendor\Package\Dummy\Core\ComponentNested1');
+        $this->assertClassIsInstantiable('\Vendor\Package\Dummy\Core\ComponentNested1');
     }
 
     /**
@@ -131,7 +131,7 @@ class Psr4AutoloadingStrategyTest extends AbstractAutoloadingStrategyTestCase
 
         $this->strategy->registerNamespacePath('Vendor\Package\Dummy', $path);
 
-        $this->assertClassDoesNotExist('Vendor\Package\Dummy\Core\ComponentNested2');
+        $this->assertClassDoesNotExist('\Vendor\Package\Dummy\Core\ComponentNested2');
     }
 
     /**
@@ -143,9 +143,63 @@ class Psr4AutoloadingStrategyTest extends AbstractAutoloadingStrategyTestCase
     {
         $path = $this->getFullFixturePath('/src');
 
-        $this->strategy->registerNamespacePath('Dummy', $path);
+        $this->strategy->registerNamespacePath('Vendor\Package', $path);
 
-        $this->assertClassIsInstantiable('Dummy\Additional_Package\AdditionalComponentNested');
+        $this->assertClassIsInstantiable('\Vendor\Package\Dummy\Additional_Package\AdditionalComponentNested');
+    }
+
+    public function testFromReference1()
+    {
+        $path = $this->getFullFixturePath('/acme-log-writer/lib/');
+
+        $this->strategy->registerNamespacePath('Acme\Log\Writer', $path);
+
+        $this->assertClassIsInstantiable('\Acme\Log\Writer\File_Writer');
+    }
+
+    public function testFromReference2()
+    {
+        $path = $this->getFullFixturePath('/path/to/aura-web/src');
+
+        $this->strategy->registerNamespacePath('Aura\Web', $path);
+
+        $this->assertClassIsInstantiable('\Aura\Web\Response\Status');
+    }
+
+    public function testFromReference3()
+    {
+        $path = $this->getFullFixturePath('/vendor/Symfony/Core');
+
+        $this->strategy->registerNamespacePath('Symfony\Core', $path);
+
+        $this->assertClassIsInstantiable('\Symfony\Core\Request');
+    }
+
+    public function testFromReference4()
+    {
+        $path = $this->getFullFixturePath('/usr/includes/Zend');
+
+        $this->strategy->registerNamespacePath('Zend', $path);
+
+        $this->assertClassIsInstantiable('\Zend\Acl');
+    }
+
+    public function testFromReferenceGrouped()
+    {
+        $path1 = $this->getFullFixturePath('/acme-log-writer/lib/');
+        $path2 = $this->getFullFixturePath('/path/to/aura-web/src');
+        $path3 = $this->getFullFixturePath('/vendor/Symfony/Core');
+        $path4 = $this->getFullFixturePath('/usr/includes/Zend');
+
+        $this->strategy->registerNamespacePath('Acme\Log\Writer', $path1);
+        $this->strategy->registerNamespacePath('Aura\Web', $path2);
+        $this->strategy->registerNamespacePath('Symfony\Core', $path3);
+        $this->strategy->registerNamespacePath('Zend', $path4);
+
+        $this->assertClassIsInstantiable('\Acme\Log\Writer\File_Writer');
+        $this->assertClassIsInstantiable('\Aura\Web\Response\Status');
+        $this->assertClassIsInstantiable('\Symfony\Core\Request');
+        $this->assertClassIsInstantiable('\Zend\Acl');
     }
 
     /**
