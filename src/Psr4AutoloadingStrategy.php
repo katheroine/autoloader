@@ -25,8 +25,12 @@ namespace ExOrg\Autoloader;
  */
 class Psr4AutoloadingStrategy extends AbstractPsrAutoloadingStrategy
 {
+    /**
+     * Actually processed namespaced class name.
+     *
+     * @var string
+     */
     private string $processedNamespacedClassName = '';
-    private string $processedClassName = '';
 
     /**
      * Extract class paramaters like namespace or class name
@@ -53,35 +57,13 @@ class Psr4AutoloadingStrategy extends AbstractPsrAutoloadingStrategy
     protected function findClassFilePath(): ?string
     {
         foreach ($this->namespacePaths as $registeredNamespacePrefix => $registeredBaseDirPath) {
-            $namespacePrefix = substr(
-                string: $this->processedNamespacedClassName,
-                offset: 0,
-                length: strlen($registeredNamespacePrefix)
-            );
-            $processedNamespaceHasReisteredPrefix = ($namespacePrefix == $registeredNamespacePrefix);
-
-            if (! $processedNamespaceHasReisteredPrefix) {
+            if (! $this->processedNamespacedClassNameContainsPrefix($registeredNamespacePrefix)) {
                 continue;
             }
 
-            $unprefixedNamespacedClassName = substr(
-                string: $this->processedNamespacedClassName,
-                offset: strlen($registeredNamespacePrefix)
-            );
+            $unprefixedNamespacedClassName = $this->unprefixProcessedNamespacedClassName($registeredNamespacePrefix);
 
-            $classFilePathWithinBaseDir = ltrim(
-                string: str_replace(
-                    search: '\\',
-                    replace: DIRECTORY_SEPARATOR,
-                    subject: $unprefixedNamespacedClassName
-                ),
-                characters: '/'
-            )
-            . '.php';
-
-            $classFilePath = $registeredBaseDirPath
-                . DIRECTORY_SEPARATOR
-                . $classFilePathWithinBaseDir;
+            $classFilePath = $this->buildClassFilePath($registeredBaseDirPath, $unprefixedNamespacedClassName);
 
             $classFileExists = is_file($classFilePath);
 
@@ -91,5 +73,46 @@ class Psr4AutoloadingStrategy extends AbstractPsrAutoloadingStrategy
         }
 
         return null;
+    }
+
+    private function processedNamespacedClassNameContainsPrefix(string $prefix): bool
+    {
+        $namespacePrefix = substr(
+            string: $this->processedNamespacedClassName,
+            offset: 0,
+            length: strlen($prefix)
+        );
+        $processedNamespaceHasReisteredPrefix = ($prefix == $namespacePrefix);
+
+        return $processedNamespaceHasReisteredPrefix;
+    }
+
+    private function unprefixProcessedNamespacedClassName(string $prefix): string
+    {
+        $unprefixedNamespacedClassName = substr(
+            string: $this->processedNamespacedClassName,
+            offset: strlen($prefix)
+        );
+
+        return $unprefixedNamespacedClassName;
+    }
+
+    private function buildClassFilePath(string $baseDirPath, string $namespacedClassName): string
+    {
+        $classFilePathWithinBaseDir = ltrim(
+            string: str_replace(
+                search: '\\',
+                replace: DIRECTORY_SEPARATOR,
+                subject: $namespacedClassName
+            ),
+            characters: '/'
+        )
+        . '.php';
+
+        $classFilePath = $baseDirPath
+            . DIRECTORY_SEPARATOR
+            . $classFilePathWithinBaseDir;
+
+        return $classFilePath;
     }
 }
