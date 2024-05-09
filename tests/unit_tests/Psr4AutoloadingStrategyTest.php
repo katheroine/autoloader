@@ -56,7 +56,7 @@ class Psr4AutoloadingStrategyTest extends AbstractAutoloadingStrategyTestCase
 
         $this->strategy->registerNamespacePath('Vendor\Package', $path);
 
-        $this->assertClassDoesNotExist('\Dummy\ComponentExistent');
+        $this->assertClassDoesNotExist('\Vendor\Package\Dummy\ComponentExistent');
     }
 
     /**
@@ -68,7 +68,7 @@ class Psr4AutoloadingStrategyTest extends AbstractAutoloadingStrategyTestCase
 
         $this->strategy->registerNamespacePath('Vendor\Package', $path);
 
-        $this->assertClassDoesNotExist('Dummy\ComponentExistent');
+        $this->assertClassDoesNotExist('\Vendor\Package\Dummy\ComponentExistent');
     }
 
     /**
@@ -80,7 +80,7 @@ class Psr4AutoloadingStrategyTest extends AbstractAutoloadingStrategyTestCase
 
         $this->strategy->registerNamespacePath('Vendor\Package', $path);
 
-        $this->assertClassDoesNotExist('\Dummy\ComponentNonexistent');
+        $this->assertClassDoesNotExist('\Vendor\Package\Dummy\ComponentNonexistent');
     }
 
     /**
@@ -90,9 +90,79 @@ class Psr4AutoloadingStrategyTest extends AbstractAutoloadingStrategyTestCase
     {
         $path = $this->getFullFixturePath('/src');
 
-        $this->strategy->registerNamespacePath('Unregistered', $path);
+        $this->assertClassDoesNotExist('\Vendor\Package\Dummy\ComponentExistent');
+    }
 
-        $this->assertClassDoesNotExist('\Dummy\Component');
+    /**
+     * Test for not registered namespace.
+     */
+    public function testForUnexistentNamespace()
+    {
+        $path = $this->getFullFixturePath('/src');
+
+        $this->strategy->registerNamespacePath('Unexistent', $path);
+
+        $this->assertClassDoesNotExist('\Vendor\Package\Dummy\ComponentExistent');
+    }
+
+    /**
+     * Test for existent class file.
+     */
+    public function testForExistentClassFile()
+    {
+        $path = $this->getFullFixturePath('/src');
+
+        $this->strategy->registerNamespacePath('Vendor\Package', $path);
+
+        $this->assertClassIsInstantiable('\Vendor\Package\Dummy\ComponentExistent');
+    }
+
+    /**
+     * Test for namespace with backslash on the beginning.
+     */
+    public function testForNamespaceWithBackslashOnBeginning()
+    {
+        $path = $this->getFullFixturePath('/src');
+
+        $this->strategy->registerNamespacePath('\Vendor\Package', $path);
+
+        $this->assertClassIsInstantiable('\Vendor\Package\Dummy\ComponentExistent');
+    }
+
+    /**
+     * Test for namespace with backslash on the end.
+     */
+    public function testForNamespaceWithBackslashOnEnd()
+    {
+        $path = $this->getFullFixturePath('/src');
+
+        $this->strategy->registerNamespacePath('Vendor\Package\\', $path);
+
+        $this->assertClassIsInstantiable('\Vendor\Package\Dummy\ComponentExistent');
+    }
+
+    /**
+     * Test for namespace with backslash on the beginning and the end.
+     */
+    public function testForNamespaceWithBackslashOnBeginningAndEnd()
+    {
+        $path = $this->getFullFixturePath('/src');
+
+        $this->strategy->registerNamespacePath('\Vendor\Package\\', $path);
+
+        $this->assertClassIsInstantiable('\Vendor\Package\Dummy\ComponentExistent');
+    }
+
+    /**
+     * Test for fully qualified class name without backslash on the beginning.
+     */
+    public function testForFQClassNameWithoutBackslashOnBeginning()
+    {
+        $path = $this->getFullFixturePath('/src');
+
+        $this->strategy->registerNamespacePath('Vendor\Package', $path);
+
+        $this->assertClassIsInstantiable('Vendor\Package\Dummy\ComponentExistent');
     }
 
     /**
@@ -135,19 +205,52 @@ class Psr4AutoloadingStrategyTest extends AbstractAutoloadingStrategyTestCase
     }
 
     /**
-     * Test for the class with one level of nesting
-     * and class specification with two levels of nesting
-     * with underscored package name.
+     * Test for the class with underscored namespace name.
      */
-    public function testFor1nNamespaceAnd2nClassWithUSPackage()
+    public function testForClassWithUnderscoredNamespaceName()
     {
         $path = $this->getFullFixturePath('/src');
 
         $this->strategy->registerNamespacePath('Vendor\Package', $path);
 
-        $this->assertClassIsInstantiable('\Vendor\Package\Dummy\Additional_Package\AdditionalComponentNested');
+        $this->assertClassIsInstantiable('\Vendor\Package\Dummy\Underscored_Section\AdditionalComponent');
     }
 
+    /**
+     * Test for the class with underscored name.
+     */
+    public function testForClassWithUnderscoredName()
+    {
+        $path = $this->getFullFixturePath('/src');
+
+        $this->strategy->registerNamespacePath('Vendor\Package', $path);
+
+        $this->assertClassIsInstantiable('\Vendor\Package\Dummy\Core\Underscored_Component');
+    }
+
+    /**
+     * Test for many classes from the same namespace and directory path registered.
+     */
+    public function testManyClassesFromTheSameNamespace()
+    {
+        $path = $this->getFullFixturePath('/src');
+
+        $this->strategy->registerNamespacePath('Vendor\Package', $path);
+
+        $this->assertClassDoesNotExist('\Vendor\Package\Dummy\ComponentNonexistent');
+        $this->assertClassIsInstantiable('\Vendor\Package\Dummy\ComponentExistent');
+        $this->assertClassIsInstantiable('\Vendor\Package\Dummy\ComponentNotNested');
+        $this->assertClassIsInstantiable('\Vendor\Package\Dummy\Core\ComponentNested1');
+        $this->assertClassIsInstantiable('\Vendor\Package\Dummy\Core\ComponentNested2');
+        $this->assertClassIsInstantiable('\Vendor\Package\Dummy\Underscored_Section\AdditionalComponent');
+        $this->assertClassIsInstantiable('\Vendor\Package\Dummy\Core\Underscored_Component');
+    }
+
+    /**
+     * Test for the case from PRS-1 reference page
+     * https://www.php-fig.org/psr/psr-4/#3-examples.
+     * First example.
+     */
     public function testFromReference1()
     {
         $path = $this->getFullFixturePath('/acme-log-writer/lib/');
@@ -157,6 +260,11 @@ class Psr4AutoloadingStrategyTest extends AbstractAutoloadingStrategyTestCase
         $this->assertClassIsInstantiable('\Acme\Log\Writer\File_Writer');
     }
 
+    /**
+     * Test for the case from PRS-1 reference page
+     * https://www.php-fig.org/psr/psr-4/#3-examples.
+     * Second example.
+     */
     public function testFromReference2()
     {
         $path = $this->getFullFixturePath('/path/to/aura-web/src');
@@ -166,6 +274,11 @@ class Psr4AutoloadingStrategyTest extends AbstractAutoloadingStrategyTestCase
         $this->assertClassIsInstantiable('\Aura\Web\Response\Status');
     }
 
+    /**
+     * Test for the case from PRS-1 reference page
+     * https://www.php-fig.org/psr/psr-4/#3-examples.
+     * Third example.
+     */
     public function testFromReference3()
     {
         $path = $this->getFullFixturePath('/vendor/Symfony/Core');
@@ -175,6 +288,11 @@ class Psr4AutoloadingStrategyTest extends AbstractAutoloadingStrategyTestCase
         $this->assertClassIsInstantiable('\Symfony\Core\Request');
     }
 
+    /**
+     * Test for the case from PRS-1 reference page
+     * https://www.php-fig.org/psr/psr-4/#3-examples.
+     * Fourth example.
+     */
     public function testFromReference4()
     {
         $path = $this->getFullFixturePath('/usr/includes/Zend');
@@ -184,6 +302,10 @@ class Psr4AutoloadingStrategyTest extends AbstractAutoloadingStrategyTestCase
         $this->assertClassIsInstantiable('\Zend\Acl');
     }
 
+    /**
+     * Tests for all cases from PRS-1 reference page
+     * https://www.php-fig.org/psr/psr-4/#3-examples.
+     */
     public function testFromReferenceGrouped()
     {
         $path1 = $this->getFullFixturePath('/acme-log-writer/lib/');
