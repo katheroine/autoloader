@@ -247,6 +247,24 @@ class Psr4AutoloadingStrategyTest extends AbstractAutoloadingStrategyTestCase
     }
 
     /**
+     * Test for namespace registration with two directory paths registered
+     * for the same namespace.
+     */
+    public function testForTwoPathsAndOneNamespace()
+    {
+        $path1 = $this->getFullFixturePath('/src');
+        $path2 = $this->getFullFixturePath('/lib');
+
+        $this->strategy->registerNamespacePath('Vendor\Package', $path1);
+        $this->strategy->registerNamespacePath('Vendor\Package', $path2);
+
+        $this->assertClassIsInstantiable('\Vendor\Package\Dummy\ComponentA');
+        $this->assertClassIsInstantiable('\Vendor\Package\Dummy\ComponentB');
+        $this->assertClassIsInstantiable('\Vendor\Package\Dummy\Core\ComponentC');
+        $this->assertClassIsInstantiable('\Vendor\Package\Dummy\Core\ComponentD');
+    }
+
+    /**
      * Test for the case from PRS-1 reference page
      * https://www.php-fig.org/psr/psr-4/#3-examples.
      * First example.

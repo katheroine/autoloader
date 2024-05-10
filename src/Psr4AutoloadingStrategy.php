@@ -56,19 +56,21 @@ class Psr4AutoloadingStrategy extends AbstractPsrAutoloadingStrategy
      */
     protected function findClassFilePath(): ?string
     {
-        foreach ($this->namespacePaths as $registeredNamespacePrefix => $registeredBaseDirPath) {
-            if (! $this->processedNamespacedClassNameContainsPrefix($registeredNamespacePrefix)) {
-                continue;
-            }
+        foreach ($this->namespacePaths as $registeredNamespacePrefix => $registeredBaseDirPaths) {
+            foreach ($registeredBaseDirPaths as $registeredBaseDirPath) {
+                if (! $this->processedNamespacedClassNameContainsPrefix($registeredNamespacePrefix)) {
+                    continue;
+                }
 
-            $unprefixedNamespacedClassName = $this->unprefixProcessedNamespacedClassName($registeredNamespacePrefix);
+                $unprefixedNamespacedClassName = $this->unprefixProcessedNamespacedClassName($registeredNamespacePrefix);
 
-            $classFilePath = $this->buildClassFilePath($registeredBaseDirPath, $unprefixedNamespacedClassName);
+                $classFilePath = $this->buildClassFilePath($registeredBaseDirPath, $unprefixedNamespacedClassName);
 
-            $classFileExists = is_file($classFilePath);
+                $classFileExists = is_file($classFilePath);
 
-            if ($classFileExists) {
-                return $classFilePath;
+                if ($classFileExists) {
+                    return $classFilePath;
+                }
             }
         }
 
