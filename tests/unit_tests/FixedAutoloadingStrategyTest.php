@@ -11,7 +11,7 @@ declare(strict_types=1);
  * file that was distributed with this source code.
  */
 
-namespace Exorg\Autoloader;
+namespace ExOrg\Autoloader;
 
 /**
  * Fixed autoloading strategy test.
@@ -25,22 +25,16 @@ namespace Exorg\Autoloader;
  */
 class FixedAutoloadingStrategyTest extends AbstractAutoloadingStrategyTestCase
 {
-    /**
-     * Initialise strategy fixture.
-     */
-    protected function initialiseStrategy(): void
-    {
-        $this->strategy = new FixedAutoloadingStrategy();
-    }
+    private const FIXED_AUTOLOADING_STRATEGY_FULLY_QUALIFIED_CLASS_NAME = 'ExOrg\Autoloader\FixedAutoloadingStrategy';
 
     /**
-     * Test Exorg\Autoloader\FixedAutoloadingStrategy class exists.
+     * Test ExOrg\Autoloader\FixedAutoloadingStrategy class exists.
      */
     public function testConstructorReturnsProperInstance()
     {
         $strategy = new FixedAutoloadingStrategy();
 
-        $this->assertInstanceOf('Exorg\Autoloader\FixedAutoloadingStrategy', $strategy);
+        $this->assertInstanceOf(self::FIXED_AUTOLOADING_STRATEGY_FULLY_QUALIFIED_CLASS_NAME, $strategy);
     }
 
     /**
@@ -50,7 +44,7 @@ class FixedAutoloadingStrategyTest extends AbstractAutoloadingStrategyTestCase
     {
         $strategy = new FixedAutoloadingStrategy();
 
-        $this->assertImplements($strategy, 'Exorg\Autoloader\AutoloadingStrategyInterface');
+        $this->assertImplements($strategy, self::AUTOLOADING_STRATEGY_FULLY_QUALIFIED_INTERFACE_NAME);
     }
 
     /**
@@ -151,5 +145,16 @@ class FixedAutoloadingStrategyTest extends AbstractAutoloadingStrategyTestCase
         $this->strategy->registerClassPath('Dummy\ComponentNestedWithNS', $path);
 
         $this->assertClassIsInstantiable('Dummy\ComponentNestedWithNS');
+    }
+
+    /**
+     * Provide autoloading strategy instance
+     * against which the tests will be running.
+     *
+     * @return AutoloadingStrategyInterface
+     */
+    protected function provideStrategyIstance(): AutoloadingStrategyInterface
+    {
+        return new FixedAutoloadingStrategy();
     }
 }

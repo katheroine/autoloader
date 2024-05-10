@@ -11,13 +11,11 @@ declare(strict_types=1);
  * file that was distributed with this source code.
  */
 
-namespace Exorg\Autoloader;
-
-use PHPUnit\Framework\TestCase;
+namespace ExOrg\Autoloader;
 
 /**
- * Autoloading process test case.
- * PHPUnit test class for all autoloading processes.
+ * Class and object trait.
+ * Answers questions about classe and object states and features.
  *
  * @package Autoloader
  * @author Katarzyna Krasińska <katheroine@gmail.com>
@@ -25,10 +23,10 @@ use PHPUnit\Framework\TestCase;
  * @license http://opensource.org/licenses/MIT MIT License
  * @link https://github.com/ExOrg/php-autoloader
  */
-abstract class AutoloadingProcessTestCase extends TestCase
+trait ClassAndObjectTrait
 {
     /**
-     * Assert class exist.
+     * Assert class does not exist.
      *
      * @param string $class
      */
@@ -52,5 +50,19 @@ abstract class AutoloadingProcessTestCase extends TestCase
         parent::assertInstanceOf($class, $object);
 
         unset($object);
+    }
+
+    /**
+     * Assert object class implements given interface.
+     *
+     * @param mixed  $object
+     * @param string $interface
+     */
+    protected function assertImplements(mixed $object, string $interface): void
+    {
+        $implementedInterfaces = class_implements($object);
+        $implementsInterface = in_array($interface, $implementedInterfaces);
+
+        $this->assertTrue($implementsInterface);
     }
 }

@@ -11,7 +11,7 @@ declare(strict_types=1);
  * file that was distributed with this source code.
  */
 
-namespace Exorg\Autoloader;
+namespace ExOrg\Autoloader;
 
 /**
  * Autoloading strategy interface.
@@ -28,9 +28,9 @@ interface AutoloadingStrategyInterface
     /**
      * Load proper file containing needed definition.
      *
-     * @param string $classFullName
+     * @param string $fullyQualifiedClassName
      *
      * @return boolean
      */
-    public function loadClass(string $classFullName): bool;
+    public function loadClass(string $fullyQualifiedClassName): bool;
 }

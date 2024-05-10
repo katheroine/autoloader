@@ -11,7 +11,7 @@ declare(strict_types=1);
  * file that was distributed with this source code.
  */
 
-namespace Exorg\Autoloader;
+namespace ExOrg\Autoloader;
 
 /**
  * PEAR autoloading strategy test.
@@ -25,22 +25,16 @@ namespace Exorg\Autoloader;
  */
 class PearAutoloadingStrategyTest extends AbstractAutoloadingStrategyTestCase
 {
-    /**
-     * Initialise strategy fixture.
-     */
-    protected function initialiseStrategy(): void
-    {
-        $this->strategy = new PearAutoloadingStrategy();
-    }
+    private const PEAR_AUTOLOADING_STRATEGY_FULLY_QUALIFIED_CLASS_NAME = 'ExOrg\Autoloader\PearAutoloadingStrategy';
 
     /**
-     * Test Exorg\Autoloader\PearAutoloadingStrategy class exists.
+     * Test ExOrg\Autoloader\PearAutoloadingStrategy class exists.
      */
     public function testConstructorReturnsProperInstance()
     {
         $strategy = new PearAutoloadingStrategy();
 
-        $this->assertInstanceOf('Exorg\Autoloader\PearAutoloadingStrategy', $strategy);
+        $this->assertInstanceOf(self::PEAR_AUTOLOADING_STRATEGY_FULLY_QUALIFIED_CLASS_NAME, $strategy);
     }
 
     /**
@@ -50,7 +44,7 @@ class PearAutoloadingStrategyTest extends AbstractAutoloadingStrategyTestCase
     {
         $strategy = new PearAutoloadingStrategy();
 
-        $this->assertImplements($strategy, 'Exorg\Autoloader\AutoloadingStrategyInterface');
+        $this->assertImplements($strategy, self::AUTOLOADING_STRATEGY_FULLY_QUALIFIED_INTERFACE_NAME);
     }
 
     /**
@@ -123,5 +117,16 @@ class PearAutoloadingStrategyTest extends AbstractAutoloadingStrategyTestCase
         $this->strategy->registerPrefixPath('Dummy_', $path);
 
         $this->assertClassIsInstantiable('Dummy_Core_ComponentNested');
+    }
+
+    /**
+     * Provide autoloading strategy instance
+     * against which the tests will be running.
+     *
+     * @return AutoloadingStrategyInterface
+     */
+    protected function provideStrategyIstance(): AutoloadingStrategyInterface
+    {
+        return new PearAutoloadingStrategy();
     }
 }

@@ -11,7 +11,9 @@ declare(strict_types=1);
  * file that was distributed with this source code.
  */
 
-namespace Exorg\Autoloader;
+namespace ExOrg\Autoloader;
+
+use PHPUnit\Framework\TestCase;
 
 /**
  * Autoloading strategy test.
@@ -23,14 +25,32 @@ namespace Exorg\Autoloader;
  * @license http://opensource.org/licenses/MIT MIT License
  * @link https://github.com/ExOrg/php-autoloader
  */
-abstract class AbstractAutoloadingStrategyTestCase extends AutoloadingProcessTestCase
+abstract class AbstractAutoloadingStrategyTestCase extends TestCase
 {
+    use ClassAndObjectTrait;
+
+    /**
+     * var string
+     */
+    protected const AUTOLOADER_FUNCTION_NAME = 'loadClass';
+    protected const AUTOLOADING_STRATEGY_FULLY_QUALIFIED_INTERFACE_NAME = 'ExOrg\Autoloader\AutoloadingStrategyInterface';
+    protected const FIXTURES_DIRECTORY_RELATIVE_PATH = '/../fixtures/';
+    protected const CLASS_NAME_SECTION_REGEXP_PATTERN = '/((?:^|[A-Z])[a-z0-9]+)/';
+
     /**
      * Instance of tested class.
      *
      * @var AutoloadingStrategyInterface
      */
     protected AutoloadingStrategyInterface $strategy;
+
+    /**
+     * Provide autoloading strategy instance
+     * against which the tests will be running.
+     *
+     * @return AutoloadingStrategyInterface
+     */
+    abstract protected function provideStrategyIstance(): AutoloadingStrategyInterface;
 
     /**
      * Sets up the fixture, for example, open a network connection.
@@ -52,12 +72,20 @@ abstract class AbstractAutoloadingStrategyTestCase extends AutoloadingProcessTes
     }
 
     /**
+     * Initialise strategy fixture.
+     */
+    protected function initialiseStrategy(): void
+    {
+        $this->strategy = $this->provideStrategyIstance();
+    }
+
+    /**
      * Register proper method of autoloading strategy
      * as an autoloader function.
      */
     protected function registerAutoloadingStrategy(): void
     {
-        spl_autoload_register([$this->strategy, 'loadClass'], true);
+        spl_autoload_register([$this->strategy, self::AUTOLOADER_FUNCTION_NAME], true);
     }
 
     /**
@@ -66,41 +94,27 @@ abstract class AbstractAutoloadingStrategyTestCase extends AutoloadingProcessTes
      */
     protected function unregisterAutoloadingStrategy(): void
     {
-        spl_autoload_unregister([$this->strategy, 'loadClass']);
+        spl_autoload_unregister([$this->strategy, self::AUTOLOADER_FUNCTION_NAME]);
     }
 
     /**
      * Get full path for given partial path
      * of autoloaded class files.
      *
-     * @param string $path
+     * @param string $partialPath
      *
      * @return string
      */
-    protected function getFullFixturePath(string $path): string
+    protected function getFullFixturePath(string $partialPath): string
     {
         $fullClassName = get_called_class();
         $fullClassNameSections = explode('\\', $fullClassName);
         $shortClassName = array_pop($fullClassNameSections);
         $classNameSections = null;
-        preg_match_all('/((?:^|[A-Z])[a-z0-9]+)/', $shortClassName, $classNameSections);
+        preg_match_all(self::CLASS_NAME_SECTION_REGEXP_PATTERN, $shortClassName, $classNameSections);
         $directoryName = strtolower($classNameSections[0][0]);
-        $path = (__DIR__) . '/fixtures/' . $directoryName . $path;
+        $path = (__DIR__) . self::FIXTURES_DIRECTORY_RELATIVE_PATH . $directoryName . $partialPath;
 
         return $path;
-    }
-
-    /**
-     * Assert object class implements given interface.
-     *
-     * @param mixed  $object
-     * @param string $interface
-     */
-    public function assertImplements(mixed $object, string $interface): void
-    {
-        $implementedInterfaces = class_implements($object);
-        $implementsInterface = in_array($interface, $implementedInterfaces);
-
-        $this->assertTrue($implementsInterface);
     }
 }

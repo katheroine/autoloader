@@ -11,7 +11,7 @@ declare(strict_types=1);
  * file that was distributed with this source code.
  */
 
-namespace Exorg\Autoloader;
+namespace ExOrg\Autoloader;
 
 /**
  * Recursive autoloading strategy test.
@@ -25,22 +25,16 @@ namespace Exorg\Autoloader;
  */
 class RecursiveAutoloadingStrategyTest extends AbstractAutoloadingStrategyTestCase
 {
-    /**
-     * Initialise strategy fixture.
-     */
-    protected function initialiseStrategy(): void
-    {
-        $this->strategy = new RecursiveAutoloadingStrategy();
-    }
+    private const RECURSIVE_AUTOLOADING_STRATEGY_FULLY_QUALIFIED_CLASS_NAME = 'ExOrg\Autoloader\RecursiveAutoloadingStrategy';
 
     /**
-     * Test Exorg\Autoloader\RecursiveAutoloadingStrategy class exists.
+     * Test ExOrg\Autoloader\RecursiveAutoloadingStrategy class exists.
      */
     public function testConstructorReturnsProperInstance()
     {
         $strategy = new RecursiveAutoloadingStrategy();
 
-        $this->assertInstanceOf('Exorg\Autoloader\RecursiveAutoloadingStrategy', $strategy);
+        $this->assertInstanceOf(self::RECURSIVE_AUTOLOADING_STRATEGY_FULLY_QUALIFIED_CLASS_NAME, $strategy);
     }
 
     /**
@@ -50,7 +44,7 @@ class RecursiveAutoloadingStrategyTest extends AbstractAutoloadingStrategyTestCa
     {
         $strategy = new RecursiveAutoloadingStrategy();
 
-        $this->assertImplements($strategy, 'Exorg\Autoloader\AutoloadingStrategyInterface');
+        $this->assertImplements($strategy, self::AUTOLOADING_STRATEGY_FULLY_QUALIFIED_INTERFACE_NAME);
     }
 
     /**
@@ -225,5 +219,16 @@ class RecursiveAutoloadingStrategyTest extends AbstractAutoloadingStrategyTestCa
         $this->strategy->registerPath($path);
 
         $this->assertClassIsInstantiable('Dummy\Class_1_1_4');
+    }
+
+    /**
+     * Provide autoloading strategy instance
+     * against which the tests will be running.
+     *
+     * @return AutoloadingStrategyInterface
+     */
+    protected function provideStrategyIstance(): AutoloadingStrategyInterface
+    {
+        return new RecursiveAutoloadingStrategy();
     }
 }

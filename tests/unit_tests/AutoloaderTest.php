@@ -11,7 +11,7 @@ declare(strict_types=1);
  * file that was distributed with this source code.
  */
 
-namespace Exorg\Autoloader;
+namespace ExOrg\Autoloader;
 
 use PHPUnit\Framework\TestCase;
 
@@ -28,6 +28,16 @@ use PHPUnit\Framework\TestCase;
 class AutoloaderTest extends TestCase
 {
     /**
+     * @var string
+     */
+    protected const AUTOLOADER_FULLY_QUALIFIED_CLASS_NAME = 'ExOrg\\Autoloader\\Autoloader';
+    protected const AUTOLOADING_STRATEGY_INTERFACE_NAME = 'AutoloadingStrategyInterface';
+    protected const AUTOLOADING_STRATEGY_FULLY_QUALIFIED_INTERFACE_NAME = 'ExOrg\\Autoloader\\'
+        . self::AUTOLOADING_STRATEGY_INTERFACE_NAME ;
+    protected const AUTOLOADER_FUNCTION_NAME = 'loadClass';
+    protected const TYPE_ERROR_EXCEPTION_CLASS_NAME = 'TypeError';
+
+    /**
      * Instance of tested class.
      *
      * @var Autoloader
@@ -43,6 +53,53 @@ class AutoloaderTest extends TestCase
     private mixed $autoloadingStrategyMock;
 
     /**
+     * Test ExOrg\Autoloader\Autoloader class exists.
+     */
+    public function testConstructorReturnsProperInstance()
+    {
+        $this->assertInstanceOf(self::AUTOLOADER_FULLY_QUALIFIED_CLASS_NAME, $this->autoloader);
+    }
+
+    /**
+     * Test setAutoloadingStrategy method
+     * doesn't accept argument of class
+     * that does not implement ExOrg\Autoloader\IntrfaceAutoloadingStrategy iterface.
+     */
+    public function testSetAutoloadingStrategyDoesNotAcceptUnproperArgument()
+    {
+        $this->expectException(self::TYPE_ERROR_EXCEPTION_CLASS_NAME);
+
+        $this->autoloader->setAutoloadingStrategy(new \stdClass());
+    }
+
+    /**
+     * Test register method registers autoloader class and method properly.
+     */
+    public function testRegisterRegistersAutoloaderProperly()
+    {
+        $this->setUpAutoloaderWithStrategy();
+
+        $this->autoloader->register();
+
+        $this->assertAutoloaderRegistered();
+
+        $this->unregisterAutoloaderStrategyMock();
+    }
+
+    /**
+     * Test unregister method unregisters autoloader class and method properly.
+     */
+    public function testUnregisterRegistersAutoloaderProperly()
+    {
+        $this->setUpAutoloaderWithStrategy();
+        $this->registerAutoloaderStrategyMock();
+
+        $this->autoloader->unregister();
+
+        $this->assertAutoloaderUnregistered();
+    }
+
+        /**
      * Sets up the fixture, for example, open a network connection.
      * This method is called before a test is executed.
      */
@@ -65,8 +122,7 @@ class AutoloaderTest extends TestCase
      */
     protected function initialiseAutoloadingStrategyMock(): void
     {
-        $this->autoloadingStrategyMock = $this->getMockBuilder('Exorg\Autoloader\AutoloadingStrategyInterface')
-            ->getMock();
+        $this->autoloadingStrategyMock = $this->createMock(self::AUTOLOADING_STRATEGY_FULLY_QUALIFIED_INTERFACE_NAME);
     }
 
     /**
@@ -83,7 +139,7 @@ class AutoloaderTest extends TestCase
      */
     protected function registerAutoloaderStrategyMock(): void
     {
-        spl_autoload_register([$this->autoloadingStrategyMock, 'loadClass'], true);
+        spl_autoload_register([$this->autoloadingStrategyMock, self::AUTOLOADER_FUNCTION_NAME], true);
     }
 
     /**
@@ -92,7 +148,7 @@ class AutoloaderTest extends TestCase
      */
     protected function unregisterAutoloaderStrategyMock(): void
     {
-        spl_autoload_unregister([$this->autoloadingStrategyMock, 'loadClass']);
+        spl_autoload_unregister([$this->autoloadingStrategyMock, self::AUTOLOADER_FUNCTION_NAME]);
     }
 
     /**
@@ -126,8 +182,8 @@ class AutoloaderTest extends TestCase
         $autoloaderClass = $this->getMockedClass($lastRegisteredAutoloader[0]);
         $autoloaderMethod = $lastRegisteredAutoloader[1];
 
-        $classIsCorrect = ($autoloaderClass === 'AutoloadingStrategyInterface');
-        $methodIsCorrect = ($autoloaderMethod === 'loadClass');
+        $classIsCorrect = ($autoloaderClass === self::AUTOLOADING_STRATEGY_INTERFACE_NAME);
+        $methodIsCorrect = ($autoloaderMethod === self::AUTOLOADER_FUNCTION_NAME);
         $registrationIsCorrect = $classIsCorrect && $methodIsCorrect;
 
         return $registrationIsCorrect;
@@ -147,69 +203,5 @@ class AutoloaderTest extends TestCase
         $mockedClass = (substr(substr($mockClass, 11), 0, -9));
 
         return $mockedClass;
-    }
-
-    /**
-     * Test Exorg\Autoloader\Autoloader class exists.
-     */
-    public function testConstructorReturnsProperInstance()
-    {
-        $autoloader = new Autoloader();
-
-        $this->assertInstanceOf('Exorg\Autoloader\Autoloader', $autoloader);
-    }
-
-    /**
-     * Test setAutoloadingStrategy method
-     * doesn't accept argument of class
-     * that does not implement Exorg\Autoloader\IntrfaceAutoloadingStrategy iterface.
-     */
-    public function testSetAutoloadingStrategyDoesNotAcceptsArgument()
-    {
-        $this->expectException('TypeError');
-
-        $this->autoloader->setAutoloadingStrategy(new \stdClass());
-    }
-
-    /**
-     * Test setAutoloadingStrategy method
-     * receives argument of Exorg\Autoloader\IntrfaceAutoloadingStrategy iterface.
-     */
-    public function testSetAutoloadingStrategyReceivesCorrectArgument()
-    {
-        $this->markTestIncomplete('This test is problematic.');
-
-        $autoloadingStrategyMock = $this->getMockBuilder('Exorg\Autoloader\AutoloadingStrategyInterface')
-            ->getMock();
-
-        $this->autoloader->setAutoloadingStrategy($autoloadingStrategyMock);
-    }
-
-    /**
-     * Test register method registers autoloader class and method properly.
-     */
-    public function testRegisterRegistersAutoloaderProperly()
-    {
-        $this->setUpAutoloaderWithStrategy();
-
-        $this->autoloader->register();
-
-        $this->assertAutoloaderRegistered();
-
-        $this->unregisterAutoloaderStrategyMock();
-    }
-
-    /**
-     * Test unregister method unregisters autoloader class and method properly.
-     */
-    public function testUnregisterRegistersAutoloaderProperly()
-    {
-        $this->setUpAutoloaderWithStrategy();
-
-        $this->registerAutoloaderStrategyMock();
-
-        $this->autoloader->unregister();
-
-        $this->assertAutoloaderUnregistered();
     }
 }

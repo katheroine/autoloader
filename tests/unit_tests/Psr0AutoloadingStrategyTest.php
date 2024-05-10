@@ -11,7 +11,7 @@ declare(strict_types=1);
  * file that was distributed with this source code.
  */
 
-namespace Exorg\Autoloader;
+namespace ExOrg\Autoloader;
 
 /**
  * PSR-0 autoloading strategy test.
@@ -25,22 +25,16 @@ namespace Exorg\Autoloader;
  */
 class Psr0AutoloadingStrategyTest extends AbstractAutoloadingStrategyTestCase
 {
-    /**
-     * Initialise strategy fixture.
-     */
-    protected function initialiseStrategy(): void
-    {
-        $this->strategy = new Psr0AutoloadingStrategy();
-    }
+    private const PSR0_AUTOLOADING_STRATEGY_FULLY_QUALIFIED_CLASS_NAME = 'ExOrg\Autoloader\Psr0AutoloadingStrategy';
 
     /**
-     * Test Exorg\Autoloader\Psr0AutoloadingStrategy class exists.
+     * Test ExOrg\Autoloader\Psr0AutoloadingStrategy class exists.
      */
     public function testConstructorReturnsProperInstance()
     {
         $strategy = new Psr0AutoloadingStrategy();
 
-        $this->assertInstanceOf('Exorg\Autoloader\Psr0AutoloadingStrategy', $strategy);
+        $this->assertInstanceOf(self::PSR0_AUTOLOADING_STRATEGY_FULLY_QUALIFIED_CLASS_NAME, $strategy);
     }
 
     /**
@@ -50,7 +44,7 @@ class Psr0AutoloadingStrategyTest extends AbstractAutoloadingStrategyTestCase
     {
         $strategy = new Psr0AutoloadingStrategy();
 
-        $this->assertImplements($strategy, 'Exorg\Autoloader\AutoloadingStrategyInterface');
+        $this->assertImplements($strategy, self::AUTOLOADING_STRATEGY_FULLY_QUALIFIED_INTERFACE_NAME);
     }
 
     /**
@@ -294,5 +288,16 @@ class Psr0AutoloadingStrategyTest extends AbstractAutoloadingStrategyTestCase
         $this->strategy->registerNamespacePath('Dummy', $path);
 
         $this->assertClassIsInstantiable('Dummy\Additional_Package\Sub_AdditionalComponentNestedSub');
+    }
+
+    /**
+     * Provide autoloading strategy instance
+     * against which the tests will be running.
+     *
+     * @return AutoloadingStrategyInterface
+     */
+    protected function provideStrategyIstance(): AutoloadingStrategyInterface
+    {
+        return new Psr0AutoloadingStrategy();
     }
 }
