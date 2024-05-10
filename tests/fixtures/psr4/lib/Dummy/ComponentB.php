@@ -2,7 +2,7 @@
 
 namespace Vendor\Package\Dummy;
 
-class ComponentExistent
+class ComponentB
 {
 
 }

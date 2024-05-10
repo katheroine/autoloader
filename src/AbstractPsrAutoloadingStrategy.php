@@ -54,6 +54,6 @@ abstract class AbstractPsrAutoloadingStrategy extends AbstractAutoloadingStrateg
      */
     public function registerNamespacePath(string $namespace, string $path): void
     {
-        $this->namespacePaths[$namespace] = $path;
+        $this->namespacePaths[$namespace][] = $path;
     }
 }
