@@ -1,6 +1,6 @@
 <?php
 
-namespace Dummy;
+namespace Vendor\Package\Dummy;
 
 class ComponentExistent
 {

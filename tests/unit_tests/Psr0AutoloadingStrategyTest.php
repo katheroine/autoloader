@@ -22,6 +22,8 @@ namespace ExOrg\Autoloader;
  * @copyright Copyright (c) Katarzyna Krasińska
  * @license http://opensource.org/licenses/MIT MIT License
  * @link https://github.com/ExOrg/php-autoloader
+ *
+ * @runTestsInSeparateProcesses
  */
 class Psr0AutoloadingStrategyTest extends AbstractAutoloadingStrategyTestCase
 {
@@ -48,246 +50,220 @@ class Psr0AutoloadingStrategyTest extends AbstractAutoloadingStrategyTestCase
     }
 
     /**
-     * Test for nonexisting path
-     * with namespace separator.
+     * Test for nonexisting path.
      */
-    public function testForNonexistentPathWithNSSep()
+    public function testForNonexistentPath()
     {
         $path = $this->getFullFixturePath('/nonexistent');
 
-        $this->strategy->registerNamespacePath('Dummy', $path);
+        $this->strategy->registerNamespacePath('Vendor\Package', $path);
 
-        $this->assertClassDoesNotExist('Dummy\ComponentNonexistent');
+        $this->assertClassDoesNotExist('\Vendor\Package\Dummy\ComponentExistent');
     }
 
     /**
-     * Test for nonexisting path
-     * with underscore separator.
+     * Test for empty path.
      */
-    public function testForNonexistentPathWithUSSep()
-    {
-        $path = $this->getFullFixturePath('/nonexistent');
-
-        $this->strategy->registerNamespacePath('Dummy', $path);
-
-        $this->assertClassDoesNotExist('Dummy_ComponentNonexistent');
-    }
-
-    /**
-     * Test for empty path
-     * with namespace separator.
-     */
-    public function testForEmptyPathWithNSSep()
+    public function testForEmptyPath()
     {
         $path = $this->getFullFixturePath('/empty');
 
-        $this->strategy->registerNamespacePath('Dummy', $path);
+        $this->strategy->registerNamespacePath('Vendor\Package', $path);
 
-        $this->assertClassDoesNotExist('Dummy\ComponentNonexistent');
+        $this->assertClassDoesNotExist('\Vendor\Package\Dummy\ComponentExistent');
     }
 
     /**
-     * Test for empty path
-     * with underscore separator.
+     * Test for nonexistent class file.
      */
-    public function testForEmptyPathWithUSSep()
-    {
-        $path = $this->getFullFixturePath('/empty');
-
-        $this->strategy->registerNamespacePath('Dummy', $path);
-
-        $this->assertClassDoesNotExist('Dummy_ComponentNonexistent');
-    }
-
-    /**
-     * Test for nonexistent class file
-     * with namespace separator.
-     */
-    public function testForNonexistentClassFileWithNSSep()
+    public function testForNonexistentClassFile()
     {
         $path = $this->getFullFixturePath('/src');
 
-        $this->strategy->registerNamespacePath('Dummy', $path);
+        $this->strategy->registerNamespacePath('Vendor\Package', $path);
 
-        $this->assertClassDoesNotExist('Dummy\ComponentNonexistent');
+        $this->assertClassDoesNotExist('\Vendor\Package\Dummy\ComponentNonexistent');
     }
 
     /**
-     * Test for nonexistent class file
-     * with underscore separator.
+     * Test for not registered namespace.
      */
-    public function testForNonexistentClassFileWithUSSep()
+    public function testForUnregisteredNamespace()
     {
         $path = $this->getFullFixturePath('/src');
 
-        $this->strategy->registerNamespacePath('Dummy', $path);
-
-        $this->assertClassDoesNotExist('Dummy_ComponentNonexistent');
+        $this->assertClassDoesNotExist('\Vendor\Package\Dummy\ComponentExistent');
     }
 
     /**
-     * Test for not registered namespace
-     * with namespace separator.
+     * Test for not registered namespace.
      */
-    public function testForUnregisteredNamespaceWithNSSep()
+    public function testForUnexistentNamespace()
     {
         $path = $this->getFullFixturePath('/src');
 
-        $this->strategy->registerNamespacePath('Unregistered', $path);
+        $this->strategy->registerNamespacePath('Unexistent', $path);
 
-        $this->assertClassDoesNotExist('Dummy\Component');
+        $this->assertClassDoesNotExist('\Vendor\Package\Dummy\ComponentExistent');
     }
 
     /**
-     * Test for not registered namespace
-     * with underscore separator.
+     * Test for existent class file.
      */
-    public function testForUnregisteredNamespaceWithUSSep()
+    public function testForExistentClassFile()
     {
         $path = $this->getFullFixturePath('/src');
 
-        $this->strategy->registerNamespacePath('Unregistered', $path);
+        $this->strategy->registerNamespacePath('Vendor\Package', $path);
 
-        $this->assertClassDoesNotExist('Dummy_Component');
+        $this->assertClassIsInstantiable('\Vendor\Package\Dummy\ComponentExistent');
     }
 
     /**
-     * Test for registered namespace but unused in class specification.
+     * Test for namespace with backslash on the beginning.
      */
-    public function testForUnusedNamespace()
+    public function testForNamespaceWithBackslashOnBeginning()
     {
         $path = $this->getFullFixturePath('/src');
 
-        $this->strategy->registerNamespacePath('Dummy', $path);
+        $this->strategy->registerNamespacePath('\Vendor\Package', $path);
 
-        $this->assertClassDoesNotExist('Component');
+        $this->assertClassDoesNotExist('\Vendor\Package\Dummy\ComponentExistent');
+    }
+
+    /**
+     * Test for namespace with backslash on the end.
+     */
+    public function testForNamespaceWithBackslashOnEnd()
+    {
+        $path = $this->getFullFixturePath('/src');
+
+        $this->strategy->registerNamespacePath('Vendor\Package\\', $path);
+
+        $this->assertClassIsInstantiable('\Vendor\Package\Dummy\ComponentExistent');
+    }
+
+    /**
+     * Test for namespace with backslash on the beginning and the end.
+     */
+    public function testForNamespaceWithBackslashOnBeginningAndEnd()
+    {
+        $path = $this->getFullFixturePath('/src');
+
+        $this->strategy->registerNamespacePath('\Vendor\Package\\', $path);
+
+        $this->assertClassDoesNotExist('\Vendor\Package\Dummy\ComponentExistent');
+    }
+
+    /**
+     * Test for fully qualified class name without backslash on the beginning.
+     */
+    public function testForFQClassNameWithoutBackslashOnBeginning()
+    {
+        $path = $this->getFullFixturePath('/src');
+
+        $this->strategy->registerNamespacePath('Vendor\Package', $path);
+
+        $this->assertClassIsInstantiable('Vendor\Package\Dummy\ComponentExistent');
     }
 
     /**
      * Test for namespace registration with one level of nesting
-     * and class specification with one level of nesting
-     * with namespace separator.
+     * and class specification with one level of nesting.
      */
-    public function testFor1nNamespaceAnd1nClassWithNSSep()
+    public function testFor1nNamespaceAnd1nClass()
     {
         $path = $this->getFullFixturePath('/src');
 
-        $this->strategy->registerNamespacePath('Dummy', $path);
+        $this->strategy->registerNamespacePath('Vendor\Package', $path);
 
-        $this->assertClassIsInstantiable('Dummy\ComponentNotNested');
+        $this->assertClassIsInstantiable('\Vendor\Package\Dummy\ComponentNotNested');
     }
 
     /**
      * Test for namespace registration with one level of nesting
-     * and class specification with one level of nesting
-     * with underscore separator.
+     * and class specification with two levels of nesting.
      */
-    public function testFor1nNamespaceAnd1nClassWithUSSep()
+    public function testFor1nNamespaceAnd2nClass()
     {
         $path = $this->getFullFixturePath('/src');
 
-        $this->strategy->registerNamespacePath('Dummy', $path);
+        $this->strategy->registerNamespacePath('Vendor\Package', $path);
 
-        $this->assertClassIsInstantiable('Dummy_ComponentNotNested');
-    }
-
-    /**
-     * Test for namespace registration with one level of nesting
-     * and class specification with two levels of nesting
-     * with namespace separator.
-     */
-    public function testFor1nNamespaceAnd2nClassWithNSSep()
-    {
-        $path = $this->getFullFixturePath('/src');
-
-        $this->strategy->registerNamespacePath('Dummy', $path);
-
-        $this->assertClassIsInstantiable('Dummy\Core\ComponentNested');
-    }
-
-    /**
-     * Test for namespace registration with one level of nesting
-     * and class specification with two levels of nesting
-     * with underscore separator.
-     */
-    public function testFor1nNamespaceAnd2nClassWithUSSep()
-    {
-        $path = $this->getFullFixturePath('/src');
-
-        $this->strategy->registerNamespacePath('Dummy', $path);
-
-        $this->assertClassIsInstantiable('Dummy_Core_ComponentNested');
+        $this->assertClassIsInstantiable('\Vendor\Package\Dummy\Core\ComponentNested1');
     }
 
     /**
      * Test for namespace registration with two levels of nesting
-     * and class specification with two levels of nesting
-     * with namespace separator.
+     * and class specification with two levels of nesting.
      */
-    public function testFor2nNamespaceAnd2nClassWithNSSep()
+    public function testFor2nNamespaceAnd2nClass()
     {
         $path = $this->getFullFixturePath('/src');
 
-        $this->strategy->registerNamespacePath('Dummy\Core', $path);
+        $this->strategy->registerNamespacePath('Vendor\Package\Dummy', $path);
 
-        $this->assertClassIsInstantiable('Dummy\Core\ComponentNested');
+        $this->assertClassIsInstantiable('\Vendor\Package\Dummy\Core\ComponentNested2');
     }
 
     /**
-     * Test for namespace registration with two levels of nesting
-     * and class specification with two levels of nesting
-     * with underscore separator.
+     * Test for the class with underscored namespace name.
      */
-    public function testFor2nNamespaceAnd2nClassWithUSSep()
+    public function testForClassWithUnderscoredNamespaceName()
     {
         $path = $this->getFullFixturePath('/src');
 
-        $this->strategy->registerNamespacePath('Dummy\Core', $path);
+        $this->strategy->registerNamespacePath('Vendor\Package', $path);
 
-        $this->assertClassIsInstantiable('Dummy_Core_ComponentNested');
+        $this->assertClassIsInstantiable('\Vendor\Package\Dummy\Underscored_Section\AdditionalComponent');
     }
 
     /**
-     * Test for the class with one level of nesting
-     * and class specification with two levels of nesting
-     * with mixed separators.
+     * Test for the class with underscored name.
      */
-    public function testFor1nNamespaceAnd3nClassWithMXSep()
+    public function testForClassWithUnderscoredName()
     {
         $path = $this->getFullFixturePath('/src');
 
-        $this->strategy->registerNamespacePath('Dummy', $path);
+        $this->strategy->registerNamespacePath('Vendor\Package', $path);
 
-        $this->assertClassIsInstantiable('Dummy\Core\Sub_ComponentNestedSub');
+        $this->assertClassIsInstantiable('\Vendor\Package\Dummy\Core\Underscored_Component');
     }
 
     /**
-     * Test for the class with one level of nesting
-     * and class specification with two levels of nesting
-     * with underscored package name.
+     * Test for many classes from the same namespace and directory path registered.
      */
-    public function testFor1nNamespaceAnd2nClassWithUSPackage()
+    public function testManyClassesFromTheSameNamespace()
     {
         $path = $this->getFullFixturePath('/src');
 
-        $this->strategy->registerNamespacePath('Dummy', $path);
+        $this->strategy->registerNamespacePath('Vendor\Package', $path);
 
-        $this->assertClassIsInstantiable('Dummy\Additional_Package\AdditionalComponentNested');
+        $this->assertClassDoesNotExist('\Vendor\Package\Dummy\ComponentNonexistent');
+        $this->assertClassIsInstantiable('\Vendor\Package\Dummy\ComponentExistent');
+        $this->assertClassIsInstantiable('\Vendor\Package\Dummy\ComponentNotNested');
+        $this->assertClassIsInstantiable('\Vendor\Package\Dummy\Core\ComponentNested1');
+        $this->assertClassIsInstantiable('\Vendor\Package\Dummy\Core\ComponentNested2');
+        $this->assertClassIsInstantiable('\Vendor\Package\Dummy\Underscored_Section\AdditionalComponent');
+        $this->assertClassIsInstantiable('\Vendor\Package\Dummy\Core\Underscored_Component');
     }
 
     /**
-     * Test for the class with one level of nesting
-     * and class specification with two levels of nesting
-     * with mixed separators
-     * and underscored package name.
+     * Test for namespace registration with two directory paths registered
+     * for the same namespace.
      */
-    public function testFor1nNamespaceAnd2nClassWithUSSepAndUSPackage()
+    public function testForTwoPathsAndOneNamespace()
     {
-        $path = $this->getFullFixturePath('/src');
+        $path1 = $this->getFullFixturePath('/src');
+        $path2 = $this->getFullFixturePath('/lib');
 
-        $this->strategy->registerNamespacePath('Dummy', $path);
+        $this->strategy->registerNamespacePath('Vendor\Package', $path1);
+        $this->strategy->registerNamespacePath('Vendor\Package', $path2);
 
-        $this->assertClassIsInstantiable('Dummy\Additional_Package\Sub_AdditionalComponentNestedSub');
+        $this->assertClassIsInstantiable('\Vendor\Package\Dummy\ComponentA');
+        $this->assertClassIsInstantiable('\Vendor\Package\Dummy\ComponentB');
+        $this->assertClassIsInstantiable('\Vendor\Package\Dummy\Core\ComponentC');
+        $this->assertClassIsInstantiable('\Vendor\Package\Dummy\Core\ComponentD');
     }
 
     /**

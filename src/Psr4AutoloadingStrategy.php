@@ -26,18 +26,11 @@ namespace ExOrg\Autoloader;
 class Psr4AutoloadingStrategy extends AbstractPsrAutoloadingStrategy
 {
     /**
-     * Actually processed namespaced class name.
-     *
-     * @var string
-     */
-    private string $processedNamespacedClassName = '';
-
-    /**
      * Extract class paramaters like namespace or class name
      * needed in file searching process
      * and assign their values to the strategy class variables.
      *
-     * @param string $class
+     * @param string $fullyQualifiedClassName
      */
     protected function extractClassParameters(string $fullyQualifiedClassName): void
     {

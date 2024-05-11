@@ -33,18 +33,11 @@ abstract class AbstractPsrAutoloadingStrategy extends AbstractAutoloadingStrateg
     protected array $namespacePaths = [];
 
     /**
-     * Namespace of the currently processed class name.
+     * Actually processed namespaced class name.
      *
-     * @var string | null
+     * @var string
      */
-    protected ?string $processedNamespace = null;
-
-    /**
-     * Partial file path of the currently processed class name.
-     *
-     * @var string | null
-     */
-    protected ?string $processedPath = null;
+    protected string $processedNamespacedClassName = '';
 
     /**
      * Register namespace and assign a directory path.

@@ -30,27 +30,15 @@ class Psr0AutoloadingStrategy extends AbstractPsrAutoloadingStrategy
      * needed in file searching process
      * and assign their values to the strategy class variables.
      *
-     * @param string $class
+     * @param string $fullyQualifiedClassName
      */
-    protected function extractClassParameters(string $class): void
+    protected function extractClassParameters(string $fullyQualifiedClassName): void
     {
-        // Removing '\' characters from the beginning of the name
-        $classFullName = ltrim($class, '\\');
-
-        // Extracting namespace chain and strict class name
-        $namespaceEndPosition = strrpos($classFullName, '\\') ?: null;
-        $this->processedNamespace = substr($classFullName, 0, $namespaceEndPosition);
-
-        // Building namespace path snippet
-        $namespacePath = str_replace('\\', DIRECTORY_SEPARATOR, $this->processedNamespace);
-
-        // Building class path snippet
-        $classNameStartPosition = $namespaceEndPosition + 1;
-        $className = substr($classFullName, $classNameStartPosition);
-        $classPath = str_replace('_', DIRECTORY_SEPARATOR, $className);
-
-        // Building entire class file path
-        $this->processedPath = $namespacePath . DIRECTORY_SEPARATOR . $classPath . '.php';
+        // Removing '\' characters from the beginning of the fully qualified class name
+        $this->processedNamespacedClassName = ltrim(
+            string: $fullyQualifiedClassName,
+            characters: '\\'
+        );
     }
 
     /**
@@ -61,15 +49,13 @@ class Psr0AutoloadingStrategy extends AbstractPsrAutoloadingStrategy
      */
     protected function findClassFilePath(): ?string
     {
-        foreach ($this->namespacePaths as $namespace => $paths) {
-            foreach ($paths as $path) {
-                $namespaceIsNotRegistered = (0 !== strpos($this->processedNamespace, $namespace));
-
-                if ($namespaceIsNotRegistered) {
+        foreach ($this->namespacePaths as $registeredNamespacePrefix => $registeredBaseDirPaths) {
+            foreach ($registeredBaseDirPaths as $registeredBaseDirPath) {
+                if (! $this->processedNamespacedClassNameContainsPrefix($registeredNamespacePrefix)) {
                     continue;
                 }
 
-                $classFilePath = $path . DIRECTORY_SEPARATOR . $this->processedPath;
+                $classFilePath = $this->buildClassFilePath($registeredBaseDirPath);
 
                 $classFileExists = is_file($classFilePath);
 
@@ -80,5 +66,76 @@ class Psr0AutoloadingStrategy extends AbstractPsrAutoloadingStrategy
         }
 
         return null;
+    }
+
+    private function processedNamespacedClassNameContainsPrefix(string $prefix): bool
+    {
+        $namespacePrefix = substr(
+            string: $this->processedNamespacedClassName,
+            offset: 0,
+            length: strlen($prefix)
+        );
+        $processedNamespaceHasReisteredPrefix = ($prefix == $namespacePrefix);
+
+        return $processedNamespaceHasReisteredPrefix;
+    }
+
+    private function buildClassFilePath(string $baseDirPath): string
+    {
+        $classFilePath = $baseDirPath
+            . DIRECTORY_SEPARATOR
+            . $this->buildClassFilePathWithinBaseDir();
+
+        return $classFilePath;
+    }
+
+    private function buildClassFilePathWithinBaseDir(): string
+    {
+        list($classNamespace, $className) = $this->extractProcessedClassNamespaceAndName();
+
+        // Building namespace path snippet
+        $namespacePath = str_replace(
+            search: '\\',
+            replace: DIRECTORY_SEPARATOR,
+            subject: $classNamespace
+        );
+
+        // Building class path snippet
+        $classPath = str_replace(
+            search: '_',
+            replace: DIRECTORY_SEPARATOR,
+            subject: $className
+        );
+
+        // Building entire class file path
+        $classFilePathWithinBaseDir = $namespacePath
+            . DIRECTORY_SEPARATOR
+            . $classPath
+            . '.php';
+
+        return $classFilePathWithinBaseDir;
+    }
+
+    private function extractProcessedClassNamespaceAndName(): array
+    {
+        // Extracting class namespace
+        $namespaceEndPosition = strrpos(
+            haystack: $this->processedNamespacedClassName,
+            needle: '\\'
+        );
+        $classNamespace = substr(
+            string: $this->processedNamespacedClassName,
+            offset: 0,
+            length: $namespaceEndPosition
+        );
+
+        // Extracting class name
+        $classNameStartPosition = $namespaceEndPosition + 1;
+        $className = substr(
+            string: $this->processedNamespacedClassName,
+            offset: $classNameStartPosition
+        );
+
+        return [$classNamespace, $className];
     }
 }

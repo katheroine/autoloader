@@ -85,7 +85,7 @@ abstract class AbstractAutoloadingStrategyTestCase extends TestCase
      */
     protected function registerAutoloadingStrategy(): void
     {
-        spl_autoload_register([$this->strategy, self::AUTOLOADER_FUNCTION_NAME], true);
+        spl_autoload_register([$this->strategy, self::AUTOLOADER_FUNCTION_NAME]);
     }
 
     /**
