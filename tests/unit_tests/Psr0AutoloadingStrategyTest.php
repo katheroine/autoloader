@@ -22,6 +22,8 @@ namespace ExOrg\Autoloader;
  * @copyright Copyright (c) Katarzyna Krasińska
  * @license http://opensource.org/licenses/MIT MIT License
  * @link https://github.com/ExOrg/php-autoloader
+ *
+ * @runTestsInSeparateProcesses
  */
 class Psr0AutoloadingStrategyTest extends AbstractAutoloadingStrategyTestCase
 {
@@ -126,7 +128,7 @@ class Psr0AutoloadingStrategyTest extends AbstractAutoloadingStrategyTestCase
 
         $this->strategy->registerNamespacePath('\Vendor\Package', $path);
 
-        $this->assertClassIsInstantiable('\Vendor\Package\Dummy\ComponentExistent');
+        $this->assertClassDoesNotExist('\Vendor\Package\Dummy\ComponentExistent');
     }
 
     /**
@@ -150,7 +152,7 @@ class Psr0AutoloadingStrategyTest extends AbstractAutoloadingStrategyTestCase
 
         $this->strategy->registerNamespacePath('\Vendor\Package\\', $path);
 
-        $this->assertClassIsInstantiable('\Vendor\Package\Dummy\ComponentExistent');
+        $this->assertClassDoesNotExist('\Vendor\Package\Dummy\ComponentExistent');
     }
 
     /**
