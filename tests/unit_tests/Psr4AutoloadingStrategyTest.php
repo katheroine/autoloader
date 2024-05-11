@@ -90,8 +90,6 @@ class Psr4AutoloadingStrategyTest extends AbstractAutoloadingStrategyTestCase
      */
     public function testForUnregisteredNamespace()
     {
-        $path = $this->getFullFixturePath('/src');
-
         $this->assertClassDoesNotExist('\Vendor\Package\Dummy\ComponentExistent');
     }
 

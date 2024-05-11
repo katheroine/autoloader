@@ -22,6 +22,8 @@ namespace ExOrg\Autoloader;
  * @copyright Copyright (c) Katarzyna Krasińska
  * @license http://opensource.org/licenses/MIT MIT License
  * @link https://github.com/ExOrg/php-autoloader
+ *
+ * @runTestsInSeparateProcesses
  */
 class PearAutoloadingStrategyTest extends AbstractAutoloadingStrategyTestCase
 {
@@ -56,7 +58,7 @@ class PearAutoloadingStrategyTest extends AbstractAutoloadingStrategyTestCase
 
         $this->strategy->registerPrefixPath('Dummy', $path);
 
-        $this->assertClassDoesNotExist('Dummy_ComponentNotRegistered');
+        $this->assertClassDoesNotExist('Dummy_ComponentExistent');
     }
 
     /**
@@ -68,27 +70,35 @@ class PearAutoloadingStrategyTest extends AbstractAutoloadingStrategyTestCase
 
         $this->strategy->registerPrefixPath('Dummy', $path);
 
-        $this->assertClassDoesNotExist('Dummy_ComponentNotRegistered');
+        $this->assertClassDoesNotExist('Dummy_ComponentExistent');
+    }
+
+    /**
+     * Test for nonexistent class file.
+     */
+    public function testForNonexistentClassFile()
+    {
+        $path = $this->getFullFixturePath('/src');
+
+        $this->strategy->registerPrefixPath('Dummy', $path);
+
+        $this->assertClassDoesNotExist('Dummy_ComponentNonexistent');
     }
 
     /**
      * Test for unregisterd path.
      */
-    public function testForUnregisteredPath()
+    public function testForUnregisteredPrefix()
     {
-        $path = $this->getFullFixturePath('/doc');
-
-        $this->strategy->registerPrefixPath('Dummy_', $path);
-
-        $this->assertClassDoesNotExist('Dummy_ComponentNotRegistered');
+        $this->assertClassDoesNotExist('Dummy_ComponentExistent');
     }
 
     /**
-     * Test class with unregisterd prefix.
+     * Test unexistent prefix.
      */
-    public function testForUnregisteredPrefix()
+    public function testForUnexistentPrefix()
     {
-        $path = $this->getFullFixturePath('/lib/classes');
+        $path = $this->getFullFixturePath('/src');
 
         $this->strategy->registerPrefixPath('Nonexistent_', $path);
 
@@ -96,26 +106,116 @@ class PearAutoloadingStrategyTest extends AbstractAutoloadingStrategyTestCase
     }
 
     /**
-     * Test for the class with one level of nesting.
+     * Test for existent class file.
      */
-    public function testFor1nClass()
+    public function testForExistentClassFile()
     {
-        $path = $this->getFullFixturePath('/lib/classes');
+        $path = $this->getFullFixturePath('/src');
+
+        $this->strategy->registerPrefixPath('Dummy', $path);
+
+        $this->assertClassIsInstantiable('Dummy_ComponentExistent');
+    }
+
+    /**
+     * Test for prefix (pseudonamespace) with underscore on the beginning.
+     */
+    public function testForPrefixWithUnderscoreOnBeginning()
+    {
+        $path = $this->getFullFixturePath('/src');
+
+        $this->strategy->registerPrefixPath('_Dummy', $path);
+
+        $this->assertClassDoesNotExist('Dummy_ComponentExistent');
+    }
+
+    /**
+     * Test for prefix (pseudonamespace) with underscore on the end.
+     */
+    public function testForPrefixWithUnderscoreOnEnd()
+    {
+        $path = $this->getFullFixturePath('/src');
 
         $this->strategy->registerPrefixPath('Dummy_', $path);
+
+        $this->assertClassIsInstantiable('Dummy_ComponentExistent');
+    }
+
+    /**
+     * Test for prefix (pseudonamespace) with underscore on the beginning and the end.
+     */
+    public function testForPrefixWithUnderscoreOnBeginningAndEnd()
+    {
+        $path = $this->getFullFixturePath('/src');
+
+        $this->strategy->registerPrefixPath('_Dummy_', $path);
+
+        $this->assertClassDoesNotExist('Dummy_ComponentExistent');
+    }
+
+    /**
+     * Test for prefixed class name with backslash on the beginning.
+     */
+    public function testForFQClassNameWithoutBackslashOnBeginning()
+    {
+        $path = $this->getFullFixturePath('/src');
+
+        $this->strategy->registerPrefixPath('Dummy', $path);
+
+        $this->assertClassIsInstantiable('\Dummy_ComponentExistent');
+    }
+
+    /**
+     * Test for prefix registration with one level of nesting
+     * and class specification with one level of nesting.
+     */
+    public function testFor1nPrefixAnd1nClass()
+    {
+        $path = $this->getFullFixturePath('/src');
+
+        $this->strategy->registerPrefixPath('Dummy', $path);
 
         $this->assertClassIsInstantiable('Dummy_ComponentNotNested');
     }
 
     /**
-     * Test for the class with two levels of nesting.
+     * Test for prefix registration with one level of nesting
+     * and class specification with two levels of nesting.
      */
-    public function testFor2nClass()
+    public function testFor1nPrefixAnd2nClass()
     {
-        $path = $this->getFullFixturePath('/lib/classes');
+        $path = $this->getFullFixturePath('/src');
 
-        $this->strategy->registerPrefixPath('Dummy_', $path);
+        $this->strategy->registerPrefixPath('Dummy', $path);
 
+        $this->assertClassIsInstantiable('Dummy_Core_ComponentNested');
+    }
+
+    /**
+     * Test for prefix registration with two levels of nesting
+     * and class specification with two levels of nesting.
+     */
+    public function testFor2nPrefixAnd2nClass()
+    {
+        $path = $this->getFullFixturePath('/src');
+
+        $this->strategy->registerPrefixPath('Dummy_Core', $path);
+
+        $this->assertClassIsInstantiable('Dummy_Core_ComponentNested');
+    }
+
+    /**
+     * Test for many classes from the same namespace and directory path registered.
+     */
+    public function testManyClassesFromTheSamePrefix()
+    {
+        $path = $this->getFullFixturePath('/src');
+
+        $this->strategy->registerPrefixPath('Dummy', $path);
+
+        $this->assertClassDoesNotExist('Dummy_ComponentNonexistent');
+        $this->assertClassIsInstantiable('Dummy_ComponentExistent');
+        $this->assertClassIsInstantiable('Dummy_ComponentNotNested');
         $this->assertClassIsInstantiable('Dummy_Core_ComponentNested');
     }
 
