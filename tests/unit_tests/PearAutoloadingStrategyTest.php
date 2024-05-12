@@ -220,6 +220,24 @@ class PearAutoloadingStrategyTest extends AbstractAutoloadingStrategyTestCase
     }
 
     /**
+     * Test for prefix registration with two directory paths registered
+     * for the same prefix.
+     */
+    public function testForTwoPathsAndOneNamespace()
+    {
+        $path1 = $this->getFullFixturePath('/src');
+        $path2 = $this->getFullFixturePath('/lib');
+
+        $this->strategy->registerPrefixPath('Dummy', $path1);
+        $this->strategy->registerPrefixPath('Dummy', $path2);
+
+        $this->assertClassIsInstantiable('Dummy_ComponentA');
+        $this->assertClassIsInstantiable('Dummy_ComponentB');
+        $this->assertClassIsInstantiable('Dummy_Core_ComponentC');
+        $this->assertClassIsInstantiable('Dummy_Core_ComponentD');
+    }
+
+    /**
      * Provide autoloading strategy instance
      * against which the tests will be running.
      *

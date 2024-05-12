@@ -62,7 +62,7 @@ class PearAutoloadingStrategy extends AbstractAutoloadingStrategy
      */
     public function registerPrefixPath(string $prefix, string $path): void
     {
-        $this->prefixPaths[$prefix] = $path;
+        $this->prefixPaths[$prefix][] = $path;
     }
 
     /**
@@ -89,19 +89,21 @@ class PearAutoloadingStrategy extends AbstractAutoloadingStrategy
      */
     protected function findClassFilePath(): ?string
     {
-        foreach ($this->prefixPaths as $prefix => $path) {
-            $prefixIsNotRegistered = (0 !== strpos($this->processedClass, $prefix));
+        foreach ($this->prefixPaths as $prefix => $paths) {
+            foreach ($paths as $path) {
+                $prefixIsNotRegistered = (0 !== strpos($this->processedClass, $prefix));
 
-            if ($prefixIsNotRegistered) {
-                continue;
-            }
+                if ($prefixIsNotRegistered) {
+                    continue;
+                }
 
-            $classFilePath = $path . DIRECTORY_SEPARATOR . $this->processedPath;
+                $classFilePath = $path . DIRECTORY_SEPARATOR . $this->processedPath;
 
-            $classFileExists = is_file($classFilePath);
+                $classFileExists = is_file($classFilePath);
 
-            if ($classFileExists) {
-                return $classFilePath;
+                if ($classFileExists) {
+                    return $classFilePath;
+                }
             }
         }
 
