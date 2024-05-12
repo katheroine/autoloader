@@ -33,26 +33,12 @@ class PearAutoloadingStrategy extends AbstractAutoloadingStrategy
      */
     protected array $prefixPaths = [];
 
-    /**
-     * Class full names with assigned directory path.
+     /**
+     * Actually processed prefixed class name.
      *
-     * @var string[] | array[]
+     * @var string
      */
-    protected $classPaths = [];
-
-    /**
-     * Currently processed full name of the class.
-     *
-     * @var mixed
-     */
-    protected $processedClass = null;
-
-    /**
-     * Partial file path of the currently processed class name.
-     *
-     * @var string | null
-     */
-    protected $processedPath = null;
+    protected string $processedPrefixedClassName = '';
 
     /**
      * Register prefix and assign a directory path.
@@ -70,15 +56,11 @@ class PearAutoloadingStrategy extends AbstractAutoloadingStrategy
      * needed in file searching process
      * and assign their values to the strategy class variables.
      *
-     * @param string $class
+     * @param string $prefixedClassName
      */
-    protected function extractClassParameters(string $class): void
+    protected function extractClassParameters(string $prefixedClassName): void
     {
-        $this->processedClass = $class;
-
-        $classPath = $this->buildClassPathFromClass($class);
-
-        $this->processedPath = $classPath . '.php';
+        $this->processedPrefixedClassName = $prefixedClassName;
     }
 
     /**
@@ -89,15 +71,13 @@ class PearAutoloadingStrategy extends AbstractAutoloadingStrategy
      */
     protected function findClassFilePath(): ?string
     {
-        foreach ($this->prefixPaths as $prefix => $paths) {
-            foreach ($paths as $path) {
-                $prefixIsNotRegistered = (0 !== strpos($this->processedClass, $prefix));
-
-                if ($prefixIsNotRegistered) {
+        foreach ($this->prefixPaths as $registeredPrefix => $registeredBaseDirPaths) {
+            foreach ($registeredBaseDirPaths as $registeredBaseDirPath) {
+                if (! $this->processedPrefixedClassNameContainsPrefix($registeredPrefix)) {
                     continue;
                 }
 
-                $classFilePath = $path . DIRECTORY_SEPARATOR . $this->processedPath;
+                $classFilePath = $this->buildClassFilePath($registeredBaseDirPath);
 
                 $classFileExists = is_file($classFilePath);
 
@@ -110,17 +90,39 @@ class PearAutoloadingStrategy extends AbstractAutoloadingStrategy
         return null;
     }
 
-    /**
-     * Build class path from class name.
-     *
-     * @param string $class
-     *
-     * @return string
-     */
-    protected static function buildClassPathFromClass(string $class): string
+    private function processedPrefixedClassNameContainsPrefix(string $prefix): bool
     {
-        $classPath = str_replace('_', DIRECTORY_SEPARATOR, $class);
+        $pseudonamespacePrefix = substr(
+            string: $this->processedPrefixedClassName,
+            offset: 0,
+            length: strlen($prefix)
+        );
+        $processedPrefixHasReisteredPrefix = ($prefix == $pseudonamespacePrefix);
 
-        return $classPath;
+        return $processedPrefixHasReisteredPrefix;
+    }
+
+    private function buildClassFilePath(string $baseDirPath): string
+    {
+        $classFilePath = $baseDirPath
+            . DIRECTORY_SEPARATOR
+            . $this->buildClassFilePathWithinBaseDir();
+
+        return $classFilePath;
+    }
+
+    protected function buildClassFilePathWithinBaseDir(): string
+    {
+        // Building pseudonamespaced class path snippet
+        $prefixedClassPath = str_replace(
+            search: '_',
+            replace: DIRECTORY_SEPARATOR,
+            subject: $this->processedPrefixedClassName
+        );
+
+        // Building entire class file path
+        $classFilePathWithinBaseDir = $prefixedClassPath . '.php';
+
+        return $classFilePathWithinBaseDir;
     }
 }
