@@ -27,28 +27,28 @@ class PearAutoloadingStrategy extends AbstractAutoloadingStrategy
 {
     /**
      * Directory paths where class files are searched
-     * assigned to the class name prefixes.
+     * assigned to the class name prefixes (pseudo-namespaces).
      *
      * @var array
      */
-    protected array $prefixPaths = [];
+    protected array $pseudonamespacePaths = [];
 
-     /**
-     * Actually processed prefixed class name.
+    /**
+     * Actually processed prefixed (pseudo-namespaced) class name.
      *
      * @var string
      */
-    protected string $processedPrefixedClassName = '';
+    protected string $processedPseudonamespacedClassName = '';
 
     /**
-     * Register prefix and assign a directory path.
+     * Register pseudo-namespace and assign a directory path.
      *
-     * @param string $prefix
+     * @param string $pseudonamespace
      * @param string $path
      */
-    public function registerPrefixPath(string $prefix, string $path): void
+    public function registerPseudonamespacePath(string $pseudonamespace, string $path): void
     {
-        $this->prefixPaths[$prefix][] = $path;
+        $this->pseudonamespacePaths[$pseudonamespace][] = $path;
     }
 
     /**
@@ -56,11 +56,11 @@ class PearAutoloadingStrategy extends AbstractAutoloadingStrategy
      * needed in file searching process
      * and assign their values to the strategy class variables.
      *
-     * @param string $prefixedClassName
+     * @param string $pseudonamespacedClassName
      */
-    protected function extractClassParameters(string $prefixedClassName): void
+    protected function extractClassParameters(string $pseudonamespacedClassName): void
     {
-        $this->processedPrefixedClassName = $prefixedClassName;
+        $this->processedPseudonamespacedClassName = $pseudonamespacedClassName;
     }
 
     /**
@@ -71,9 +71,9 @@ class PearAutoloadingStrategy extends AbstractAutoloadingStrategy
      */
     protected function findClassFilePath(): ?string
     {
-        foreach ($this->prefixPaths as $registeredPrefix => $registeredBaseDirPaths) {
+        foreach ($this->pseudonamespacePaths as $registeredPseudonamespacePrefix => $registeredBaseDirPaths) {
             foreach ($registeredBaseDirPaths as $registeredBaseDirPath) {
-                if (! $this->processedPrefixedClassNameContainsPrefix($registeredPrefix)) {
+                if (! $this->processedPseudonamespaceedClassNameContainsPrefix($registeredPseudonamespacePrefix)) {
                     continue;
                 }
 
@@ -90,16 +90,16 @@ class PearAutoloadingStrategy extends AbstractAutoloadingStrategy
         return null;
     }
 
-    private function processedPrefixedClassNameContainsPrefix(string $prefix): bool
+    private function processedPseudonamespaceedClassNameContainsPrefix(string $prefix): bool
     {
         $pseudonamespacePrefix = substr(
-            string: $this->processedPrefixedClassName,
+            string: $this->processedPseudonamespacedClassName,
             offset: 0,
             length: strlen($prefix)
         );
-        $processedPrefixHasReisteredPrefix = ($prefix == $pseudonamespacePrefix);
+        $processedPseudonamespaceHasReisteredPrefix = ($prefix == $pseudonamespacePrefix);
 
-        return $processedPrefixHasReisteredPrefix;
+        return $processedPseudonamespaceHasReisteredPrefix;
     }
 
     private function buildClassFilePath(string $baseDirPath): string
@@ -113,11 +113,11 @@ class PearAutoloadingStrategy extends AbstractAutoloadingStrategy
 
     protected function buildClassFilePathWithinBaseDir(): string
     {
-        // Building pseudonamespaced class path snippet
+        // Building pseudo-namespaced class path snippet
         $prefixedClassPath = str_replace(
             search: '_',
             replace: DIRECTORY_SEPARATOR,
-            subject: $this->processedPrefixedClassName
+            subject: $this->processedPseudonamespacedClassName
         );
 
         // Building entire class file path
