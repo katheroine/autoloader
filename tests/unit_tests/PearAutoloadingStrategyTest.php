@@ -22,6 +22,8 @@ namespace ExOrg\Autoloader;
  * @copyright Copyright (c) Katarzyna Krasińska
  * @license http://opensource.org/licenses/MIT MIT License
  * @link https://github.com/ExOrg/php-autoloader
+ *
+ * @runTestsInSeparateProcesses
  */
 class PearAutoloadingStrategyTest extends AbstractAutoloadingStrategyTestCase
 {
@@ -54,9 +56,9 @@ class PearAutoloadingStrategyTest extends AbstractAutoloadingStrategyTestCase
     {
         $path = $this->getFullFixturePath('/nonexistent');
 
-        $this->strategy->registerPrefixPath('Dummy', $path);
+        $this->strategy->registerPseudonamespacePath('Dummy', $path);
 
-        $this->assertClassDoesNotExist('Dummy_ComponentNotRegistered');
+        $this->assertClassDoesNotExist('Dummy_ComponentExistent');
     }
 
     /**
@@ -66,57 +68,173 @@ class PearAutoloadingStrategyTest extends AbstractAutoloadingStrategyTestCase
     {
         $path = $this->getFullFixturePath('/empty');
 
-        $this->strategy->registerPrefixPath('Dummy', $path);
+        $this->strategy->registerPseudonamespacePath('Dummy', $path);
+
+        $this->assertClassDoesNotExist('Dummy_ComponentExistent');
+    }
+
+    /**
+     * Test for nonexistent class file.
+     */
+    public function testForNonexistentClassFile()
+    {
+        $path = $this->getFullFixturePath('/src');
+
+        $this->strategy->registerPseudonamespacePath('Dummy', $path);
+
+        $this->assertClassDoesNotExist('Dummy_ComponentNonexistent');
+    }
+
+    /**
+     * Test for not registerd pseudo-namespace.
+     */
+    public function testForUnregisteredPseudonamespace()
+    {
+        $this->assertClassDoesNotExist('Dummy_ComponentExistent');
+    }
+
+    /**
+     * Test unexistent pseudo-namespace.
+     */
+    public function testForUnexistentPseudonamespace()
+    {
+        $path = $this->getFullFixturePath('/src');
+
+        $this->strategy->registerPseudonamespacePath('Nonexistent', $path);
 
         $this->assertClassDoesNotExist('Dummy_ComponentNotRegistered');
     }
 
     /**
-     * Test for unregisterd path.
+     * Test for existent class file.
      */
-    public function testForUnregisteredPath()
+    public function testForExistentClassFile()
     {
-        $path = $this->getFullFixturePath('/doc');
+        $path = $this->getFullFixturePath('/src');
 
-        $this->strategy->registerPrefixPath('Dummy_', $path);
+        $this->strategy->registerPseudonamespacePath('Dummy', $path);
 
-        $this->assertClassDoesNotExist('Dummy_ComponentNotRegistered');
+        $this->assertClassIsInstantiable('Dummy_ComponentExistent');
     }
 
     /**
-     * Test class with unregisterd prefix.
+     * Test for pseudo-namespace with underscore on the beginning.
      */
-    public function testForUnregisteredPrefix()
+    public function testForPseudonamespaceWithUnderscoreOnBeginning()
     {
-        $path = $this->getFullFixturePath('/lib/classes');
+        $path = $this->getFullFixturePath('/src');
 
-        $this->strategy->registerPrefixPath('Nonexistent_', $path);
+        $this->strategy->registerPseudonamespacePath('_Dummy', $path);
 
-        $this->assertClassDoesNotExist('Dummy_ComponentNotRegistered');
+        $this->assertClassDoesNotExist('Dummy_ComponentExistent');
     }
 
     /**
-     * Test for the class with one level of nesting.
+     * Test for pseudo-namespace with underscore on the end.
      */
-    public function testFor1nClass()
+    public function testForPseudonamespaceWithUnderscoreOnEnd()
     {
-        $path = $this->getFullFixturePath('/lib/classes');
+        $path = $this->getFullFixturePath('/src');
 
-        $this->strategy->registerPrefixPath('Dummy_', $path);
+        $this->strategy->registerPseudonamespacePath('Dummy_', $path);
+
+        $this->assertClassIsInstantiable('Dummy_ComponentExistent');
+    }
+
+    /**
+     * Test for pseudo-namespace with underscore on the beginning and the end.
+     */
+    public function testForPseudonamespaceWithUnderscoreOnBeginningAndEnd()
+    {
+        $path = $this->getFullFixturePath('/src');
+
+        $this->strategy->registerPseudonamespacePath('_Dummy_', $path);
+
+        $this->assertClassDoesNotExist('Dummy_ComponentExistent');
+    }
+
+    /**
+     * Test for pseudo-namespaceed class name with backslash on the beginning.
+     */
+    public function testForFQClassNameWithoutBackslashOnBeginning()
+    {
+        $path = $this->getFullFixturePath('/src');
+
+        $this->strategy->registerPseudonamespacePath('Dummy', $path);
+
+        $this->assertClassIsInstantiable('\Dummy_ComponentExistent');
+    }
+
+    /**
+     * Test for pseudo-namespace registration with one level of nesting
+     * and class specification with one level of nesting.
+     */
+    public function testFor1nPseudonamespaceAnd1nClass()
+    {
+        $path = $this->getFullFixturePath('/src');
+
+        $this->strategy->registerPseudonamespacePath('Dummy', $path);
 
         $this->assertClassIsInstantiable('Dummy_ComponentNotNested');
     }
 
     /**
-     * Test for the class with two levels of nesting.
+     * Test for pseudo-namespace registration with one level of nesting
+     * and class specification with two levels of nesting.
      */
-    public function testFor2nClass()
+    public function testFor1nPseudonamespaceAnd2nClass()
     {
-        $path = $this->getFullFixturePath('/lib/classes');
+        $path = $this->getFullFixturePath('/src');
 
-        $this->strategy->registerPrefixPath('Dummy_', $path);
+        $this->strategy->registerPseudonamespacePath('Dummy', $path);
 
         $this->assertClassIsInstantiable('Dummy_Core_ComponentNested');
+    }
+
+    /**
+     * Test for pseudo-namespace registration with two levels of nesting
+     * and class specification with two levels of nesting.
+     */
+    public function testFor2nPseudonamespaceAnd2nClass()
+    {
+        $path = $this->getFullFixturePath('/src');
+
+        $this->strategy->registerPseudonamespacePath('Dummy_Core', $path);
+
+        $this->assertClassIsInstantiable('Dummy_Core_ComponentNested');
+    }
+
+    /**
+     * Test for many classes from the same namespace and directory path registered.
+     */
+    public function testManyClassesFromTheSamePseudonamespace()
+    {
+        $path = $this->getFullFixturePath('/src');
+
+        $this->strategy->registerPseudonamespacePath('Dummy', $path);
+
+        $this->assertClassDoesNotExist('Dummy_ComponentNonexistent');
+        $this->assertClassIsInstantiable('Dummy_ComponentExistent');
+        $this->assertClassIsInstantiable('Dummy_ComponentNotNested');
+        $this->assertClassIsInstantiable('Dummy_Core_ComponentNested');
+    }
+
+    /**
+     * Test for pseudo-namespace registration with two directory paths registered
+     * for the same pseudo-namespace.
+     */
+    public function testForTwoPathsAndOnePseudonamespace()
+    {
+        $path1 = $this->getFullFixturePath('/src');
+        $path2 = $this->getFullFixturePath('/lib');
+
+        $this->strategy->registerPseudonamespacePath('Dummy', $path1);
+        $this->strategy->registerPseudonamespacePath('Dummy', $path2);
+
+        $this->assertClassIsInstantiable('Dummy_ComponentA');
+        $this->assertClassIsInstantiable('Dummy_ComponentB');
+        $this->assertClassIsInstantiable('Dummy_Core_ComponentC');
+        $this->assertClassIsInstantiable('Dummy_Core_ComponentD');
     }
 
     /**
