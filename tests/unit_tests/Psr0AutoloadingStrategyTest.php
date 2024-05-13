@@ -50,7 +50,7 @@ class Psr0AutoloadingStrategyTest extends AbstractAutoloadingStrategyTestCase
     }
 
     /**
-     * Test for nonexisting path.
+     * Test for nonexistent path.
      */
     public function testForNonexistentPath()
     {
