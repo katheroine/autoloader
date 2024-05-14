@@ -73,7 +73,7 @@ class PearAutoloadingStrategy extends AbstractAutoloadingStrategy
     {
         foreach ($this->pseudonamespacePaths as $registeredPseudonamespacePrefix => $registeredBaseDirPaths) {
             foreach ($registeredBaseDirPaths as $registeredBaseDirPath) {
-                if (! $this->processedPseudonamespaceedClassNameContainsPrefix($registeredPseudonamespacePrefix)) {
+                if (! $this->processedPseudonamespacedClassNameContainsPrefix($registeredPseudonamespacePrefix)) {
                     continue;
                 }
 
@@ -90,7 +90,7 @@ class PearAutoloadingStrategy extends AbstractAutoloadingStrategy
         return null;
     }
 
-    private function processedPseudonamespaceedClassNameContainsPrefix(string $prefix): bool
+    private function processedPseudonamespacedClassNameContainsPrefix(string $prefix): bool
     {
         $pseudonamespacePrefix = substr(
             string: $this->processedPseudonamespacedClassName,

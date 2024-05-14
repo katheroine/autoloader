@@ -50,7 +50,7 @@ class PearAutoloadingStrategyTest extends AbstractAutoloadingStrategyTestCase
     }
 
     /**
-     * Test for nonexistent registered path.
+     * Test for nonexistent path.
      */
     public function testForNonexistentPath()
     {
@@ -62,7 +62,7 @@ class PearAutoloadingStrategyTest extends AbstractAutoloadingStrategyTestCase
     }
 
     /**
-     * Test for empty registered path.
+     * Test for empty path.
      */
     public function testForEmptyPath()
     {

@@ -22,6 +22,8 @@ namespace ExOrg\Autoloader;
  * @copyright Copyright (c) Katarzyna Krasińska
  * @license http://opensource.org/licenses/MIT MIT License
  * @link https://github.com/ExOrg/php-autoloader
+ *
+ * @runTestsInSeparateProcesses
  */
 class FixedAutoloadingStrategyTest extends AbstractAutoloadingStrategyTestCase
 {
@@ -48,103 +50,226 @@ class FixedAutoloadingStrategyTest extends AbstractAutoloadingStrategyTestCase
     }
 
     /**
-     * Test for nonexistent registered path.
+     * Test for nonexistent path.
      */
     public function testForNonexistentPath()
     {
-        $path = $this->getFullFixturePath('/nonexistent');
+        $path = $this->getFullFixturePath('/nonexistent/Dummy/ComponentExistent.php');
 
-        $this->strategy->registerClassPath('NotCalledClass', $path);
+        $this->strategy->registerClassPath('Dummy\ComponentExistent', $path);
 
-        $this->assertClassDoesNotExist('NonexistentClass');
+        $this->assertClassDoesNotExist('\Dummy\ComponentExistent');
     }
 
     /**
-     * Test for empty registered path.
+     * Test for empty path.
      */
     public function testForEmptyPath()
     {
-        $path = $this->getFullFixturePath('/empty');
+        $path = $this->getFullFixturePath('/empty/Dummy/ComponentExistent.php');
 
-        $this->strategy->registerClassPath('NotCalledClass', $path);
+        $this->strategy->registerClassPath('Dummy\ComponentExistent', $path);
 
-        $this->assertClassDoesNotExist('NonexistentClass');
+        $this->assertClassDoesNotExist('\Dummy\ComponentExistent');
     }
 
     /**
-     * Test class not existent in registered path is not found.
+     * Test for nonexistent class file.
      */
-    public function testForNonexistentClass()
+    public function testForNonexistentClassFile()
     {
-        $path = $this->getFullFixturePath('/src');
+        $path = $this->getFullFixturePath('/src/Dummy/ComponentNonexistent.php');
 
-        $this->strategy->registerClassPath('NonexistentClass', $path);
+        $this->strategy->registerClassPath('Dummy\ComponentNonexistent', $path);
 
-        $this->assertClassDoesNotExist('NonexistentClass');
+        $this->assertClassDoesNotExist('\Dummy\ComponentNonexistent');
     }
 
     /**
-     * Test class not registered with registered path is not found.
+     * Test for not registered class.
      */
     public function testForUnregisteredClass()
     {
-        $path = $this->getFullFixturePath('/src');
+        $this->assertClassDoesNotExist('\Dummy\ComponentExistent');
+    }
 
-        $this->strategy->registerClassPath('RegisteredClass', $path);
+    /**
+     * Test for unexistent namespace.
+     */
+    public function testForUnexistentNamespace()
+    {
+        $path = $this->getFullFixturePath('/src/Dummy/ComponentExistent.php');
 
-        $this->assertClassDoesNotExist('NotRegisteredClass');
+        $this->strategy->registerClassPath('Unexistent\ComponentExistent', $path);
+
+        $this->assertClassDoesNotExist('\Dummy\ComponentExistent');
+    }
+
+    /**
+     * Test for existent class file.
+     */
+    public function testForExistentClassFile()
+    {
+        $path = $this->getFullFixturePath('/src/Dummy/ComponentExistent.php');
+
+        $this->strategy->registerClassPath('Dummy\ComponentExistent', $path);
+
+        $this->assertClassIsInstantiable('\Dummy\ComponentExistent');
+    }
+
+    /**
+     * Test for namespace with backslash on the beginning.
+     */
+    public function testForNamespaceWithBackslashOnBeginning()
+    {
+        $path = $this->getFullFixturePath('/src/Dummy/ComponentExistent.php');
+
+        $this->strategy->registerClassPath('\Dummy\ComponentExistent', $path);
+
+        $this->assertClassDoesNotExist('\Dummy\ComponentExistent');
+    }
+
+    /**
+     * Test for namespace with backslash on the end.
+     */
+    public function testForNamespaceWithBackslashOnEnd()
+    {
+        $path = $this->getFullFixturePath('/src/Dummy/ComponentExistent.php');
+
+        $this->strategy->registerClassPath('Dummy\ComponentExistent\\', $path);
+
+        $this->assertClassDoesNotExist('\Dummy\ComponentExistent');
+    }
+
+    /**
+     * Test for namespace with backslash on the beginning and the end.
+     */
+    public function testForNamespaceWithBackslashOnBeginningAndEnd()
+    {
+        $path = $this->getFullFixturePath('/src/Dummy/ComponentExistent.php');
+
+        $this->strategy->registerClassPath('\Dummy\ComponentExistent\\', $path);
+
+        $this->assertClassDoesNotExist('\Dummy\ComponentExistent');
+    }
+
+    /**
+     * Test for fully qualified class name without backslash on the beginning.
+     */
+    public function testForFQClassNameWithoutBackslashOnBeginning()
+    {
+        $path = $this->getFullFixturePath('/src/Dummy/ComponentExistent.php');
+
+        $this->strategy->registerClassPath('Dummy\ComponentExistent', $path);
+
+        $this->assertClassIsInstantiable('Dummy\ComponentExistent');
     }
 
     /**
      * Test for the class specification with one level of nesting
-     * with no namespace.
+     * without namespace.
      */
-    public function testFor1nClassAndNoNamespace()
+    public function testFor1nClassWithoutNamespace()
     {
-        $path = $this->getFullFixturePath('/src/ComponentNotNestedNoNS.php');
+        $path = $this->getFullFixturePath('/src/Dummy/ComponentNotNestedWithoutNS.php');
 
-        $this->strategy->registerClassPath('ComponentNotNestedNoNS', $path);
+        $this->strategy->registerClassPath('ComponentNotNestedWithoutNS', $path);
 
-        $this->assertClassIsInstantiable('ComponentNotNestedNoNS');
+        $this->assertClassIsInstantiable('\ComponentNotNestedWithoutNS');
     }
 
     /**
      * Test for the class specification with one level of nesting
-     * and namespace with one level of nesting.
+     * with namespace.
      */
-    public function testFor1nClassAnd1nNamespace()
+    public function testFor1nClassWithNamespace()
     {
-        $path = $this->getFullFixturePath('/src/ComponentNotNestedWithNS.php');
+        $path = $this->getFullFixturePath('/src/Dummy/ComponentNotNestedWithNS.php');
 
         $this->strategy->registerClassPath('Dummy\ComponentNotNestedWithNS', $path);
 
-        $this->assertClassIsInstantiable('Dummy\ComponentNotNestedWithNS');
+        $this->assertClassIsInstantiable('\Dummy\ComponentNotNestedWithNS');
     }
 
     /**
      * Test for the class specification with two levels of nesting
-     * with no namespace.
+     * without namespace.
      */
-    public function testFor2nClassAndNoNamespace()
+    public function testFor2nClassWithoutNamespace()
     {
-        $path = $this->getFullFixturePath('/src/Core/ComponentNestedNoNS.php');
+        $path = $this->getFullFixturePath('/src/Dummy/Core/ComponentNestedWithoutNS.php');
 
-        $this->strategy->registerClassPath('ComponentNestedNoNS', $path);
+        $this->strategy->registerClassPath('ComponentNestedWithoutNS', $path);
 
-        $this->assertClassIsInstantiable('ComponentNestedNoNS');
+        $this->assertClassIsInstantiable('\ComponentNestedWithoutNS');
+    }
+
+        /**
+     * Test for the class specification with two levels of nesting
+     * with namespace.
+     */
+    public function testFor2nClassWithNamespace()
+    {
+        $path = $this->getFullFixturePath('/src/Dummy/Core/ComponentNestedWithNS.php');
+
+        $this->strategy->registerClassPath('Dummy\Core\ComponentNestedWithNS', $path);
+
+        $this->assertClassIsInstantiable('\Dummy\Core\ComponentNestedWithNS');
     }
 
     /**
-     * Test for the class specification with two levels of nesting
-     * with namespace with one level of nesting.
+     * Test for the class with underscored namespace name.
      */
-    public function testFor2nClassAnd1nNamespace()
+    public function testForClassWithUnderscoredNamespaceName()
     {
-        $path = $this->getFullFixturePath('/src/Core/ComponentNestedWithNS.php');
+        $path = $this->getFullFixturePath('/src/Dummy/Underscored_Section/AdditionalComponent.php');
 
-        $this->strategy->registerClassPath('Dummy\ComponentNestedWithNS', $path);
+        $this->strategy->registerClassPath('Dummy\Underscored_Section\AdditionalComponent', $path);
 
-        $this->assertClassIsInstantiable('Dummy\ComponentNestedWithNS');
+        $this->assertClassIsInstantiable('\Dummy\Underscored_Section\AdditionalComponent');
+    }
+
+    /**
+     * Test for the class with underscored name.
+     */
+    public function testForClassWithUnderscoredName()
+    {
+        $path = $this->getFullFixturePath('/src/Dummy/Core/Underscored_Component.php');
+
+        $this->strategy->registerClassPath('Dummy\Core\Underscored_Component', $path);
+
+        $this->assertClassIsInstantiable('\Dummy\Core\Underscored_Component');
+    }
+
+    /**
+     * Test for many class pathes registered.
+     */
+    public function testManyClasses()
+    {
+        $path1 = $this->getFullFixturePath('/src/Dummy/ComponentExistent.php');
+        $path2 = $this->getFullFixturePath('/src/Dummy/ComponentNotNestedWithoutNS.php');
+        $path3 = $this->getFullFixturePath('/src/Dummy/ComponentNotNestedWithNS.php');
+        $path4 = $this->getFullFixturePath('/src/Dummy/Core/ComponentNestedWithoutNS.php');
+        $path5 = $this->getFullFixturePath('/src/Dummy/Core/ComponentNestedWithNS.php');
+        $path6 = $this->getFullFixturePath('/src/Dummy/Underscored_Section/AdditionalComponent.php');
+        $path7 = $this->getFullFixturePath('/src/Dummy/Core/Underscored_Component.php');
+
+        $this->strategy->registerClassPath('Dummy\ComponentExistent', $path1);
+        $this->strategy->registerClassPath('ComponentNotNestedWithoutNS', $path2);
+        $this->strategy->registerClassPath('Dummy\ComponentNotNestedWithNS', $path3);
+        $this->strategy->registerClassPath('ComponentNestedWithoutNS', $path4);
+        $this->strategy->registerClassPath('Dummy\Core\ComponentNestedWithNS', $path5);
+        $this->strategy->registerClassPath('Dummy\Underscored_Section\AdditionalComponent', $path6);
+        $this->strategy->registerClassPath('Dummy\Core\Underscored_Component', $path7);
+
+        $this->assertClassDoesNotExist('\Dummy\ComponentNonexistent');
+        $this->assertClassIsInstantiable('\Dummy\ComponentExistent');
+        $this->assertClassIsInstantiable('\ComponentNotNestedWithoutNS');
+        $this->assertClassIsInstantiable('\Dummy\ComponentNotNestedWithNS');
+        $this->assertClassIsInstantiable('\ComponentNestedWithoutNS');
+        $this->assertClassIsInstantiable('\Dummy\Core\ComponentNestedWithNS');
+        $this->assertClassIsInstantiable('\Dummy\Underscored_Section\AdditionalComponent');
+        $this->assertClassIsInstantiable('\Dummy\Core\Underscored_Component');
     }
 
     /**

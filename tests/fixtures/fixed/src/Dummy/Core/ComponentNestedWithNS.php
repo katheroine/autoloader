@@ -1,6 +1,6 @@
 <?php
 
-namespace Dummy;
+namespace Dummy\Core;
 
 class ComponentNestedWithNS
 {
