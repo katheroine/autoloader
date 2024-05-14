@@ -28,16 +28,16 @@ class RecursiveAutoloadingStrategy extends AbstractAutoloadingStrategy
     /**
      * Directory paths where class files are searched.
      *
-     * @var string[] | array[]
+     * @var string[]
      */
     protected array $paths = [];
 
     /**
-     * File name for the currently processed class.
+     * File name (unnamespaced & with extension) of the currently processed class.
      *
      * @var string
      */
-    protected string $processedFile;
+    protected string $processedClassFileName;
 
     /**
      * Register path for recursive search by autoloader.
@@ -54,13 +54,17 @@ class RecursiveAutoloadingStrategy extends AbstractAutoloadingStrategy
      * needed in file searching process
      * and assign their values to the strategy class variables.
      *
-     * @param string $class
+     * @param string $fullyQualifiedClassName
      */
-    public function extractClassParameters(string $class): void
+    public function extractClassParameters(string $fullyQualifiedClassName): void
     {
-        $classStrictName = $this->extractClassStrictName($class);
+        // Removing '\' characters from the beginning of the fully qualified class name
+        $processedClassName = ltrim(
+            string: $fullyQualifiedClassName,
+            characters: '\\'
+        );
 
-        $this->processedFile = $classStrictName . '.php';
+        $this->processedClassFileName = $this->extractUnnamespacedClassName($processedClassName) . '.php';
     }
 
     /**
@@ -71,10 +75,10 @@ class RecursiveAutoloadingStrategy extends AbstractAutoloadingStrategy
      */
     protected function findClassFilePath(): ?string
     {
-        foreach ($this->paths as $path) {
-            $classFilePath = $this->findFileInDirectoryPath($this->processedFile, $path);
+        foreach ($this->paths as $registeredBaseDirPath) {
+            $classFilePath = $this->findProcessedFileInDirectoryPath($registeredBaseDirPath);
 
-            $classFileExists = ! is_null($classFilePath) && is_file($classFilePath);
+            $classFileExists = is_file($classFilePath);
 
             if ($classFileExists) {
                 return $classFilePath;
@@ -88,54 +92,58 @@ class RecursiveAutoloadingStrategy extends AbstractAutoloadingStrategy
      * Decompose class full name.
      * Strip namespace and extract class strict name.
      *
-     * @param string $classFullName
+     * @param string $className
+     *
+     * @return string
      */
-    protected static function extractClassStrictName(string $classFullName): string
+    protected static function extractUnnamespacedClassName(string $className): string
     {
-        // removing '\' characters from the beginning of the name
-        $classFullName = ltrim($classFullName, '\\');
+        // Extracting class namespace
+        $namespaceEndPosition = strrpos(
+            haystack: $className,
+            needle: '\\'
+        );
 
-        // extracting namespace chain and strict class name
-        $namespaceEndPosition = strrpos($classFullName, '\\');
-
-        $namespaceFound = (bool) $namespaceEndPosition;
+        $namespaceFound = ($namespaceEndPosition !== false);
 
         if ($namespaceFound) {
             $classNameStartPosition = $namespaceEndPosition + 1;
-            $classStrictName = substr($classFullName, $classNameStartPosition);
+            $unnamespacedClassName = substr(
+                string: $className,
+                offset: $classNameStartPosition
+            );
         } else {
-            $classStrictName = $classFullName;
+            $unnamespacedClassName = $className;
         }
 
-        return $classStrictName;
+        return $unnamespacedClassName;
     }
 
     /**
      * Find full path of the file in the directory.
      *
-     * @param string $fileName
      * @param string $directoryPath
      *
-     * @return string | null $filePath
+     * @return string
      */
-    private function findFileInDirectoryPath(string $fileName, string $directoryPath): ?string
+    private function findProcessedFileInDirectoryPath(string $directoryPath): string
     {
         try {
             $directoryIterator = new \RecursiveDirectoryIterator($directoryPath);
             $directoryItems = new \RecursiveIteratorIterator($directoryIterator);
 
             foreach ($directoryItems as $directoryItem) {
-                $directoryItemIsSearchedFile = ($directoryItem->getFilename() === $fileName);
+                $directoryItemIsSearchedFile = ($directoryItem->getFilename() === $this->processedClassFileName);
 
                 if ($directoryItemIsSearchedFile) {
                     return $directoryItem->getPathname();
                 }
             }
 
-            return null;
+            return '';
         } catch (\RuntimeException $exception) {
             // Directory path defines empty directory
-            return null;
+            return '';
         }
     }
 }
