@@ -94,13 +94,13 @@ class Psr0AutoloadingStrategyTest extends AbstractAutoloadingStrategyTestCase
     }
 
     /**
-     * Test for unexistent namespace.
+     * Test for nonexistent namespace.
      */
-    public function testForUnexistentNamespace()
+    public function testForNonexistentNamespace()
     {
         $path = $this->getFullFixturePath('/src');
 
-        $this->strategy->registerNamespacePath('Unexistent', $path);
+        $this->strategy->registerNamespacePath('Nonexistent', $path);
 
         $this->assertClassDoesNotExist('\Vendor\Package\Dummy\ComponentExistent');
     }

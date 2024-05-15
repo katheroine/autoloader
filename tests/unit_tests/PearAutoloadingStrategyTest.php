@@ -94,9 +94,9 @@ class PearAutoloadingStrategyTest extends AbstractAutoloadingStrategyTestCase
     }
 
     /**
-     * Test unexistent pseudo-namespace.
+     * Test nonexistent pseudo-namespace.
      */
-    public function testForUnexistentPseudonamespace()
+    public function testForNonexistentPseudonamespace()
     {
         $path = $this->getFullFixturePath('/src');
 

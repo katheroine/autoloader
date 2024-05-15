@@ -72,11 +72,11 @@ class PearAutoloadingStrategy extends AbstractAutoloadingStrategy
     protected function findClassFilePath(): ?string
     {
         foreach ($this->pseudonamespacePaths as $registeredPseudonamespacePrefix => $registeredBaseDirPaths) {
-            foreach ($registeredBaseDirPaths as $registeredBaseDirPath) {
-                if (! $this->processedPseudonamespacedClassNameContainsPrefix($registeredPseudonamespacePrefix)) {
-                    continue;
-                }
+            if (! $this->processedPseudonamespacedClassNameContainsPrefix($registeredPseudonamespacePrefix)) {
+                continue;
+            }
 
+            foreach ($registeredBaseDirPaths as $registeredBaseDirPath) {
                 $classFilePath = $this->buildClassFilePath($registeredBaseDirPath);
 
                 $classFileExists = is_file($classFilePath);

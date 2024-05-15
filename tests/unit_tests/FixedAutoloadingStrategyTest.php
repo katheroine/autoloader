@@ -94,13 +94,13 @@ class FixedAutoloadingStrategyTest extends AbstractAutoloadingStrategyTestCase
     }
 
     /**
-     * Test for unexistent namespace.
+     * Test for nonexistent namespace.
      */
-    public function testForUnexistentNamespace()
+    public function testForNonexistentNamespace()
     {
         $path = $this->getFullFixturePath('/src/Dummy/ComponentExistent.php');
 
-        $this->strategy->registerClassPath('Unexistent\ComponentExistent', $path);
+        $this->strategy->registerClassPath('Nonexistent\ComponentExistent', $path);
 
         $this->assertClassDoesNotExist('\Dummy\ComponentExistent');
     }
