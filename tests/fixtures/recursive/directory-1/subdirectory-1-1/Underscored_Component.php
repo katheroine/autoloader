@@ -2,7 +2,7 @@
 
 namespace Dummy;
 
-class Class_2
+class Underscored_Component
 {
 
 }
