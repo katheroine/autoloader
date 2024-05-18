@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /*
  * This file is part of the Autoloader package.
  *
@@ -9,50 +11,44 @@
  * file that was distributed with this source code.
  */
 
-namespace Exorg\Autoloader;
+namespace ExOrg\Autoloader;
 
 /**
- * PearAutoloadingStrategy.
+ * PEAR autoloading strategy.
  * Autoloading strategy for PEAR-like directory structures.
  *
  * @package Autoloader
  * @author Katarzyna Krasińska <katheroine@gmail.com>
- * @copyright Copyright (c) 2015 Katarzyna Krasińska
+ * @copyright Copyright (c) Katarzyna Krasińska
  * @license http://opensource.org/licenses/MIT MIT License
  * @link https://github.com/ExOrg/php-autoloader
  */
 class PearAutoloadingStrategy extends AbstractAutoloadingStrategy
 {
     /**
-     * Class full names with assigned directory path.
+     * Directory paths where class files are searched
+     * assigned to the class name prefixes (pseudo-namespaces).
      *
-     * @var array[string]string | array[]
+     * @var array
      */
-    protected $classPaths = array();
+    protected array $pseudonamespacePaths = [];
 
     /**
-     * Currently processed full name of the class.
+     * Actually processed prefixed (pseudo-namespaced) class name.
      *
-     * @var unknown
+     * @var string
      */
-    protected $processedClass = null;
+    protected string $processedPseudonamespacedClassName = '';
 
     /**
-     * Partial file path of the currently processed class name.
+     * Register pseudo-namespace and assign a directory path.
      *
-     * @var string | null
-     */
-    protected $processedPath = null;
-
-    /**
-     * Register prefix and assign a directory path.
-     *
-     * @param string $prefix
+     * @param string $pseudonamespace
      * @param string $path
      */
-    public function registerPrefixPath($prefix, $path)
+    public function registerPseudonamespacePath(string $pseudonamespace, string $path): void
     {
-        $this->prefixPaths[$prefix] = $path;
+        $this->pseudonamespacePaths[$pseudonamespace][] = $path;
     }
 
     /**
@@ -60,15 +56,11 @@ class PearAutoloadingStrategy extends AbstractAutoloadingStrategy
      * needed in file searching process
      * and assign their values to the strategy class variables.
      *
-     * @param string $class
+     * @param string $pseudonamespacedClassName
      */
-    protected function extractClassParameters($class)
+    protected function extractClassParameters(string $pseudonamespacedClassName): void
     {
-        $this->processedClass = $class;
-
-        $classPath = $this->buildClassPathFromClass($class);
-
-        $this->processedPath = $classPath . '.php';
+        $this->processedPseudonamespacedClassName = $pseudonamespacedClassName;
     }
 
     /**
@@ -77,35 +69,60 @@ class PearAutoloadingStrategy extends AbstractAutoloadingStrategy
      *
      * @return string | null
      */
-    protected function findClassFilePath()
+    protected function findClassFilePath(): ?string
     {
-        foreach ($this->prefixPaths as $prefix => $path) {
-            $prefixIsNotRegistered = (0 !== strpos($this->processedClass, $prefix));
-
-            if ($prefixIsNotRegistered) {
+        foreach ($this->pseudonamespacePaths as $registeredPseudonamespacePrefix => $registeredBaseDirPaths) {
+            if (! $this->processedPseudonamespacedClassNameContainsPrefix($registeredPseudonamespacePrefix)) {
                 continue;
             }
 
-            $classFilePath = $path . DIRECTORY_SEPARATOR . $this->processedPath;
+            foreach ($registeredBaseDirPaths as $registeredBaseDirPath) {
+                $classFilePath = $this->buildClassFilePath($registeredBaseDirPath);
 
-            $classFileExists = is_file($classFilePath);
+                $classFileExists = is_file($classFilePath);
 
-            if ($classFileExists) {
-                return $classFilePath;
+                if ($classFileExists) {
+                    return $classFilePath;
+                }
             }
         }
+
+        return null;
     }
 
-    /**
-     * Build class path from class name.
-     *
-     * @param string $class
-     * @return string
-     */
-    protected static function buildClassPathFromClass($class)
+    private function processedPseudonamespacedClassNameContainsPrefix(string $prefix): bool
     {
-        $classPath = str_replace('_', DIRECTORY_SEPARATOR, $class);
+        $pseudonamespacePrefix = substr(
+            string: $this->processedPseudonamespacedClassName,
+            offset: 0,
+            length: strlen($prefix)
+        );
+        $processedPseudonamespaceHasReisteredPrefix = ($prefix == $pseudonamespacePrefix);
 
-        return $classPath;
+        return $processedPseudonamespaceHasReisteredPrefix;
+    }
+
+    private function buildClassFilePath(string $baseDirPath): string
+    {
+        $classFilePath = $baseDirPath
+            . DIRECTORY_SEPARATOR
+            . $this->buildClassFilePathWithinBaseDir();
+
+        return $classFilePath;
+    }
+
+    protected function buildClassFilePathWithinBaseDir(): string
+    {
+        // Building pseudo-namespaced class path snippet
+        $prefixedClassPath = str_replace(
+            search: '_',
+            replace: DIRECTORY_SEPARATOR,
+            subject: $this->processedPseudonamespacedClassName
+        );
+
+        // Building entire class file path
+        $classFilePathWithinBaseDir = $prefixedClassPath . '.php';
+
+        return $classFilePathWithinBaseDir;
     }
 }

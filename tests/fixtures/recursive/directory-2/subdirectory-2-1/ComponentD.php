@@ -1,0 +1,8 @@
+<?php
+
+namespace Dummy\Core;
+
+class ComponentD
+{
+
+}

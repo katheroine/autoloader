@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /*
  * This file is part of the Autoloader package.
  *
@@ -9,15 +11,15 @@
  * file that was distributed with this source code.
  */
 
-namespace Exorg\Autoloader;
+namespace ExOrg\Autoloader;
 
 /**
- * Psr0AutoloadingStrategy.
+ * PSR-0 autoloading strategy.
  * Autoloading strategy for PSR-0 standard.
  *
  * @package Autoloader
  * @author Katarzyna Krasińska <katheroine@gmail.com>
- * @copyright Copyright (c) 2015 Katarzyna Krasińska
+ * @copyright Copyright (c) Katarzyna Krasińska
  * @license http://opensource.org/licenses/MIT MIT License
  * @link https://github.com/ExOrg/php-autoloader
  */
@@ -28,27 +30,15 @@ class Psr0AutoloadingStrategy extends AbstractPsrAutoloadingStrategy
      * needed in file searching process
      * and assign their values to the strategy class variables.
      *
-     * @param string $class
+     * @param string $fullyQualifiedClassName
      */
-    protected function extractClassParameters($class)
+    protected function extractClassParameters(string $fullyQualifiedClassName): void
     {
-        // removing '\' characters from the beginning of the name
-        $classFullName = ltrim($class, '\\');
-
-        // extracting namespace chain and strict class name
-        $namespaceEndPosition = strrpos($classFullName, '\\');
-        $this->processedNamespace = substr($classFullName, 0, $namespaceEndPosition);
-
-        // building namespace path snippet
-        $namespacePath = str_replace('\\', DIRECTORY_SEPARATOR, $this->processedNamespace);
-
-        // building class path snippet
-        $classNameStartPosition = $namespaceEndPosition + 1;
-        $className = substr($classFullName, $classNameStartPosition);
-        $classPath = str_replace('_', DIRECTORY_SEPARATOR, $className);
-
-        // building entire class file path
-        $this->processedPath = $namespacePath . DIRECTORY_SEPARATOR . $classPath . '.php';
+        // Removing '\' characters from the beginning of the fully qualified class name
+        $this->processedNamespacedClassName = ltrim(
+            string: $fullyQualifiedClassName,
+            characters: '\\'
+        );
     }
 
     /**
@@ -57,22 +47,95 @@ class Psr0AutoloadingStrategy extends AbstractPsrAutoloadingStrategy
      *
      * @return string | null
      */
-    protected function findClassFilePath()
+    protected function findClassFilePath(): ?string
     {
-        foreach ($this->namespacePaths as $namespace => $path) {
-            $namespaceIsNotRegistered = (0 !== strpos($this->processedNamespace, $namespace));
-
-            if ($namespaceIsNotRegistered) {
+        foreach ($this->namespacePaths as $registeredNamespacePrefix => $registeredBaseDirPaths) {
+            if (! $this->processedNamespacedClassNameContainsPrefix($registeredNamespacePrefix)) {
                 continue;
             }
 
-            $classFilePath = $path . DIRECTORY_SEPARATOR . $this->processedPath;
+            foreach ($registeredBaseDirPaths as $registeredBaseDirPath) {
+                $classFilePath = $this->buildClassFilePath($registeredBaseDirPath);
 
-            $classFileExists = is_file($classFilePath);
+                $classFileExists = is_file($classFilePath);
 
-            if ($classFileExists) {
-                return $classFilePath;
+                if ($classFileExists) {
+                    return $classFilePath;
+                }
             }
         }
+
+        return null;
+    }
+
+    private function processedNamespacedClassNameContainsPrefix(string $prefix): bool
+    {
+        $namespacePrefix = substr(
+            string: $this->processedNamespacedClassName,
+            offset: 0,
+            length: strlen($prefix)
+        );
+        $processedNamespaceHasReisteredPrefix = ($prefix == $namespacePrefix);
+
+        return $processedNamespaceHasReisteredPrefix;
+    }
+
+    private function buildClassFilePath(string $baseDirPath): string
+    {
+        $classFilePath = $baseDirPath
+            . DIRECTORY_SEPARATOR
+            . $this->buildClassFilePathWithinBaseDir();
+
+        return $classFilePath;
+    }
+
+    private function buildClassFilePathWithinBaseDir(): string
+    {
+        list($classNamespace, $className) = $this->extractProcessedClassNamespaceAndName();
+
+        // Building namespace path snippet
+        $namespacePath = str_replace(
+            search: '\\',
+            replace: DIRECTORY_SEPARATOR,
+            subject: $classNamespace
+        );
+
+        // Building class path snippet
+        $classPath = str_replace(
+            search: '_',
+            replace: DIRECTORY_SEPARATOR,
+            subject: $className
+        );
+
+        // Building entire class file path
+        $classFilePathWithinBaseDir = $namespacePath
+            . DIRECTORY_SEPARATOR
+            . $classPath
+            . '.php';
+
+        return $classFilePathWithinBaseDir;
+    }
+
+    private function extractProcessedClassNamespaceAndName(): array
+    {
+        // Extracting class namespace
+        $namespaceEndPosition = strrpos(
+            haystack: $this->processedNamespacedClassName,
+            needle: '\\'
+        );
+        $classNamespace = substr(
+            string: $this->processedNamespacedClassName,
+            offset: 0,
+            length: $namespaceEndPosition
+        );
+
+        // Extracting class name
+        $classNameStartPosition = $namespaceEndPosition + 1;
+        $className = substr(
+            string: $this->processedNamespacedClassName,
+            offset: $classNameStartPosition
+        );
+
+        return [$classNamespace, $className];
     }
 }

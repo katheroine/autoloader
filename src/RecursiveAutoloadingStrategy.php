@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /*
  * This file is part of the Autoloader package.
  *
@@ -9,40 +11,40 @@
  * file that was distributed with this source code.
  */
 
-namespace Exorg\Autoloader;
+namespace ExOrg\Autoloader;
 
 /**
- * RecursiveAutoloadingStrategy.
+ * Recursive autoloading strategy.
  * Autoloading strategy for recursve directory searching.
  *
  * @package Autoloader
  * @author Katarzyna Krasińska <katheroine@gmail.com>
- * @copyright Copyright (c) 2015 Katarzyna Krasińska
+ * @copyright Copyright (c) Katarzyna Krasińska
  * @license http://opensource.org/licenses/MIT MIT License
  * @link https://github.com/ExOrg/php-autoloader
  */
 class RecursiveAutoloadingStrategy extends AbstractAutoloadingStrategy
 {
     /**
-     * Directory path where class files are searched.
+     * Directory paths where class files are searched.
      *
-     * @var array[string] | array[]
+     * @var string[]
      */
-    protected $paths = array();
+    protected array $paths = [];
 
     /**
-     * File name for the currently processed class.
+     * File name (unnamespaced & with extension) of the currently processed class.
      *
      * @var string
      */
-    protected $processedFile;
+    protected string $processedClassFileName;
 
     /**
      * Register path for recursive search by autoloader.
      *
      * @param string $path
      */
-    public function registerPath($path)
+    public function registerPath(string $path): void
     {
         $this->paths[] = $path;
     }
@@ -52,13 +54,17 @@ class RecursiveAutoloadingStrategy extends AbstractAutoloadingStrategy
      * needed in file searching process
      * and assign their values to the strategy class variables.
      *
-     * @param string $class
+     * @param string $fullyQualifiedClassName
      */
-    public function extractClassParameters($class)
+    public function extractClassParameters(string $fullyQualifiedClassName): void
     {
-        $classStrictName = $this->extractClassStrictName($class);
+        // Removing '\' characters from the beginning of the fully qualified class name
+        $processedClassName = ltrim(
+            string: $fullyQualifiedClassName,
+            characters: '\\'
+        );
 
-        $this->processedFile = $classStrictName . '.php';
+        $this->processedClassFileName = $this->extractUnnamespacedClassName($processedClassName) . '.php';
     }
 
     /**
@@ -67,10 +73,10 @@ class RecursiveAutoloadingStrategy extends AbstractAutoloadingStrategy
      *
      * @return string | null
      */
-    protected function findClassFilePath()
+    protected function findClassFilePath(): ?string
     {
-        foreach ($this->paths as $path) {
-            $classFilePath = $this->findFileInDirectoryPath($this->processedFile, $path);
+        foreach ($this->paths as $registeredBaseDirPath) {
+            $classFilePath = $this->findProcessedFileInDirectoryPath($registeredBaseDirPath);
 
             $classFileExists = is_file($classFilePath);
 
@@ -78,57 +84,66 @@ class RecursiveAutoloadingStrategy extends AbstractAutoloadingStrategy
                 return $classFilePath;
             }
         }
+
+        return null;
     }
 
     /**
      * Decompose class full name.
      * Strip namespace and extract class strict name.
      *
-     * @param string $classFullName
+     * @param string $className
+     *
+     * @return string
      */
-    protected static function extractClassStrictName($classFullName)
+    protected static function extractUnnamespacedClassName(string $className): string
     {
-        // removing '\' characters from the beginning of the name
-        $classFullName = ltrim($classFullName, '\\');
+        // Extracting class namespace
+        $namespaceEndPosition = strrpos(
+            haystack: $className,
+            needle: '\\'
+        );
 
-        // extracting namespace chain and strict class name
-        $namespaceEndPosition = strrpos($classFullName, '\\');
-
-        $namespaceFound = (bool) $namespaceEndPosition;
+        $namespaceFound = ($namespaceEndPosition !== false);
 
         if ($namespaceFound) {
             $classNameStartPosition = $namespaceEndPosition + 1;
-            $classStrictName = substr($classFullName, $classNameStartPosition);
+            $unnamespacedClassName = substr(
+                string: $className,
+                offset: $classNameStartPosition
+            );
         } else {
-            $classStrictName = $classFullName;
+            $unnamespacedClassName = $className;
         }
 
-        return $classStrictName;
+        return $unnamespacedClassName;
     }
 
     /**
      * Find full path of the file in the directory.
      *
-     * @param string $fileName
      * @param string $directoryPath
-     * @return string $filePath | null
+     *
+     * @return string
      */
-    private function findFileInDirectoryPath($fileName, $directoryPath)
+    private function findProcessedFileInDirectoryPath(string $directoryPath): string
     {
         try {
             $directoryIterator = new \RecursiveDirectoryIterator($directoryPath);
             $directoryItems = new \RecursiveIteratorIterator($directoryIterator);
 
             foreach ($directoryItems as $directoryItem) {
-                $directoryItemIsSearchedFile = ($directoryItem->getFilename() === $fileName);
+                $directoryItemIsSearchedFile = ($directoryItem->getFilename() === $this->processedClassFileName);
 
                 if ($directoryItemIsSearchedFile) {
                     return $directoryItem->getPathname();
                 }
             }
+
+            return '';
         } catch (\RuntimeException $exception) {
-            // directory path defines empty directory
-            return null;
+            // Directory path defines empty directory
+            return '';
         }
     }
 }

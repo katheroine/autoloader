@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /*
  * This file is part of the Autoloader package.
  *
@@ -9,15 +11,14 @@
  * file that was distributed with this source code.
  */
 
-namespace Exorg\Autoloader;
+namespace ExOrg\Autoloader;
 
 /**
- * AbstractAutoloadingStrategy.
  * Autoloading strategy.
  *
  * @package Autoloader
  * @author Katarzyna Krasińska <katheroine@gmail.com>
- * @copyright Copyright (c) 2015 Katarzyna Krasińska
+ * @copyright Copyright (c) Katarzyna Krasińska
  * @license http://opensource.org/licenses/MIT MIT License
  * @link https://github.com/ExOrg/php-autoloader
  */
@@ -26,33 +27,35 @@ abstract class AbstractAutoloadingStrategy implements AutoloadingStrategyInterfa
     /**
      * Search for the class file path and load it.
      *
-     * @param string $class
+     * @param string $fullyQualifiedClassName
+     *
      * @return boolean
      */
-    public function loadClass($class)
+    public function loadClass(string $fullyQualifiedClassName): bool
     {
-        $this->extractClassParameters($class);
+        $this->extractClassParameters($fullyQualifiedClassName);
 
         $classFilePath = $this->findClassFilePath();
-        $classFileFound = !is_null($classFilePath);
+        $classFileNotFound = is_null($classFilePath);
 
-        if ($classFileFound) {
-            require $classFilePath;
-
-            return true;
-        } else {
+        if ($classFileNotFound) {
             return false;
         }
+
+        require $classFilePath;
+
+        return true;
     }
 
     /**
      * Extract class paramaters like namespace or class name
-     * needed in file searching process
-     * and assign their values to the strategy class variables.
+     * needed in the class file searching process
+     * and assign their values to the strategy class variables
+     * that will be used by the findClassFilePath method.
      *
-     * @param string $class
+     * @param string $fullyQualifiedClassName
      */
-    abstract protected function extractClassParameters($class);
+    abstract protected function extractClassParameters(string $fullyQualifiedClassName): void;
 
     /**
      * Find full path of the file that contains
@@ -60,5 +63,5 @@ abstract class AbstractAutoloadingStrategy implements AutoloadingStrategyInterfa
      *
      * @return string | null
      */
-    abstract protected function findClassFilePath();
+    abstract protected function findClassFilePath(): ?string;
 }

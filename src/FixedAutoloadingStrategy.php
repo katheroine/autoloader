@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /*
  * This file is part of the Autoloader package.
  *
@@ -9,15 +11,15 @@
  * file that was distributed with this source code.
  */
 
-namespace Exorg\Autoloader;
+namespace ExOrg\Autoloader;
 
 /**
- * FixedAutoloadingStrategy.
+ * Fixed autoloading strategy.
  * Autoloading strategy for fixed paths.
  *
  * @package Autoloader
  * @author Katarzyna Krasińska <katheroine@gmail.com>
- * @copyright Copyright (c) 2015 Katarzyna Krasińska
+ * @copyright Copyright (c) Katarzyna Krasińska
  * @license http://opensource.org/licenses/MIT MIT License
  * @link https://github.com/ExOrg/php-autoloader
  */
@@ -26,24 +28,24 @@ class FixedAutoloadingStrategy extends AbstractAutoloadingStrategy
     /**
      * Class full names with assigned directory path.
      *
-     * @var array[string]string | array[]
+     * @var string[] | array[]
      */
-    protected $classPaths = array();
+    protected $classPaths = [];
 
     /**
      * Currently processed class name.
      *
-     * @var string | null
+     * @var string
      */
-    protected $processedClass = null;
+    protected $processedClassName = '';
 
     /**
      * Register class full name and assign a directory path.
      *
-     * @param string $class
+     * @param string $class can be namespaced or not
      * @param string $path
      */
-    public function registerClassPath($class, $path)
+    public function registerClassPath(string $class, string $path): void
     {
         $this->classPaths[$class] = $path;
     }
@@ -53,11 +55,15 @@ class FixedAutoloadingStrategy extends AbstractAutoloadingStrategy
      * needed in file searching process
      * and assign their values to the strategy class variables.
      *
-     * @param string $class
+     * @param string $className can be namespaced or not
      */
-    public function extractClassParameters($class)
+    public function extractClassParameters(string $className): void
     {
-        $this->processedClass = $class;
+         // Removing '\' characters from the beginning of the class name
+        $this->processedClassName = ltrim(
+            string: $className,
+            characters: '\\'
+        );
     }
 
     /**
@@ -66,20 +72,20 @@ class FixedAutoloadingStrategy extends AbstractAutoloadingStrategy
      *
      * @return string | null
      */
-    protected function findClassFilePath()
+    protected function findClassFilePath(): ?string
     {
-        foreach ($this->classPaths as $class => $path) {
-            $pathIsNotRegistered = (0 !== strpos(strrev($this->processedClass), strrev($class)));
-
-            if ($pathIsNotRegistered) {
+        foreach ($this->classPaths as $registeredClassName => $registeredClassFilePath) {
+            if ($this->processedClassName != $registeredClassName) {
                 continue;
             }
 
-            $classFileExists = is_file($path);
+            $classFileExists = is_file($registeredClassFilePath);
 
             if ($classFileExists) {
-                return $path;
+                return $registeredClassFilePath;
             }
         }
+
+        return null;
     }
 }

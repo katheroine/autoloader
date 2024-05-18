@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /*
  * This file is part of the Autoloader package.
  *
@@ -9,7 +11,7 @@
  * file that was distributed with this source code.
  */
 
-namespace Exorg\Autoloader;
+namespace ExOrg\Autoloader;
 
 /**
  * Autoloader.
@@ -20,25 +22,27 @@ namespace Exorg\Autoloader;
  *
  * @package Autoloader
  * @author Katarzyna Krasińska <katheroine@gmail.com>
- * @copyright Copyright (c) 2015 Katarzyna Krasińska
+ * @copyright Copyright (c) Katarzyna Krasińska
  * @license http://opensource.org/licenses/MIT MIT License
  * @link https://github.com/ExOrg/php-autoloader
  */
 class Autoloader
 {
+    private const AUTOLOADER_FUNCTION_NAME = 'loadClass';
+
     /**
      * Autoloading strategy.
      *
-     * @var AutoloadingStrategy
+     * @var AutoloadingStrategyInterface
      */
-    private $autoloadingStrategy;
+    private AutoloadingStrategyInterface $autoloadingStrategy;
 
     /**
      * Set autoloading strategy.
      *
      * @param AutoloadingStrategyInterface $autoloadingStrategy
      */
-    public function setAutoloadingStrategy(AutoloadingStrategyInterface $autoloadingStrategy)
+    public function setAutoloadingStrategy(AutoloadingStrategyInterface $autoloadingStrategy): void
     {
         $this->autoloadingStrategy = $autoloadingStrategy;
     }
@@ -46,16 +50,16 @@ class Autoloader
     /**
      * Register autoloading function.
      */
-    public function register()
+    public function register(): void
     {
-        spl_autoload_register([$this->autoloadingStrategy, 'loadClass'], true);
+        spl_autoload_register([$this->autoloadingStrategy, self::AUTOLOADER_FUNCTION_NAME], true);
     }
 
     /**
      * Unregister autoloading function.
      */
-    public function unregister()
+    public function unregister(): void
     {
-        spl_autoload_unregister([$this->autoloadingStrategy, 'loadClass']);
+        spl_autoload_unregister([$this->autoloadingStrategy, self::AUTOLOADER_FUNCTION_NAME]);
     }
 }
