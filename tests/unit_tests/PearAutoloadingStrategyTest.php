@@ -30,23 +30,11 @@ class PearAutoloadingStrategyTest extends AbstractAutoloadingStrategyTestCase
     private const PEAR_AUTOLOADING_STRATEGY_FULLY_QUALIFIED_CLASS_NAME = 'ExOrg\Autoloader\PearAutoloadingStrategy';
 
     /**
-     * Test ExOrg\Autoloader\PearAutoloadingStrategy class exists.
-     */
-    public function testConstructorReturnsProperInstance()
-    {
-        $strategy = new PearAutoloadingStrategy();
-
-        $this->assertInstanceOf(self::PEAR_AUTOLOADING_STRATEGY_FULLY_QUALIFIED_CLASS_NAME, $strategy);
-    }
-
-    /**
      * Test FixedAutoloadingStrategy class implements AutoloadingStrategyInterface.
      */
     public function testImplementsAutoloadingStrategyInterace()
     {
-        $strategy = new PearAutoloadingStrategy();
-
-        $this->assertImplements($strategy, self::AUTOLOADING_STRATEGY_FULLY_QUALIFIED_INTERFACE_NAME);
+        $this->assertImplements($this->strategy, self::AUTOLOADING_STRATEGY_FULLY_QUALIFIED_INTERFACE_NAME);
     }
 
     /**
