@@ -30,23 +30,11 @@ class RecursiveAutoloadingStrategyTest extends AbstractAutoloadingStrategyTestCa
     private const RECURSIVE_AUTOLOADING_STRATEGY_FULLY_QUALIFIED_CLASS_NAME = 'ExOrg\Autoloader\RecursiveAutoloadingStrategy';
 
     /**
-     * Test ExOrg\Autoloader\RecursiveAutoloadingStrategy class exists.
-     */
-    public function testConstructorReturnsProperInstance()
-    {
-        $strategy = new RecursiveAutoloadingStrategy();
-
-        $this->assertInstanceOf(self::RECURSIVE_AUTOLOADING_STRATEGY_FULLY_QUALIFIED_CLASS_NAME, $strategy);
-    }
-
-    /**
      * Test FixedAutoloadingStrategy class implements AutoloadingStrategyInterface.
      */
     public function testImplementsAutoloadingStrategyInterace()
     {
-        $strategy = new RecursiveAutoloadingStrategy();
-
-        $this->assertImplements($strategy, self::AUTOLOADING_STRATEGY_FULLY_QUALIFIED_INTERFACE_NAME);
+        $this->assertImplements($this->strategy, self::AUTOLOADING_STRATEGY_FULLY_QUALIFIED_INTERFACE_NAME);
     }
 
     /**

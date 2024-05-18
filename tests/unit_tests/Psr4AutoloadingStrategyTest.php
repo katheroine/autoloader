@@ -30,23 +30,11 @@ class Psr4AutoloadingStrategyTest extends AbstractAutoloadingStrategyTestCase
     private const PSR4_AUTOLOADING_STRATEGY_FULLY_QUALIFIED_CLASS_NAME = 'ExOrg\Autoloader\Psr4AutoloadingStrategy';
 
     /**
-     * Test ExOrg\Autoloader\Psr4AutoloadingStrategy class exists.
-     */
-    public function testConstructorReturnsProperInstance()
-    {
-        $strategy = new Psr4AutoloadingStrategy();
-
-        $this->assertInstanceOf(self::PSR4_AUTOLOADING_STRATEGY_FULLY_QUALIFIED_CLASS_NAME, $strategy);
-    }
-
-    /**
      * Test Psr0AutoloadingStrategy class implements AutoloadingStrategyInterface.
      */
     public function testImplementsAutoloadingStrategyInterace()
     {
-        $strategy = new Psr4AutoloadingStrategy();
-
-        $this->assertImplements($strategy, self::AUTOLOADING_STRATEGY_FULLY_QUALIFIED_INTERFACE_NAME);
+        $this->assertImplements($this->strategy, self::AUTOLOADING_STRATEGY_FULLY_QUALIFIED_INTERFACE_NAME);
     }
 
     /**
