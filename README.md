@@ -1,6 +1,6 @@
 # Autoloader
 
-<!-- ![example workflow](https://github.com/ExOrg/php-autoloader/actions/workflows/php.yml/badge.svg) -->
+![PHP workflow](https://github.com/ExOrg/php-autoloader/actions/workflows/php.yml/badge.svg)
 
 Expansible Universal Autoloader.
 

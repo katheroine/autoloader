@@ -1,0 +1,31 @@
+name: PHP Unit Tests & Sniffs
+
+on:
+  push:
+    branches: [ "main", "develop" ]
+  pull_request:
+    branches: [ "main", "develop" ]
+
+permissions:
+  contents: read
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        php-versions: [ '8.1', '8.2', '8.3' ]
+    steps:
+    - uses: actions/checkout@v4
+    - name: Install PHP
+      uses: shivammathur/setup-php@v2
+      with:
+        php-version: ${{ matrix.php-versions }}
+    - name: Validate composer.json and composer.lock
+      run: composer validate --strict
+    - name: Install dependencies
+      run: composer install --prefer-dist --no-progress
+    - name: Run unit tests
+      run: vendor/bin/phpunit ./tests
+    - name: Run code sniffs
+      run: vendor/bin/phpcs ./src ./tests
